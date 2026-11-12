@@ -1,0 +1,661 @@
+{
+  "liteModeEnabled": {
+    "status": "todo"
+  },
+  "noAds": {
+    "status": "todo",
+    "note": "partial: Feed ad components done (AdsFilter); video ads need the player-response hook."
+  },
+  "noPromotionCards": {
+    "status": "todo",
+    "note": "partial: Litho part done (FeedFilter/AdsFilter); player time-bar label is a View (paid_promotion_label_text_view) still to hook."
+  },
+  "noSearchHistory": {
+    "status": "todo"
+  },
+  "noLinkTracking": {
+    "status": "todo"
+  },
+  "noShareChunk": {
+    "status": "todo"
+  },
+  "noCast": {
+    "status": "todo"
+  },
+  "noNotifsButton": {
+    "status": "todo"
+  },
+  "noSearchButton": {
+    "status": "todo"
+  },
+  "noVoiceSearchButton": {
+    "status": "todo"
+  },
+  "stickyNavbar": {
+    "status": "todo"
+  },
+  "noSubbar": {
+    "status": "todo",
+    "note": "partial: Litho chip bars done (subscriptions, channel, history, chips_shelf); Home/search/related chip rows are Views still to hook."
+  },
+  "noYTLogo": {
+    "status": "todo"
+  },
+  "premiumYTLogo": {
+    "status": "todo"
+  },
+  "frostedPivot": {
+    "status": "todo"
+  },
+  "disableFloatingTabBar": {
+    "status": "todo"
+  },
+  "removeLabels": {
+    "status": "todo"
+  },
+  "removeIndicators": {
+    "status": "todo"
+  },
+  "twoRowTabBar": {
+    "status": "todo"
+  },
+  "centeredAnchorTabBar": {
+    "status": "todo"
+  },
+  "anchorLeftTab": {
+    "status": "todo"
+  },
+  "anchorRightTab": {
+    "status": "todo"
+  },
+  "startupAnimation": {
+    "status": "todo"
+  },
+  "oldYTUI": {
+    "status": "todo"
+  },
+  "floatingKeyboard": {
+    "status": "n/a",
+    "why": "iPad floating keyboard; Android has no equivalent system keyboard mode."
+  },
+  "disableRTL": {
+    "status": "todo"
+  },
+  "persistentProgressBar": {
+    "status": "todo"
+  },
+  "hideHeatwaves": {
+    "status": "todo"
+  },
+  "theme_glowEnabled": {
+    "status": "todo"
+  },
+  "theme_glowPivot": {
+    "status": "todo"
+  },
+  "theme_glowOverlay": {
+    "status": "todo"
+  },
+  "theme_glowScrubber": {
+    "status": "todo"
+  },
+  "theme_glowSeekBar": {
+    "status": "todo"
+  },
+  "seekBarAnimated": {
+    "status": "todo"
+  },
+  "disableAmbientMode": {
+    "status": "todo"
+  },
+  "seekBarGradient": {
+    "status": "todo"
+  },
+  "sponsorBlockEnabled": {
+    "status": "todo"
+  },
+  "sponsorBlockShortsEnabled": {
+    "status": "todo"
+  },
+  "sponsorBlockMarkersEnabled": {
+    "status": "todo"
+  },
+  "sponsorBlockMarkerSponsor": {
+    "status": "todo"
+  },
+  "sponsorBlockMarkerInteraction": {
+    "status": "todo"
+  },
+  "sponsorBlockMarkerSelfPromo": {
+    "status": "todo"
+  },
+  "sponsorBlockMarkerIntro": {
+    "status": "todo"
+  },
+  "sponsorBlockMarkerOutro": {
+    "status": "todo"
+  },
+  "sponsorBlockMarkerPreview": {
+    "status": "todo"
+  },
+  "sponsorBlockMarkerHook": {
+    "status": "todo"
+  },
+  "sponsorBlockMarkerFiller": {
+    "status": "todo"
+  },
+  "sponsorBlockMarkerMusicOfftopic": {
+    "status": "todo"
+  },
+  "sponsorBlockCategorySponsor": {
+    "status": "todo"
+  },
+  "sponsorBlockCategoryInteraction": {
+    "status": "todo"
+  },
+  "sponsorBlockCategorySelfPromo": {
+    "status": "todo"
+  },
+  "sponsorBlockCategoryIntro": {
+    "status": "todo"
+  },
+  "sponsorBlockCategoryOutro": {
+    "status": "todo"
+  },
+  "sponsorBlockCategoryPreview": {
+    "status": "todo"
+  },
+  "sponsorBlockCategoryHook": {
+    "status": "todo"
+  },
+  "sponsorBlockCategoryFiller": {
+    "status": "todo"
+  },
+  "sponsorBlockCategoryMusicOfftopic": {
+    "status": "todo"
+  },
+  "backgroundPlayback": {
+    "status": "todo"
+  },
+  "disableAutoCaptions": {
+    "status": "todo"
+  },
+  "rememberCaptionState": {
+    "status": "todo"
+  },
+  "rememberLoop": {
+    "status": "todo"
+  },
+  "classicQuality": {
+    "status": "todo"
+  },
+  "noContentWarning": {
+    "status": "todo"
+  },
+  "noContinueWatching": {
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/litho/filters/FeedFilter.java",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
+  },
+  "noRelatedWatchNexts": {
+    "status": "todo"
+  },
+  "hideEndScreenCards": {
+    "status": "todo"
+  },
+  "noRelatedVids": {
+    "status": "todo"
+  },
+  "noContinueWatchingPrompt": {
+    "status": "todo"
+  },
+  "miniplayer": {
+    "status": "todo"
+  },
+  "playlistOldMinibar": {
+    "status": "todo"
+  },
+  "portraitFullscreen": {
+    "status": "todo"
+  },
+  "autoFullscreen": {
+    "status": "todo"
+  },
+  "exitFullscreen": {
+    "status": "todo"
+  },
+  "tapToSeek": {
+    "status": "todo"
+  },
+  "noDoubleTapToSeek": {
+    "status": "todo"
+  },
+  "noTwoFingerSnapToChapter": {
+    "status": "todo"
+  },
+  "dontSnapToChapter": {
+    "status": "todo"
+  },
+  "noFreeZoom": {
+    "status": "todo"
+  },
+  "noPlayerDownloadButton": {
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/litho/filters/PlayerActionButtonsFilter.java",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
+  },
+  "noPlayerShareButton": {
+    "status": "todo",
+    "note": "partial: Litho action-bar button done; the on-video share button is a View still to hook."
+  },
+  "noPlayerSaveButton": {
+    "status": "todo",
+    "note": "partial: Litho action-bar button done; the on-video save button is a View still to hook."
+  },
+  "noPlayerRemixButton": {
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/litho/filters/PlayerActionButtonsFilter.java",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
+  },
+  "noPlayerClipButton": {
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/litho/filters/PlayerActionButtonsFilter.java",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
+  },
+  "removeDownloadMenu": {
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/litho/ (MenuRows) + patches menu-row hook",
+    "note": "menu rows dropped by icon type; patch applies on 21.43.523; not yet confirmed on a device"
+  },
+  "removeShareMenu": {
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/litho/ (MenuRows) + patches menu-row hook",
+    "note": "menu rows dropped by icon type; patch applies on 21.43.523; not yet confirmed on a device"
+  },
+  "muteButton": {
+    "status": "todo"
+  },
+  "lockButton": {
+    "status": "todo"
+  },
+  "downloadButton": {
+    "status": "todo"
+  },
+  "controlsSheetButton": {
+    "status": "todo"
+  },
+  "overlayDeclutterButton": {
+    "status": "todo"
+  },
+  "hideOverlayTitle": {
+    "status": "todo"
+  },
+  "hidePlayerFullscreenButton": {
+    "status": "todo"
+  },
+  "hidePlayerOverflowButton": {
+    "status": "todo"
+  },
+  "hidePlayerYouTubeMusicButton": {
+    "status": "todo"
+  },
+  "hidePlayerCollapseButton": {
+    "status": "todo"
+  },
+  "hideSubs": {
+    "status": "todo"
+  },
+  "noHUDMsgs": {
+    "status": "todo"
+  },
+  "hidePrevNext": {
+    "status": "todo"
+  },
+  "replacePrevNext": {
+    "status": "todo"
+  },
+  "noDarkBg": {
+    "status": "todo"
+  },
+  "noFullscreenActions": {
+    "status": "todo"
+  },
+  "stockVolumeHUD": {
+    "status": "n/a",
+    "why": "Android YouTube already shows the system volume panel; there is no custom HUD to swap."
+  },
+  "noWatermarks": {
+    "status": "todo"
+  },
+  "videoEndTime": {
+    "status": "todo"
+  },
+  "24hrFormat": {
+    "status": "todo"
+  },
+  "pauseOnOverlay": {
+    "status": "todo"
+  },
+  "shortsOnlyMode": {
+    "status": "todo"
+  },
+  "autoSkipShorts": {
+    "status": "todo"
+  },
+  "hideShorts": {
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/litho/filters/ShortsFeedFilter.java",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
+  },
+  "shortsProgress": {
+    "status": "todo"
+  },
+  "pinchToFullscreenShorts": {
+    "status": "todo"
+  },
+  "shortsToRegular": {
+    "status": "todo"
+  },
+  "resumeShorts": {
+    "status": "todo"
+  },
+  "hideShortsLogo": {
+    "status": "todo"
+  },
+  "hideShortsSearch": {
+    "status": "todo"
+  },
+  "hideShortsCamera": {
+    "status": "todo"
+  },
+  "hideShortsMore": {
+    "status": "todo"
+  },
+  "hideShortsLens": {
+    "status": "todo"
+  },
+  "hideShortsSubscriptions": {
+    "status": "todo"
+  },
+  "hideShortsLike": {
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/litho/filters/ShortsActionBarFilter.java",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
+  },
+  "hideShortsDislike": {
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/litho/filters/ShortsActionBarFilter.java",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
+  },
+  "hideShortsComments": {
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/litho/filters/ShortsActionBarFilter.java",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
+  },
+  "hideShortsRemix": {
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/litho/filters/ShortsActionBarFilter.java",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
+  },
+  "hideShortsShare": {
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/litho/filters/ShortsActionBarFilter.java",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
+  },
+  "hideShortsAvatars": {
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/litho/filters/ShortsOverlayFilter.java",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
+  },
+  "hideShortsThanks": {
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/litho/filters/ShortsOverlayFilter.java",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
+  },
+  "hideShortsSource": {
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/litho/filters/ShortsOverlayFilter.java",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
+  },
+  "hideShortsChannelName": {
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/litho/filters/ShortsOverlayFilter.java",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
+  },
+  "hideShortsDescription": {
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/litho/filters/ShortsOverlayFilter.java",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
+  },
+  "hideShortsAudioTrack": {
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/litho/filters/ShortsOverlayFilter.java",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
+  },
+  "hideShortsPromoCards": {
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/litho/filters/ShortsOverlayFilter.java",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
+  },
+  "hideShortsInfoPanel": {
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/litho/filters/ShortsOverlayFilter.java",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
+  },
+  "hideShortsMetapanel": {
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/litho/filters/ShortsOverlayFilter.java",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
+  },
+  "hideShortsPlayerLayer": {
+    "status": "todo"
+  },
+  "downloadRefreshMetadata": {
+    "status": "todo"
+  },
+  "downloadPreferStableAudio": {
+    "status": "todo"
+  },
+  "downloadIncludeAutoCaptions": {
+    "status": "todo"
+  },
+  "downloadOfferTranslatedCaptions": {
+    "status": "todo"
+  },
+  "removePlayNext": {
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/litho/ (MenuRows) + patches menu-row hook",
+    "note": "menu rows dropped by icon type; patch applies on 21.43.523; not yet confirmed on a device"
+  },
+  "removeWatchLaterMenu": {
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/litho/ (MenuRows) + patches menu-row hook",
+    "note": "menu rows dropped by icon type; patch applies on 21.43.523; not yet confirmed on a device"
+  },
+  "removeSaveToPlaylistMenu": {
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/litho/ (MenuRows) + patches menu-row hook",
+    "note": "menu rows dropped by icon type; patch applies on 21.43.523; not yet confirmed on a device"
+  },
+  "removeNotInterestedMenu": {
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/litho/ (MenuRows) + patches menu-row hook",
+    "note": "menu rows dropped by icon type; patch applies on 21.43.523; not yet confirmed on a device"
+  },
+  "removeDontRecommendMenu": {
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/litho/ (MenuRows) + patches menu-row hook",
+    "note": "menu rows dropped by icon type; patch applies on 21.43.523; not yet confirmed on a device"
+  },
+  "removeReportMenu": {
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/litho/ (MenuRows) + patches menu-row hook",
+    "note": "menu rows dropped by icon type; patch applies on 21.43.523; not yet confirmed on a device"
+  },
+  "copyVideoInfo": {
+    "status": "todo"
+  },
+  "saveProfilePhoto": {
+    "status": "todo"
+  },
+  "postManager": {
+    "status": "todo"
+  },
+  "commentManager": {
+    "status": "todo"
+  },
+  "nativeShare": {
+    "status": "todo"
+  },
+  "fixAlbums": {
+    "status": "todo"
+  },
+  "copyWithTimestamp": {
+    "status": "todo"
+  },
+  "advancedMode": {
+    "status": "todo"
+  },
+  "debugLogEnabled": {
+    "status": "todo"
+  },
+  "debugLogFirehose": {
+    "status": "todo"
+  },
+  "debugLogDownloads": {
+    "status": "todo"
+  },
+  "debugLogPlayerUI": {
+    "status": "todo"
+  },
+  "debugLogPremiumControls": {
+    "status": "todo"
+  },
+  "debugLogPiP": {
+    "status": "todo"
+  },
+  "debugLogProbes": {
+    "status": "todo"
+  },
+  "debugHUDEnabled": {
+    "status": "todo"
+  },
+  "redProgressBar": {
+    "status": "todo"
+  },
+  "nativeDownloadRouting": {
+    "status": "todo"
+  },
+  "speedIndex": {
+    "status": "todo"
+  },
+  "autoSpeedIndex": {
+    "status": "todo"
+  },
+  "wiFiQualityIndex": {
+    "status": "todo"
+  },
+  "cellQualityIndex": {
+    "status": "todo"
+  },
+  "autoplayMode": {
+    "status": "todo"
+  },
+  "commentsHeaderMode": {
+    "status": "todo",
+    "note": "partial: Hidden mode done (FeedFilter); pinned mode still to port."
+  },
+  "downloadPostActionMode": {
+    "status": "todo"
+  },
+  "downloadAudioTrackMode": {
+    "status": "todo"
+  },
+  "downloadAudioQualityMode": {
+    "status": "todo"
+  },
+  "downloadPickerFontScaleMode": {
+    "status": "todo"
+  },
+  "downloadPickerFontFaceMode": {
+    "status": "todo"
+  },
+  "seekBarScrubberSize": {
+    "status": "todo"
+  },
+  "theme_glowStrength": {
+    "status": "todo"
+  },
+  "theme_glowStrengthMode": {
+    "status": "todo"
+  },
+  "theme_glowStrengthCustom": {
+    "status": "todo"
+  },
+  "theme_glowOpacity": {
+    "status": "todo"
+  },
+  "theme_glowRadius": {
+    "status": "todo"
+  },
+  "theme_glowLayers": {
+    "status": "todo"
+  },
+  "theme_fontMode": {
+    "status": "todo"
+  },
+  "theme_fontSizeMode": {
+    "status": "todo"
+  },
+  "theme_fontWeightMode": {
+    "status": "todo"
+  },
+  "theme_fontStyleMode": {
+    "status": "todo"
+  },
+  "theme_tabLabelSizeMode": {
+    "status": "todo"
+  },
+  "startupTab": {
+    "status": "todo"
+  },
+  "action.resetOverlayMode": {
+    "status": "todo"
+  },
+  "action.resetThemeColors": {
+    "status": "todo"
+  },
+  "action.exportPreferences": {
+    "status": "todo"
+  },
+  "action.importPreferences": {
+    "status": "todo"
+  },
+  "action.resetSettings": {
+    "status": "todo"
+  },
+  "action.clearCache": {
+    "status": "todo"
+  },
+  "action.clearDebugLog": {
+    "status": "todo"
+  },
+  "destination.controlCenter": {
+    "status": "todo"
+  },
+  "destination.vault": {
+    "status": "todo"
+  },
+  "destination.experimentLab": {
+    "status": "todo"
+  },
+  "destination.aiHome": {
+    "status": "todo"
+  },
+  "destination.themeStudio": {
+    "status": "todo"
+  },
+  "destination.glowLab": {
+    "status": "todo"
+  }
+}
