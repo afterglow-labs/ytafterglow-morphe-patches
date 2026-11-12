@@ -9,13 +9,19 @@
    every entry's page chain and row exist).
 3. Compares hand-ported constants with the JSON: TabStore's allowed/default tab
    lists and LiteMode's forced key sets.
+4. Runs tools/jvm/SettingsVisibilityTest (javac + java from $JDK, android.jar from
+   $ANDROID_JAR) on the installed-tweak row rules: every current tweak installed, and
+   only "Shorts layout and buttons" installed.
 
 Run: python3 tools/check_settings_ui.py   (exit status 1 on any mismatch)
 """
 from __future__ import annotations
 
+import os
 import re
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 TOOLS = Path(__file__).resolve().parent
@@ -220,9 +226,39 @@ def main() -> int:
 
     print(f"settings ui: {len(order)} pages, {total_rows} rows, {pickers} pickers, "
           f"{len(entry_lines)} search entries checked against {gen.SPEC_JSON.relative_to(ROOT)}")
+    run_visibility_test()
     for error in errors:
         print("FAIL:", error, file=sys.stderr)
     return 1 if errors else 0
+
+
+def run_visibility_test() -> None:
+    test = TOOLS / "jvm/SettingsVisibilityTest.java"
+    patches = (ROOT / "patches/src/main/kotlin/app/afterglow/patches/TweakPatches.kt").read_text(encoding="utf-8")
+    marked = re.findall(r'markTweakInstalled\("([^"]+)"\)', patches)
+    m = re.search(r"CURRENT_TWEAKS = \{(.*?)\};", test.read_text(encoding="utf-8"), flags=re.S)
+    if not m or strings(m.group(1)) != marked:
+        fail(f"SettingsVisibilityTest.CURRENT_TWEAKS differs from the tweaks TweakPatches.kt marks: {marked}")
+    jdk = Path(os.environ.get("JDK", "/usr/lib/jvm/java-17-openjdk-amd64"))
+    android_jar = Path(os.environ.get("ANDROID_JAR", str(Path.home() / "Android/Sdk/platforms/android-36/android.jar")))
+    javac, java = jdk / "bin/javac", jdk / "bin/java"
+    if not (javac.exists() and java.exists() and android_jar.exists()):
+        print("settings visibility: skipped (set JDK and ANDROID_JAR to run the JVM test)")
+        return
+    sources = [EXT / "Afterglow.java", EXT / "InstalledTweaks.java", EXT / "ui/SettingsModel.java",
+               EXT / "ui/SettingsSpec.java", EXT / "ui/SettingsBehavior.java", EXT / "ui/SearchIndex.java", test]
+    sources += sorted((EXT / "settings").glob("*.java")) + sorted((EXT / "i18n").glob("*.java"))
+    with tempfile.TemporaryDirectory() as out:
+        compiled = subprocess.run([str(javac), "-encoding", "UTF-8", "-nowarn", "-classpath", str(android_jar), "-d", out]
+                                  + [str(source) for source in sources], capture_output=True, text=True)
+        if compiled.returncode:
+            fail("SettingsVisibilityTest does not compile:\n" + compiled.stderr[-3000:])
+            return
+        ran = subprocess.run([str(java), "-cp", out + os.pathsep + str(android_jar), "app.afterglow.extension.ui.SettingsVisibilityTest"],
+                             capture_output=True, text=True, timeout=300)
+        print(ran.stdout.strip() or ran.stderr.strip()[-3000:])
+        if ran.returncode:
+            fail("SettingsVisibilityTest failed")
 
 
 if __name__ == "__main__":

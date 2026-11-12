@@ -49,10 +49,14 @@ def main():
             errors.append(f"key {key} belongs to no tweak and not to base")
         elif len(found) > 1:
             errors.append(f"key {key} belongs to several: {', '.join(found)}")
-    known = {entry["key"] for entry in registry["entries"]}
+    # Internal keys (theme colors, scrubber image, the tab list) have settings rows too,
+    # so a tweak may own them; they just aren't required to have an owner.
+    known = {entry["key"] for entry in registry["entries"]} | internal
     for key in owners:
         if key not in known:
-            errors.append(f"tweaks.json lists {key}, which is not a registry key")
+            errors.append(f"tweaks.json lists {key}, which is neither a registry nor an internal key")
+        elif key in internal and len(owners[key]) > 1:
+            errors.append(f"key {key} belongs to several: {', '.join(owners[key])}")
 
     marked = {}
     for folder, _, files in os.walk(PATCHES):

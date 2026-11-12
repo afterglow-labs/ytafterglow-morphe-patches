@@ -68,6 +68,7 @@ public final class TweakCatalog {
                     "centeredAnchorTabBar",
                     "anchorLeftTab",
                     "anchorRightTab",
+                    "activeTabs",
                 }),
             new Tweak("typography", "Typography", new String[] {
                     "theme_fontMode",
@@ -83,6 +84,11 @@ public final class TweakCatalog {
                     "redProgressBar",
                     "seekBarGradient",
                     "seekBarAnimated",
+                    "seekBarScrubberImage",
+                    "theme_seekBar",
+                    "theme_seekBarLive",
+                    "theme_seekBarScrubber",
+                    "theme_seekBarScrubberLive",
                 }),
             new Tweak("glow", "Glow", new String[] {
                     "theme_glowEnabled",
@@ -97,6 +103,7 @@ public final class TweakCatalog {
                     "theme_glowScrubber",
                     "theme_glowSeekBar",
                     "destination.glowLab",
+                    "theme_glowColor",
                 }),
             new Tweak("ambient-mode", "Disable ambient mode", new String[] {
                     "disableAmbientMode",
