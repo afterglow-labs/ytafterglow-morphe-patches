@@ -36,7 +36,7 @@ val shortsTweakPatch = bytecodePatch(
     default = true,
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
-    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch, afterglowLithoFilterPatch)
+    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch, afterglowLithoFilterPatch, app.afterglow.patches.tweaks.navigation.shortsHooksPatch)
     execute { markTweakInstalled("shorts") }
 }
 
@@ -54,11 +54,11 @@ val playerButtonsMenusTweakPatch = bytecodePatch(
 @Suppress("unused")
 val watchPageTweakPatch = bytecodePatch(
     name = "Watch page",
-    description = "Lets you hide YouTube's Continue watching card.",
+    description = "Lets you hide the Continue watching card, the \"Are you still watching?\" pause, end-screen cards and end-screen related videos.",
     default = true,
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
-    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch, afterglowLithoFilterPatch)
+    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch, afterglowLithoFilterPatch, app.afterglow.patches.playback.watchPagePlaybackHookPatch)
     execute { markTweakInstalled("watch-page") }
 }
 
@@ -76,22 +76,22 @@ val commentsHeaderTweakPatch = bytecodePatch(
 @Suppress("unused")
 val removeAdsTweakPatch = bytecodePatch(
     name = "Remove ads",
-    description = "Hides ads and paid promotion labels in feeds and on the watch page.",
+    description = "Removes video ads and the ads and paid promotion labels in feeds and on the watch page.",
     default = true,
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
-    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch, afterglowLithoFilterPatch)
+    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch, afterglowLithoFilterPatch, app.afterglow.patches.playback.videoAdsHookPatch)
     execute { markTweakInstalled("remove-ads") }
 }
 
 @Suppress("unused")
 val navigationBarTweakPatch = bytecodePatch(
     name = "Navigation bar",
-    description = "Lets you hide the filter chips on the Subscriptions, channel and history pages.",
+    description = "Lets you hide the Cast, Notifications, Search and voice search buttons and the filter chips, hide or swap the YouTube logo, and keep the top bar pinned.",
     default = true,
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
-    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch, afterglowLithoFilterPatch)
+    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch, afterglowLithoFilterPatch, app.afterglow.patches.tweaks.navigation.navigationBarHooksPatch)
     execute { markTweakInstalled("navigation-bar") }
 }
 

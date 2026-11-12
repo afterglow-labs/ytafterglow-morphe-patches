@@ -234,11 +234,14 @@ def main() -> int:
 
 def run_visibility_test() -> None:
     test = TOOLS / "jvm/SettingsVisibilityTest.java"
-    patches = (ROOT / "patches/src/main/kotlin/app/afterglow/patches/TweakPatches.kt").read_text(encoding="utf-8")
-    marked = re.findall(r'markTweakInstalled\("([^"]+)"\)', patches)
-    m = re.search(r"CURRENT_TWEAKS = \{(.*?)\};", test.read_text(encoding="utf-8"), flags=re.S)
-    if not m or strings(m.group(1)) != marked:
-        fail(f"SettingsVisibilityTest.CURRENT_TWEAKS differs from the tweaks TweakPatches.kt marks: {marked}")
+    # Every tweak id a named tweak patch marks; the test derives its expectations from them.
+    marked = []
+    for source in sorted((ROOT / "patches/src").rglob("*.kt")):
+        for tweak in re.findall(r'markTweakInstalled\("([^"]+)"\)', source.read_text(encoding="utf-8")):
+            if tweak not in marked:
+                marked.append(tweak)
+    if not marked:
+        fail("no markTweakInstalled(\"...\") calls found under patches/src")
     jdk = Path(os.environ.get("JDK", "/usr/lib/jvm/java-17-openjdk-amd64"))
     android_jar = Path(os.environ.get("ANDROID_JAR", str(Path.home() / "Android/Sdk/platforms/android-36/android.jar")))
     javac, java = jdk / "bin/javac", jdk / "bin/java"
@@ -254,7 +257,7 @@ def run_visibility_test() -> None:
         if compiled.returncode:
             fail("SettingsVisibilityTest does not compile:\n" + compiled.stderr[-3000:])
             return
-        ran = subprocess.run([str(java), "-cp", out + os.pathsep + str(android_jar), "app.afterglow.extension.ui.SettingsVisibilityTest"],
+        ran = subprocess.run([str(java), "-cp", out + os.pathsep + str(android_jar), "app.afterglow.extension.ui.SettingsVisibilityTest"] + marked,
                              capture_output=True, text=True, timeout=300)
         print(ran.stdout.strip() or ran.stderr.strip()[-3000:])
         if ran.returncode:

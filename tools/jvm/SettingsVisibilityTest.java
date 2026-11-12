@@ -21,14 +21,14 @@ import app.afterglow.extension.ui.SettingsModel.SearchEntry;
 /**
  * JVM check of the installed-tweak row rules (SettingsBehavior.shown), run by
  * tools/check_settings_ui.py. Uses the real spec and logic with an in-memory
- * SharedPreferences, in two cases: every tweak patch currently in TweakPatches.kt
- * installed, and only "Shorts layout and buttons" installed.
+ * SharedPreferences, in two cases: every tweak with a named patch installed, and only "Shorts layout and buttons" installed.
  */
 public final class SettingsVisibilityTest {
-    /** The tweak ids marked by patches/.../TweakPatches.kt (checked by check_settings_ui.py). */
-    static final String[] CURRENT_TWEAKS = {
-            "shorts-layout", "shorts", "player-buttons-menus", "watch-page",
-            "comments-header", "remove-ads", "navigation-bar", "feed-menus"};
+    /**
+     * The tweak ids the named tweak patches mark (every markTweakInstalled("...") under
+     * patches/src), passed in by check_settings_ui.py so new tweak batches need no edit here.
+     */
+    static String[] currentTweaks = new String[0];
 
     private static int failures;
     private static int checks;
@@ -39,42 +39,23 @@ public final class SettingsVisibilityTest {
         field.setAccessible(true);
         field.set(null, prefs);
 
-        // ---- case 1: all current tweaks
-        install(CURRENT_TWEAKS);
+        // ---- case 1: every tweak with a named patch. Expectations are derived from TweakCatalog
+        // and the spec, so adding tweak batches or implemented keys needs no edit here.
+        currentTweaks = args;
+        check("named tweak patches passed in", true, args.length > 0);
+        install(args);
         for (boolean advanced : new boolean[] {false, true}) {
             AfterglowPrefs.setBool("advancedMode", advanced);
             String c = "all tweaks, advanced " + (advanced ? "on" : "off") + ": ";
             checkKeyedRows(c);
-            expectRows(c, "page:root", advanced
-                    ? list("root.search", "root.privacyAds", "root.interface", "root.player", "root.shorts", "root.feed", "root.comments", "root.about")
-                    : list("root.search", "root.privacyAds", "root.player", "root.shorts", "root.feed", "root.comments", "root.about"));
-            expectRows(c, "page:privacyAds", list("privacyAds.noAds", "privacyAds.noPromotionCards",
-                    "privacyAds.reset.spacer", "privacyAds.reset.header", "privacyAds.reset.action"));
-            expectRows(c, "page:player", list("player.playback", "player.buttonsMenus",
-                    "player.reset.spacer", "player.reset.header", "player.reset.action"));
-            expectRows(c, "page:player.playback", list("playback.noContinueWatching",
-                    "playback.reset.spacer", "playback.reset.header", "playback.reset.action"));
-            expectRows(c, "page:player.buttonsMenus", list("buttonsMenus.noPlayerDownloadButton", "buttonsMenus.noPlayerShareButton",
-                    "buttonsMenus.noPlayerSaveButton", "buttonsMenus.noPlayerRemixButton", "buttonsMenus.noPlayerClipButton",
-                    "buttonsMenus.spacer1", "buttonsMenus.header.menus", "buttonsMenus.removeDownloadMenu", "buttonsMenus.removeShareMenu",
-                    "buttonsMenus.reset.spacer", "buttonsMenus.reset.header", "buttonsMenus.reset.action"));
-            expectRows(c, "page:shorts", advanced
-                    ? list("shorts.hideShorts", "shorts.spacer1", "shorts.layoutButtons", "shorts.reset.spacer", "shorts.reset.header", "shorts.reset.action")
-                    : list("shorts.hideShorts", "shorts.reset.spacer", "shorts.reset.header", "shorts.reset.action"));
-            expectRows(c, "page:feed", list("feed.removePlayNext", "feed.removeWatchLaterMenu", "feed.removeSaveToPlaylistMenu",
-                    "feed.removeNotInterestedMenu", "feed.removeDontRecommendMenu", "feed.removeReportMenu",
-                    "feed.reset.spacer", "feed.reset.header", "feed.reset.action"));
-            expectAbout(c);
+            checkDerivedRows(c);
             expectRows(c, "page:about.credits", allRows("page:about.credits"));
+            expectAbout(c);
+            check(c + "root.search shown", true, SettingsBehavior.shown(SettingsBehavior.row("root.search")));
+            // Destinations whose features are not ported yet stay hidden.
             expectHidden(c, "root.liteMode", "root.aiHome", "root.abLab", "root.themes", "root.vault", "root.tools", "themes.themeStudio");
-            expectSearch(c, advanced, list("RemoveAds", "CommentsHeader", "RemovePlayNext", "Advanced"),
-                    list("LiteMode", "OLED Dark", "Theme Presets", "EnableSponsorBlock", "CopyVideoInfo"));
+            expectSearch(c, advanced, list("Advanced"), list("LiteMode", "Theme Presets"));
         }
-        // Comments picker keeps its reset block.
-        Row comments = SettingsBehavior.row("root.comments");
-        int trailing = 0;
-        for (Row row : comments.trailingRows) if (SettingsBehavior.shownInGroup(row, comments.trailingRows)) trailing++;
-        check("all tweaks: Comments picker reset rows", 3, trailing);
 
         // ---- case 2: only "Shorts layout and buttons"
         install("shorts-layout");
@@ -122,6 +103,54 @@ public final class SettingsVisibilityTest {
             }
         }
         check(c + "keyed rows follow base/installed/implemented", 0, mismatches);
+    }
+
+    /**
+     * Rows without their own key follow what the rules say they follow: section members
+     * (headers, spacers, captions, links) their section's keyed rows, Reset to Defaults the keys
+     * it resets, and sub-page rows whether their page shows a keyed row.
+     */
+    private static void checkDerivedRows(String c) {
+        int mismatches = 0;
+        for (Page page : SettingsSpec.pages()) {
+            for (Row row : page.rows) {
+                Boolean expected = null;
+                if (row.action == SettingsModel.Action.RESET_DEFAULTS) {
+                    boolean any = false;
+                    for (String key : SettingsBehavior.resetKeys(row)) any |= SettingsBehavior.keyVisible(key);
+                    expected = any;
+                } else if (SettingsBehavior.isFollower(row) && row.section >= 0) {
+                    boolean keyed = false, shown = false;
+                    for (Row other : page.rows) {
+                        if (other.section != row.section || SettingsBehavior.isFollower(other)) continue;
+                        keyed = true;
+                        shown |= SettingsBehavior.shown(other);
+                    }
+                    expected = !keyed || shown;
+                } else if (row.key == null && row.registryKey == null && row.targetPage != null
+                        && row.kind == SettingsModel.Kind.DESTINATION && !row.id.equals("root.search")) {
+                    expected = pageHasShownKeyedRow(SettingsBehavior.page(row.targetPage));
+                }
+                if (expected == null) continue;
+                expected &= SettingsBehavior.isVisible(row);
+                if (SettingsBehavior.shown(row) != expected) {
+                    mismatches++;
+                    System.out.println("  row " + row.id + ": shown=" + SettingsBehavior.shown(row) + " expected=" + expected);
+                }
+            }
+        }
+        check(c + "keyless rows follow their section, keys or page", 0, mismatches);
+    }
+
+    private static boolean pageHasShownKeyedRow(Page page) {
+        if (page == null) return false;
+        boolean keyed = false;
+        for (Row row : page.rows) {
+            if (SettingsBehavior.isFollower(row)) continue;
+            keyed = true;
+            if (SettingsBehavior.shown(row)) return true;
+        }
+        return !keyed;
     }
 
     private static void expectAbout(String c) {

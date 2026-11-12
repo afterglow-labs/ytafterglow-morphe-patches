@@ -3,58 +3,86 @@
     "status": "todo"
   },
   "noAds": {
-    "status": "todo",
-    "note": "partial: Feed ad components done (AdsFilter); video ads need the player-response hook."
+    "status": "done",
+    "where": "litho AdsFilter + playback videoAdsHookPatch",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "noPromotionCards": {
     "status": "todo",
     "note": "partial: Litho part done (FeedFilter/AdsFilter); player time-bar label is a View (paid_promotion_label_text_view) still to hook."
   },
   "noSearchHistory": {
-    "status": "todo"
+    "status": "done",
+    "where": "patches/.../tweaks/navigation/ + extension/navigation/",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "noLinkTracking": {
-    "status": "todo"
+    "status": "done",
+    "where": "patches/.../tweaks/navigation/ + extension/navigation/",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "noShareChunk": {
-    "status": "todo"
+    "status": "done",
+    "where": "patches/.../tweaks/navigation/ + extension/navigation/",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "noCast": {
-    "status": "todo"
+    "status": "done",
+    "where": "patches/.../tweaks/navigation/ + extension/navigation/",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "noNotifsButton": {
-    "status": "todo"
+    "status": "done",
+    "where": "patches/.../tweaks/navigation/ + extension/navigation/",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "noSearchButton": {
-    "status": "todo"
+    "status": "done",
+    "where": "patches/.../tweaks/navigation/ + extension/navigation/",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "noVoiceSearchButton": {
-    "status": "todo"
+    "status": "done",
+    "where": "patches/.../tweaks/navigation/ + extension/navigation/",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "stickyNavbar": {
-    "status": "todo"
+    "status": "done",
+    "where": "patches/.../tweaks/navigation/ + extension/navigation/",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "noSubbar": {
     "status": "todo",
     "note": "partial: Litho chip bars done (subscriptions, channel, history, chips_shelf); Home/search/related chip rows are Views still to hook."
   },
   "noYTLogo": {
-    "status": "todo"
+    "status": "done",
+    "where": "patches/.../tweaks/navigation/ + extension/navigation/",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "premiumYTLogo": {
-    "status": "todo"
+    "status": "done",
+    "where": "patches/.../tweaks/navigation/ + extension/navigation/",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "frostedPivot": {
-    "status": "todo"
+    "status": "done",
+    "where": "patches/.../tweaks/navigation/ + extension/navigation/",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "disableFloatingTabBar": {
-    "status": "todo"
+    "status": "n/a",
+    "why": "Android YouTube 21.43 has no floating bottom tab bar (only Home chip-row resources)."
   },
   "removeLabels": {
-    "status": "todo"
+    "status": "done",
+    "where": "patches/.../tweaks/navigation/ + extension/navigation/",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "removeIndicators": {
-    "status": "todo"
+    "status": "done",
+    "where": "patches/.../tweaks/navigation/ + extension/navigation/",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "twoRowTabBar": {
     "status": "todo"
@@ -175,10 +203,14 @@
     "status": "todo"
   },
   "backgroundPlayback": {
-    "status": "todo"
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/playback/ + patches/.../playback/",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "disableAutoCaptions": {
-    "status": "todo"
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/playback/ + patches/.../playback/",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "rememberCaptionState": {
     "status": "todo"
@@ -190,7 +222,9 @@
     "status": "todo"
   },
   "noContentWarning": {
-    "status": "todo"
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/playback/ + patches/.../playback/",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "noContinueWatching": {
     "status": "done",
@@ -201,13 +235,19 @@
     "status": "todo"
   },
   "hideEndScreenCards": {
-    "status": "todo"
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/playback/ + patches/.../playback/",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "noRelatedVids": {
-    "status": "todo"
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/playback/ + patches/.../playback/",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "noContinueWatchingPrompt": {
-    "status": "todo"
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/playback/ + patches/.../playback/",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "miniplayer": {
     "status": "todo"
@@ -337,10 +377,13 @@
     "status": "todo"
   },
   "shortsOnlyMode": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: Shorts start page done; tab-bar hiding and exit gesture not yet"
   },
   "autoSkipShorts": {
-    "status": "todo"
+    "status": "done",
+    "where": "patches/.../tweaks/navigation/ + extension/navigation/",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "hideShorts": {
     "status": "done",
@@ -354,13 +397,18 @@
     "status": "todo"
   },
   "shortsToRegular": {
-    "status": "todo"
+    "status": "done",
+    "where": "patches/.../tweaks/navigation/ + extension/navigation/",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "resumeShorts": {
-    "status": "todo"
+    "status": "done",
+    "where": "patches/.../tweaks/navigation/ + extension/navigation/",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "hideShortsLogo": {
-    "status": "todo"
+    "status": "n/a",
+    "why": "Android YouTube 21.43's Shorts player has no logo view (the icon exists only in the icon table)."
   },
   "hideShortsSearch": {
     "status": "todo"
@@ -547,19 +595,28 @@
     "status": "todo"
   },
   "speedIndex": {
-    "status": "todo"
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/playback/ + patches/.../playback/",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "autoSpeedIndex": {
-    "status": "todo"
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/playback/ + patches/.../playback/",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "wiFiQualityIndex": {
-    "status": "todo"
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/playback/ + patches/.../playback/",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "cellQualityIndex": {
-    "status": "todo"
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/playback/ + patches/.../playback/",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "autoplayMode": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: hide-switch mode done; 'off' mode has no hook yet"
   },
   "commentsHeaderMode": {
     "status": "todo",
@@ -617,7 +674,9 @@
     "status": "todo"
   },
   "startupTab": {
-    "status": "todo"
+    "status": "done",
+    "where": "patches/.../tweaks/navigation/ + extension/navigation/",
+    "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "action.resetOverlayMode": {
     "status": "todo"
