@@ -10,7 +10,8 @@ internal const val AFTERGLOW_ACTIVITY = "app.afterglow.extension.ui.AfterglowAct
 
 /**
  * Action of the row's intent and of the activity's intent filter. The row names no package, so
- * it opens the activity under whatever package name the patched app ends up with.
+ * it opens the activity under whatever package name the patched app ends up with (for example
+ * after a GmsCore support patch renames it, which happens after this patch runs).
  */
 internal const val AFTERGLOW_OPEN_SETTINGS_ACTION = "app.afterglow.extension.OPEN_SETTINGS"
 
@@ -115,7 +116,11 @@ internal val afterglowSettingsPatch = resourcePatch(
                 .firstOrNull { it.getAttribute("android:name") == AFTERGLOW_ACTIVITY }
                 ?: document.createElement("activity").apply {
                     setAttribute("android:name", AFTERGLOW_ACTIVITY)
-                    setAttribute("android:exported", "false")
+                    // Exported, because the row starts it with an implicit intent: apps targeting
+                    // Android 14+ (YouTube targets 37) deliver implicit intents only to exported
+                    // components, even within the same app, so an unexported activity throws
+                    // ActivityNotFoundException on tap. The activity reads only a page-name extra.
+                    setAttribute("android:exported", "true")
                     setAttribute("android:theme", "@android:style/Theme.DeviceDefault.DayNight")
                     setAttribute(
                         "android:configChanges",

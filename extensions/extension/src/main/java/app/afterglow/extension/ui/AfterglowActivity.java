@@ -92,7 +92,7 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
             // would show the app label ("YouTube") above Afterglow's own navigation bar.
             requestWindowFeature(Window.FEATURE_NO_TITLE);
             views = new RowViews(this, RowViews.Palette.from(getResources().getConfiguration()));
-            setContentView(buildFrame());
+            showFrame();
             stack.add(screenFor(SettingsBehavior.page(SettingsSpec.ROOT)));
             String destination = getIntent() != null ? getIntent().getStringExtra(EXTRA_DESTINATION) : null;
             if (destination != null) openDestination(destination);
@@ -118,7 +118,7 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
         super.onConfigurationChanged(newConfig);
         int y = scroll != null ? scroll.getScrollY() : 0;
         views = new RowViews(this, RowViews.Palette.from(newConfig));
-        setContentView(buildFrame());
+        showFrame();
         render(y);
     }
 
@@ -171,6 +171,15 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
     }
 
     /**
+     * Shows a freshly built page frame. The system bars are styled after setContentView: before
+     * it the window has no decor, and Window.getInsetsController() throws on Android 16.
+     */
+    private void showFrame() {
+        setContentView(buildFrame());
+        applySystemBars(views.palette);
+    }
+
+    /**
      * Page frame: navigation bar (iOS-style back chevron and bold title, themed only when the
      * theme sets a navigation surface, YTAGNavigationAppearance), pinned header slot, scrolling
      * content, and an overlay for drags. The page background is the theme gradient or color.
@@ -181,7 +190,6 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
         root.setOrientation(LinearLayout.VERTICAL);
         root.setBackground(palette.pageBackground());
         root.setFitsSystemWindows(true);
-        applySystemBars(palette);
 
         LinearLayout bar = new LinearLayout(this);
         bar.setOrientation(LinearLayout.HORIZONTAL);
@@ -225,29 +233,39 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
         return root;
     }
 
-    /** Status and navigation bars follow the page (iOS bars sit on the page or themed surface). */
+    /**
+     * Status and navigation bars follow the page (iOS bars sit on the page or themed surface).
+     * Cosmetic only, so it never throws: a failure leaves the system's default bars.
+     */
     private void applySystemBars(RowViews.Palette palette) {
-        Window window = getWindow();
-        int statusColor = palette.navBackground != android.graphics.Color.TRANSPARENT ? palette.navBackground
-                : (palette.gradient != null ? palette.gradient[0] : palette.background);
-        int navigationColor = palette.gradient != null ? palette.gradient[1] : palette.background;
-        window.setStatusBarColor(statusColor);
-        window.setNavigationBarColor(navigationColor);
-        boolean lightStatus = ThemeColors.luminance(statusColor) > 0.5;
-        boolean lightNavigation = ThemeColors.luminance(navigationColor) > 0.5;
-        if (android.os.Build.VERSION.SDK_INT >= 30) {
-            WindowInsetsController controller = window.getInsetsController();
-            if (controller != null) {
-                int mask = WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS | WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS;
-                int value = (lightStatus ? WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS : 0)
-                        | (lightNavigation ? WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS : 0);
-                controller.setSystemBarsAppearance(value, mask);
+        try {
+            Window window = getWindow();
+            // Installs the decor if it is missing; getInsetsController() needs it.
+            View decor = window.getDecorView();
+            int statusColor = palette.navBackground != android.graphics.Color.TRANSPARENT ? palette.navBackground
+                    : (palette.gradient != null ? palette.gradient[0] : palette.background);
+            int navigationColor = palette.gradient != null ? palette.gradient[1] : palette.background;
+            // No-ops when the app targets Android 15+ (edge to edge); the page background shows instead.
+            window.setStatusBarColor(statusColor);
+            window.setNavigationBarColor(navigationColor);
+            boolean lightStatus = ThemeColors.luminance(statusColor) > 0.5;
+            boolean lightNavigation = ThemeColors.luminance(navigationColor) > 0.5;
+            if (android.os.Build.VERSION.SDK_INT >= 30) {
+                WindowInsetsController controller = window.getInsetsController();
+                if (controller != null) {
+                    int mask = WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS | WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS;
+                    int value = (lightStatus ? WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS : 0)
+                            | (lightNavigation ? WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS : 0);
+                    controller.setSystemBarsAppearance(value, mask);
+                }
+            } else {
+                int flags = decor.getSystemUiVisibility();
+                flags = lightStatus ? flags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR : flags & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+                flags = lightNavigation ? flags | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR : flags & ~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+                decor.setSystemUiVisibility(flags);
             }
-        } else {
-            int flags = window.getDecorView().getSystemUiVisibility();
-            flags = lightStatus ? flags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR : flags & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            flags = lightNavigation ? flags | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR : flags & ~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
-            window.getDecorView().setSystemUiVisibility(flags);
+        } catch (Throwable error) {
+            Afterglow.error("AfterglowActivity.applySystemBars", error);
         }
     }
 
@@ -283,7 +301,7 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
             if (paletteDirty) {
                 paletteDirty = false;
                 views = new RowViews(this, RowViews.Palette.from(getResources().getConfiguration()));
-                setContentView(buildFrame());
+                showFrame();
             }
             render(y);
         });
