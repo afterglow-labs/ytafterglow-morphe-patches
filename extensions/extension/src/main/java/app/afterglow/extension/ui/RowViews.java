@@ -30,6 +30,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import app.afterglow.extension.settings.ThemeColors;
+import app.afterglow.extension.settings.ThemePalette;
+import app.afterglow.extension.settings.ThemeRole;
+import app.afterglow.extension.settings.ThemeStore;
 
 /**
  * Builds the row views of the settings screens, styled like the iOS YouTube
@@ -461,16 +464,17 @@ final class RowViews {
         final int searchFieldFill;
 
         private Palette(Configuration configuration) {
-            int pageStyle = ThemeColors.pageStyleOverride();
+            ThemePalette theme = ThemeStore.snapshot().palette;
+            int pageStyle = theme.pageStyleOverride();
             dark = pageStyle >= 0 ? pageStyle == 1
                     : (configuration.uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
 
-            Integer themeBackground = ThemeColors.color(ThemeColors.BACKGROUND);
-            Integer themeText = ThemeColors.color(ThemeColors.TEXT_PRIMARY);
-            Integer themeSecondary = ThemeColors.color(ThemeColors.TEXT_SECONDARY);
-            Integer themeIcon = ThemeColors.color(ThemeColors.TAB_ICONS);
-            Integer themeAccent = ThemeColors.color(ThemeColors.ACCENT);
-            Integer themeNavigation = ThemeColors.color(ThemeColors.NAVIGATION);
+            Integer themeBackground = theme.color(ThemeRole.BACKGROUND);
+            Integer themeText = theme.color(ThemeRole.PRIMARY_TEXT);
+            Integer themeSecondary = theme.color(ThemeRole.SECONDARY_TEXT);
+            Integer themeIcon = theme.color(ThemeRole.TAB_ICON);
+            Integer themeAccent = theme.color(ThemeRole.ACCENT);
+            Integer themeNavigation = theme.color(ThemeRole.NAVIGATION_SURFACE);
 
             background = themeBackground != null ? opaque(themeBackground) : (dark ? Color.parseColor("#0F0F0F") : Color.WHITE);
             text = themeText != null ? themeText : (dark ? Color.parseColor("#F1F1F1") : Color.parseColor("#0F0F0F"));
@@ -478,8 +482,8 @@ final class RowViews {
             tertiaryText = withAlpha(secondaryText, 0.7f);
             icon = themeIcon != null ? themeIcon : text;
             accent = themeAccent != null ? themeAccent : (dark ? Color.parseColor("#3EA6FF") : Color.parseColor("#065FD4"));
-            gradient = ThemeColors.gradientEnabled()
-                    ? new int[] {ThemeColors.color(ThemeColors.GRADIENT_START), ThemeColors.color(ThemeColors.GRADIENT_END)} : null;
+            gradient = theme.hasGradient()
+                    ? new int[] {theme.color(ThemeRole.GRADIENT_START), theme.color(ThemeRole.GRADIENT_END)} : null;
             switchThumbOff = dark ? Color.parseColor("#9E9E9E") : Color.parseColor("#FAFAFA");
             switchTrackOff = dark ? Color.parseColor("#3F3F3F") : Color.parseColor("#BDBDBD");
             groupedBackground = dark ? Color.BLACK : Color.parseColor("#F2F2F7");
@@ -498,9 +502,7 @@ final class RowViews {
                 if (themeIcon != null && ThemeColors.contrast(opaque(themeIcon), navBackground) >= 3.0) navTint = themeIcon;
                 else if (themeText != null && ThemeColors.contrast(opaque(themeText), navBackground) >= 3.0) navTint = themeText;
                 else navTint = ThemeColors.blackOrWhite(navBackground);
-                if (themeSecondary != null) navBorder = withAlpha(themeSecondary, 0.22f);
-                else if (themeText != null) navBorder = withAlpha(themeText, 0.18f);
-                else navBorder = null;
+                navBorder = theme.color(ThemeRole.BORDER);
             } else {
                 // Unthemed: YouTube's native bar over the page (transparent over a gradient).
                 navBackground = gradient != null ? Color.TRANSPARENT : background;

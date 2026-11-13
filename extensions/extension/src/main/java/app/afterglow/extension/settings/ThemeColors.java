@@ -1,12 +1,9 @@
 package app.afterglow.extension.settings;
 
-import android.graphics.Color;
-
 /**
  * Reads the theme's semantic colors from the same {@code theme_*} keys the iOS
- * theme store uses (YTAGTheme.m YTAGThemeLegacyKeyForRole). This is the single
- * decoder for those keys; the settings summaries and the settings palette both
- * read through it.
+ * theme store uses (YTAGTheme.m YTAGThemeLegacyKeyForRole). Legacy lookups return
+ * explicitly stored colors; semantic consumers use ThemeStore's resolved palette.
  *
  * <p>Storage: iOS keeps each color as an archived UIColor blob. Theme Studio is not
  * ported to Android yet, so a color is read from an ARGB integer (Integer/Long) or
@@ -28,7 +25,8 @@ public final class ThemeColors {
 
     /** The stored color as ARGB, or null when the key holds no readable color. */
     public static Integer color(String key) {
-        return decode(AfterglowPrefs.snapshot().get(key));
+        ThemeRole role = ThemeRole.forLegacyKey(key);
+        return role == null ? null : ThemeStore.snapshot().palette.explicit(role);
     }
 
     public static Integer decode(Object value) {
@@ -50,24 +48,22 @@ public final class ThemeColors {
 
     /** YES when both gradient colors are set (iOS gradientEnabled). */
     public static boolean gradientEnabled() {
-        return color(GRADIENT_START) != null && color(GRADIENT_END) != null;
+        return ThemeStore.snapshot().palette.hasGradient();
     }
 
     /**
      * iOS pageStyleOverride: when the theme owns the background (a background color or a
      * gradient) its foundation decides light (0) or dark (1); otherwise -1, follow the app.
-     * Android derives the foundation from the background's luminance.
+     * Built-in presets retain their declared foundation; custom palettes use the iOS
+     * perceived-brightness rule (average gradient endpoints first, threshold 0.55).
      */
     public static int pageStyleOverride() {
-        Integer background = color(BACKGROUND);
-        if (background == null && gradientEnabled()) background = color(GRADIENT_START);
-        if (background == null) return -1;
-        return luminance(background) > 0.5 ? 0 : 1;
+        return ThemeStore.snapshot().palette.pageStyleOverride();
     }
 
     /** WCAG relative luminance (YTAGContrastPolicy). */
     public static double luminance(int color) {
-        return 0.2126 * channel(Color.red(color)) + 0.7152 * channel(Color.green(color)) + 0.0722 * channel(Color.blue(color));
+        return 0.2126 * channel((color >>> 16) & 255) + 0.7152 * channel((color >>> 8) & 255) + 0.0722 * channel(color & 255);
     }
 
     private static double channel(int value) {
@@ -84,6 +80,6 @@ public final class ThemeColors {
 
     /** Black or white, whichever reads better on {@code background} (YTAGContrastReadableForeground). */
     public static int blackOrWhite(int background) {
-        return contrast(Color.BLACK, background) >= contrast(Color.WHITE, background) ? Color.BLACK : Color.WHITE;
+        return contrast(0xFF000000, background) >= contrast(0xFFFFFFFF, background) ? 0xFF000000 : 0xFFFFFFFF;
     }
 }

@@ -215,9 +215,11 @@ internal object PlayerCastButtonFingerprint : Fingerprint(
     parameters = listOf(),
     filters = listOf(
         checkCast("Landroidx/mediarouter/app/MediaRouteButton;"),
-        methodCall(smali = "Landroid/view/View;->setVisibility(I)V", location = MatchAfterImmediately()),
+        // GmsCore support in patches-2.0.0 depends on the official overlay-button
+        // patch, which inserts invoke-static + move-result before setVisibility.
+        methodCall(smali = "Landroid/view/View;->setVisibility(I)V", location = MatchAfterWithin(3)),
         checkCast("Lcom/google/android/libraries/youtube/mdx/mediaroute/entrypoint/MdxEntryPointButton;"),
-        methodCall(smali = "Landroid/view/View;->setVisibility(I)V", location = MatchAfterImmediately()),
+        methodCall(smali = "Landroid/view/View;->setVisibility(I)V", location = MatchAfterWithin(3)),
         literal(11208L),
     ),
 )

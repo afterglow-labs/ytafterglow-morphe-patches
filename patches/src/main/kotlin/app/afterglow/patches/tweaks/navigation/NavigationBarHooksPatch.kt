@@ -160,7 +160,9 @@ internal val navigationBarHooksPatch = bytecodePatch(
                 """,
             )
         }
-        PlayerCastButtonFingerprint.let {
+        // Resolve once: validation must not re-match the adjacent instructions after
+        // the first visibility hook has inserted code between them.
+        PlayerCastButtonFingerprint.match().let {
             listOf(it.instructionMatches[3], it.instructionMatches[1]).forEach { match ->
                 val visibility = it.method.instruction<FiveRegisterInstruction>(match.index).registerD
                 it.method.addInstructionsAtControlFlowLabel(

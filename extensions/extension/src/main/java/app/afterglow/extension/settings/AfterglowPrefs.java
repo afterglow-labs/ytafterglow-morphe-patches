@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicLong;
 
 import app.afterglow.extension.Afterglow;
 
@@ -25,6 +26,7 @@ public final class AfterglowPrefs {
     private static final Map<String, Descriptor> BY_KEY = new HashMap<>();
     private static final CopyOnWriteArrayList<Listener> LISTENERS = new CopyOnWriteArrayList<>();
     private static volatile SharedPreferences prefs;
+    private static final AtomicLong REVISION = new AtomicLong();
 
     static {
         for (Descriptor descriptor : Registry.ALL) BY_KEY.put(descriptor.key, descriptor);
@@ -170,6 +172,38 @@ public final class AfterglowPrefs {
         return p == null ? new HashMap<String, Object>() : p.getAll();
     }
 
+    static boolean available() { return prefs() != null; }
+
+    /** Published before listeners run, so cached consumers see the new values during callbacks. */
+    public static long revision() { return REVISION.get(); }
+
+    /** Change a group of keys atomically. Null removes a key; unrelated preferences are preserved. */
+    public static void update(Map<String, ?> changes) {
+        for (Map.Entry<String, ?> entry : changes.entrySet()) {
+            Object value = entry.getValue();
+            if (entry.getKey() == null || (value != null && !(value instanceof Boolean)
+                    && !(value instanceof Integer) && !(value instanceof Long)
+                    && !(value instanceof Float) && !(value instanceof String))) {
+                throw new IllegalArgumentException("Unsupported preference: " + entry.getKey());
+            }
+        }
+        SharedPreferences p = prefs();
+        if (p == null || changes.isEmpty()) return;
+        SharedPreferences.Editor editor = p.edit();
+        for (Map.Entry<String, ?> entry : changes.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            if (value == null) editor.remove(key);
+            else if (value instanceof Boolean) editor.putBoolean(key, (Boolean) value);
+            else if (value instanceof Integer) editor.putInt(key, (Integer) value);
+            else if (value instanceof Long) editor.putLong(key, (Long) value);
+            else if (value instanceof Float) editor.putFloat(key, (Float) value);
+            else editor.putString(key, (String) value);
+        }
+        editor.apply();
+        notifyChanged(null);
+    }
+
     public static void addListener(Listener listener) {
         LISTENERS.addIfAbsent(listener);
     }
@@ -179,6 +213,7 @@ public final class AfterglowPrefs {
     }
 
     private static void notifyChanged(String key) {
+        REVISION.incrementAndGet();
         for (Listener listener : LISTENERS) {
             try {
                 listener.onChanged(key);

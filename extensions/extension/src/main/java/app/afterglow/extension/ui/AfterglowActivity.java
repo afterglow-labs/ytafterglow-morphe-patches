@@ -50,6 +50,7 @@ import app.afterglow.extension.settings.PrefsTransfer;
 import app.afterglow.extension.settings.Registry;
 import app.afterglow.extension.settings.TabStore;
 import app.afterglow.extension.settings.ThemeColors;
+import app.afterglow.extension.settings.ThemeStore;
 import app.afterglow.extension.ui.SettingsModel.Page;
 import app.afterglow.extension.ui.SettingsModel.PageType;
 import app.afterglow.extension.ui.SettingsModel.Picker;
@@ -609,7 +610,7 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
                         "This removes every preset, custom color, and gradient value in Themes. Restart YouTube to fully return to the default look.",
                         L10n.get("ResetAndRestart", "Reset & Restart"), L10n.get("Cancel", "Cancel"),
                         () -> {
-                            for (String key : row.actionKeys) AfterglowPrefs.remove(key);
+                            ThemeStore.resetToSystem();
                             AppRestart.restart(this);
                         }, null);
                 break;

@@ -17,6 +17,7 @@
 
 package app.afterglow.patches.video
 
+import app.afterglow.patches.shared.Constants.EXTENSION_PACKAGE
 import app.morphe.patcher.Fingerprint
 import app.morphe.patcher.InstructionLocation.MatchAfterImmediately
 import app.morphe.patcher.InstructionLocation.MatchAfterWithin
@@ -116,6 +117,8 @@ internal object PlayerProgressFingerprint : Fingerprint(
  */
 internal object PlayerStatusEnumFingerprint : Fingerprint(
     accessFlags = listOf(AccessFlags.STATIC, AccessFlags.CONSTRUCTOR),
+    // The merged extension has a name-for-name copy of this enum. Only hook YouTube's.
+    custom = { _, classDef -> !classDef.type.startsWith("$EXTENSION_PACKAGE/") },
     strings = listOf(
         "NEW",
         "PLAYBACK_PENDING",

@@ -15,6 +15,8 @@ import app.afterglow.extension.settings.Descriptor;
 import app.afterglow.extension.settings.LiteMode;
 import app.afterglow.extension.settings.TabStore;
 import app.afterglow.extension.settings.ThemeColors;
+import app.afterglow.extension.settings.ThemePalette;
+import app.afterglow.extension.settings.ThemeStore;
 import app.afterglow.extension.settings.TweakCatalog;
 import app.afterglow.extension.ui.SettingsModel.Action;
 import app.afterglow.extension.ui.SettingsModel.Kind;
@@ -271,8 +273,8 @@ final class SettingsBehavior {
             case THEME_SEEK_BAR:
                 return customizationSummary(row.detailKeys);
             case THEME_STUDIO:
-                // Theme Studio is not ported, so the active theme is always the system theme.
-                return SettingsSpec.THEME_PRESET_COUNT + " presets";
+                ThemePalette activeTheme = ThemeStore.snapshot().palette;
+                return "system".equals(activeTheme.identifier) ? SettingsSpec.THEME_PRESET_COUNT + " presets" : activeTheme.name;
             case SPONSOR_BLOCK:
                 return sponsorBlockSummary(row);
             case VERSION:
