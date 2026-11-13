@@ -123,7 +123,10 @@ final class RowViews {
         row.addView(icon, iconParams);
         AfterglowWordmarkView wordmark = new AfterglowWordmarkView(context);
         wordmark.setUnclipDepth(2); // header row and page content; the scroll view clips at its top edge
+        // The header row plays the iOS cell; the cards drawn after it cover the glow below.
+        wordmark.setGlowRow(1, false);
         wordmark.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+        wordmark.setTextColor(palette.text); // "After" keeps it when it is dark (light pages)
         wordmark.setText(AfterglowWordmarkView.DISPLAY_TITLE);
         wordmark.setContentDescription(AfterglowWordmarkView.DISPLAY_TITLE);
         row.addView(wordmark, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
