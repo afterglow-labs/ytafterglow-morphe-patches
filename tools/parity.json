@@ -682,7 +682,8 @@
     "status": "todo"
   },
   "action.resetThemeColors": {
-    "status": "todo"
+    "status": "done",
+    "where": "ThemeStudioScreen, AfterglowActivity RESET_ALL_COLORS and ThemeStore.resetToSystem; restart removes native resource overlay"
   },
   "action.exportPreferences": {
     "status": "todo"
@@ -712,7 +713,8 @@
     "status": "todo"
   },
   "destination.themeStudio": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: 30 iOS presets, active identity, swatches and reset; native surface/text resources and Litho on Android 14+. Editor, saved library, native gradients and glow remain unimplemented."
   },
   "destination.glowLab": {
     "status": "todo"

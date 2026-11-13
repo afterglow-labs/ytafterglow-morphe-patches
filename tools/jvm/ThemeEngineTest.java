@@ -26,6 +26,7 @@ public final class ThemeEngineTest {
         decoding();
         foundations();
         derivedColors();
+        nativeColors();
         catalog();
         transactionsAndCache();
         System.out.println("PASS theme engine: " + checks + " checks");
@@ -107,6 +108,39 @@ public final class ThemeEngineTest {
         eq("OLED literal black", 0xFF000000, ThemeCatalog.find("oled-dark").color(BACKGROUND));
         eq("no invented presets", null, ThemeCatalog.find("missing"));
     }
+
+    private static void nativeColors() {
+        eq("light preset selects native light", Appearance.LIGHT, NativeThemeColors.appearance(palette(BACKGROUND, 0xFFFFFFFF), Appearance.DARK));
+        eq("dark preset selects native dark", Appearance.DARK, NativeThemeColors.appearance(palette(BACKGROUND, 0xFF000000), Appearance.LIGHT));
+        eq("reset follows saved appearance", Appearance.DARK, NativeThemeColors.appearance(ThemePalette.system(), Appearance.DARK));
+        eq("accent-only retains appearance", Appearance.LIGHT, NativeThemeColors.appearance(palette(ACCENT, 0xFF123456), Appearance.LIGHT));
+        eq("null appearance safe", null, NativeThemeColors.appearance(palette(BACKGROUND, 0), null));
+        eq("unknown enum safe", OtherAppearance.SYSTEM, NativeThemeColors.appearance(palette(BACKGROUND, 0), OtherAppearance.SYSTEM));
+        for (ThemeRole role : ThemeRole.values())
+            eq("native system preserves " + role, null, NativeThemeColors.role(ThemePalette.system(), role));
+        ThemePalette light = palette(BACKGROUND, 0xFFCCCCCC);
+        ThemePalette dark = palette(BACKGROUND, 0xFF102030);
+        eq("background-only light text", 0xFF0F0F0F, NativeThemeColors.role(light, PRIMARY_TEXT));
+        eq("background-only dark text", 0xFFF1F1F1, NativeThemeColors.role(dark, PRIMARY_TEXT));
+        eq("accent alone leaves native text", null, NativeThemeColors.role(palette(ACCENT, 0xFFFF0000), PRIMARY_TEXT));
+        eq("explicit primary wins", 0xFF123456,
+                NativeThemeColors.role(palette(BACKGROUND, 0xFFFFFFFF, PRIMARY_TEXT, 0xFF123456), PRIMARY_TEXT));
+        eq("alpha multiplier preserves transparency", 0x40123456, NativeThemeColors.withOpacity(0x80123456, 0.5));
+        eq("transparent remains transparent", 0x00123456, NativeThemeColors.withOpacity(0x00123456, 0.7));
+        eq("native dark Litho", 0xFF102030, NativeThemeColors.lithoBackground(dark, 0xFF0F0F0F, true));
+        eq("native light Litho", 0xFF102030, NativeThemeColors.lithoBackground(dark, 0xFFFFFFFF, false));
+        eq("Litho alpha", 0xFA102030, NativeThemeColors.lithoBackground(dark, 0xFA212121, true));
+        eq("selected chip foreground retained", 0xFFFFFFFF, NativeThemeColors.lithoBackground(dark, 0xFFFFFFFF, true));
+        eq("light selected chip retained", 0xFF0F0F0F, NativeThemeColors.lithoBackground(light, 0xFF0F0F0F, false));
+        eq("unknown Litho color retained", 0xFFAA1234, NativeThemeColors.lithoBackground(dark, 0xFFAA1234, true));
+        eq("accent only keeps backgrounds", 0xFF0F0F0F,
+                NativeThemeColors.lithoBackground(palette(ACCENT, 0xFFAA1234), 0xFF0F0F0F, true));
+        eq("system restores original", 0xFF0F0F0F,
+                NativeThemeColors.lithoBackground(ThemePalette.system(), 0xFF0F0F0F, true));
+    }
+
+    private enum Appearance { LIGHT, DARK }
+    private enum OtherAppearance { SYSTEM }
 
     private static void transactionsAndCache() {
         // Listener predates ThemeStore initialization: reads in callbacks must still be fresh.

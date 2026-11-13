@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-12, theme-engine takeover
+> Updated: 2026-11-13, native themes and Theme Studio presets
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, private)
-> Session summary: Started the 1:1 Android port of the YTAfterglow iOS YouTube tweak as the user's own Morphe patch source. About 28% of settings are ported. The shared theme color foundation is now implemented, strict standalone/GmsCore patch tests pass, and settings import/reset was verified in the phone emulator.
+> Session summary: The shared theme engine now has a native YouTube resource/Litho adapter and a working Theme Studio preset screen. There are 18 named tweaks, with parity at 56 done / 4 n/a / 139 todo. Theme Studio remains partial: editor/library, native gradients, glow and typography are still pending.
 
 ## Goal
 
@@ -10,6 +10,41 @@ Port every YTAfterglow iOS tweak to Android YouTube **21.43.523**, exactly as it
 - Each Afterglow feature group is a separately named tweak in Morphe's list (names from `tools/tweaks.json`).
 - An Afterglow settings page lives inside YouTube's settings and shows only rows for tweaks that are installed and implemented.
 - Plumbing such as GmsCore/microG sign-in comes from Morphe's own "GmsCore support" patch, ticked in the same run.
+
+## Native theme checkpoint — 2026-11-13
+
+The active checkout is still `/home/corey/projects/ytafterglow-morphe-patches`, on `main`.
+The **Theme Studio** named patch adds the 30 iOS presets, active identity, swatches, seasonal
+group and reset. The editor, saved library and theme-file transfer remain hidden. Native
+colors require Android 14+; the screen explains that requirement on older devices.
+
+The native adapter isolates 74 style bindings in 55 aliases and maps 38 additional semantic
+resources (93 total). It attaches an overlay to base contexts and the main activity, hooks
+the verified Litho background drawable, and selects YouTube's LIGHT/DARK foundation without
+changing the saved Appearance setting. Reset returns to that saved setting. Shared white,
+black and brand-red constants remain untouched. See [`docs/native-themes.md`](docs/native-themes.md).
+
+Testing exposed two old/new integration boundaries: the 2.1 resource encoder requires the
+canonical `colors.xml` / `overlayable.xml` filenames; and restarting in the same process left
+the user on Home. The unexported `RestartActivity` now relaunches from a short-lived separate
+process after preference writes are flushed. Removing `finishAffinity()` alone did not solve it.
+
+Current totals: **18 named patches; 56 done / 4 n/a / 139 todo**. Theme Studio remains partial.
+292 theme-engine and 67 settings-visibility checks pass. Strict `--validate` application
+passes 18/18 standalone and 19/19 with official GmsCore. The final candidate is `build-08`
+under `/mnt/c/Users/Corey/ytag-scratch/android/native-theme-20261113-01/`.
+
+The signed combined APK was installed on the Android 16 phone emulator. The actual settings
+row opens Theme Studio; Warm Sand and Midnight Blue show the expected native foundations and
+catalog background colors. Applying a preset now reopens YouTube automatically. Theme Studio
+reset removes the native overlay and restores the original appearance. Runtime logs contain
+no Afterglow errors or fatal exception, and the crash buffer is empty. Full details/screenshots
+are in the native-themes document and evidence directory above. Both reset entry points were
+exercised; the emulator was restored to system colors and shut down after testing.
+
+Remaining themes work: native gradient attachment, fuller navigation/icon/player coverage,
+exact semantic tinting for server-driven text, custom editor/library and import/export,
+then Glow and Typography. No physical-device or video-playback proof is claimed.
 
 ## Current State
 
@@ -33,7 +68,7 @@ Port every YTAfterglow iOS tweak to Android YouTube **21.43.523**, exactly as it
 - **The glow look** has never been visually compared on screen with the iOS reference screenshots.
 - **Partial keys:** noPromotionCards, noSubbar, noPlayerShareButton/SaveButton (the on-video View parts), autoplayMode "off", shortsOnlyMode, commentsHeaderMode "pinned".
 - **Not started**, biggest first:
-  - native YouTube theme adapters + Theme Studio + Glow + Typography (the shared color foundation now exists);
+  - complete native theme coverage and Theme Studio editor/library; Glow and Typography (shared palette, native resource/Litho adapter and preset picker now exist);
   - Control Center (queued, never started);
   - two-row tab bar, side anchors, tab composition from `TabStore` (Messages `FEconnections_inbox`, Afterglow tab);
   - SponsorBlock (Afterglow's own client, incl. Shorts);
@@ -134,7 +169,7 @@ extension. The fingerprint now excludes the extension namespace. Cast visibility
 
 ## Next Steps
 
-1. **Continue the selected theme batch:** wire the shared palette into native YouTube resources and Litho, then port Theme Studio. Do not re-ask which batch; the takeover already selected themes.
+1. **Continue themes:** finish native gradient/navigation/icon coverage and the Theme Studio editor/library. The shared palette, resource/Litho adapter, foundation selection and preset picker now exist. Do not re-ask which batch; the takeover already selected themes.
 2. **For a batch:**
    - Read the iOS implementation.
    - Find the Morphe equivalent in `featuremap.md`.

@@ -1,5 +1,9 @@
 # Theme color engine takeover
 
+**Follow-up (2026-11-13):** The first native adapter and Theme Studio preset screen are now
+implemented. See [`native-themes.md`](native-themes.md) for the current scope and verification.
+The remainder of this document records the first foundation batch.
+
 The first theme batch ports the shared color foundation. It does **not** mark Theme Studio,
 Glow, Typography, or native YouTube theming as implemented. The named patch count and parity
 totals remain 17 patches and 55 done / 4 not applicable / 140 todo.

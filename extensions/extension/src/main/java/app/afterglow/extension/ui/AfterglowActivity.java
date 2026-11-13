@@ -532,7 +532,10 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
             default: {
                 if (row.detail == SettingsModel.Detail.CACHE_SIZE && cacheSize == null) loadCacheSize();
                 String detail = SettingsBehavior.detail(row, cacheSize);
-                view = views.detailRow(row.displayTitle(), SettingsBehavior.text(row.description), detail, true, v -> onRowTap(row));
+                String description = "destination.themeStudio".equals(row.registryKey)
+                        ? "30 presets and native YouTube colors. Android 14 or newer."
+                        : SettingsBehavior.text(row.description);
+                view = views.detailRow(row.displayTitle(), description, detail, true, v -> onRowTap(row));
                 break;
             }
         }
@@ -578,7 +581,9 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
                 runAction(row);
                 break;
             case DESTINATION:
-                if (row.target == SettingsModel.Target.PAGE) {
+                if ("destination.themeStudio".equals(row.registryKey)) {
+                    push(new ThemeStudioScreen(this));
+                } else if (row.target == SettingsModel.Target.PAGE) {
                     push(screenFor(SettingsBehavior.page(row.targetPage)));
                 } else {
                     push(new PlaceholderScreen(row.displayTitle(), SettingsBehavior.text(row.description)));
@@ -788,7 +793,8 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
         for (Descriptor descriptor : Registry.ALL) {
             // Destinations follow their tweak, like their settings rows.
             if (destination.equals(descriptor.destination) && SettingsBehavior.keyVisible(descriptor.key)) {
-                stack.add(new PlaceholderScreen(descriptor.title(), descriptor.description()));
+                stack.add("destination.themeStudio".equals(descriptor.key) ? new ThemeStudioScreen(this)
+                        : new PlaceholderScreen(descriptor.title(), descriptor.description()));
                 return;
             }
         }

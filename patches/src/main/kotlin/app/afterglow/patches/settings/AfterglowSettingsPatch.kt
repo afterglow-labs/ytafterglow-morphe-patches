@@ -112,6 +112,19 @@ internal val afterglowSettingsPatch = resourcePatch(
             val application = document.getElementsByTagName("application").item(0) as Element
 
             val activities = document.getElementsByTagName("activity")
+            val restartName = "app.afterglow.extension.ui.RestartActivity"
+            if ((0 until activities.length).none {
+                    (activities.item(it) as Element).getAttribute("android:name") == restartName
+                }) {
+                application.appendChild(document.createElement("activity").apply {
+                    setAttribute("android:name", restartName)
+                    setAttribute("android:exported", "false")
+                    setAttribute("android:process", ":afterglow_restart")
+                    setAttribute("android:taskAffinity", "")
+                    setAttribute("android:excludeFromRecents", "true")
+                    setAttribute("android:theme", "@android:style/Theme.Translucent.NoTitleBar")
+                })
+            }
             val activity = (0 until activities.length).map { activities.item(it) as Element }
                 .firstOrNull { it.getAttribute("android:name") == AFTERGLOW_ACTIVITY }
                 ?: document.createElement("activity").apply {

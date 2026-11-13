@@ -30,6 +30,11 @@ public final class Afterglow {
         setContext(application);
     }
 
+    /** Theme hooks run before Application.onCreate, when preferences already need a base context. */
+    public static void onBaseContext(Context context) {
+        if (appContext == null) setContext(context);
+    }
+
     /** Injected at the start of YouTube's main activity onCreate. */
     public static void onMainActivityCreate(Activity activity) {
         setContext(activity);

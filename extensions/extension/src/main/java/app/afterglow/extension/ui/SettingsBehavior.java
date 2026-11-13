@@ -237,6 +237,10 @@ final class SettingsBehavior {
     /** A search entry shows when every page on its way and its row show (same rules as rows). */
     static boolean searchEntryShown(SearchEntry entry, boolean advanced) {
         if (entry.advancedOnly && !advanced) return false;
+        // Theme Studio currently offers presets. Its iOS editor-color search aliases must wait
+        // for the actual editor, even though they point to the same destination row.
+        if ("themes.themeStudio".equals(entry.rowId)
+                && entry.kind == SettingsModel.SearchKind.SETTING) return false;
         pages();
         for (int i = 1; i < entry.pageChain.length; i++) {
             Row opener = openers.get(entry.pageChain[i]);
@@ -369,7 +373,7 @@ final class SettingsBehavior {
         int colors = 0;
         for (String key : THEME_COLOR_KEYS) if (AfterglowPrefs.contains(key)) colors++;
         boolean gradient = AfterglowPrefs.contains("theme_gradientStart") || AfterglowPrefs.contains("theme_gradientEnd");
-        boolean glow = LiteMode.effectiveBool("theme_glowEnabled");
+        boolean glow = InstalledTweaks.has("glow") && LiteMode.effectiveBool("theme_glowEnabled");
         boolean font = AfterglowPrefs.getInt("theme_fontMode") != 0 || AfterglowPrefs.getInt("theme_fontSizeMode") != 0
                 || AfterglowPrefs.getInt("theme_fontWeightMode") != 0 || AfterglowPrefs.getInt("theme_fontStyleMode") != 0
                 || AfterglowPrefs.getInt("theme_tabLabelSizeMode") != 0;

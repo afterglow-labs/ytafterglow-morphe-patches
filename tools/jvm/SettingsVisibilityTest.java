@@ -53,8 +53,9 @@ public final class SettingsVisibilityTest {
             expectAbout(c);
             check(c + "root.search shown", true, SettingsBehavior.shown(SettingsBehavior.row("root.search")));
             // Destinations whose features are not ported yet stay hidden.
-            expectHidden(c, "root.liteMode", "root.aiHome", "root.abLab", "root.themes", "root.vault", "root.tools", "themes.themeStudio");
-            expectSearch(c, advanced, list("Advanced"), list("LiteMode", "Theme Presets"));
+            expectHidden(c, "root.liteMode", "root.aiHome", "root.abLab", "root.vault", "root.tools");
+            check(c + "theme presets available", true, SettingsBehavior.shown(SettingsBehavior.row("themes.themeStudio")));
+            expectSearch(c, advanced, list("Advanced", "Theme Presets"), list("LiteMode", "GradientStart", "PrimaryText"));
         }
 
         // ---- case 2: only "Shorts layout and buttons"

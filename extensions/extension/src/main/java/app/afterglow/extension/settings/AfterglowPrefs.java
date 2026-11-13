@@ -34,6 +34,12 @@ public final class AfterglowPrefs {
 
     private AfterglowPrefs() {}
 
+    /** Wait for outstanding apply writes before the restart helper terminates this process. */
+    public static boolean flush() {
+        SharedPreferences p = prefs();
+        return p == null || p.edit().commit();
+    }
+
     public static Descriptor descriptor(String key) {
         return BY_KEY.get(key);
     }

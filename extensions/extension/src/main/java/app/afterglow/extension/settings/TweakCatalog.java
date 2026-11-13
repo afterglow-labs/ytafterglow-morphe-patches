@@ -318,12 +318,14 @@ public final class TweakCatalog {
         };
 
     private static final String[] SHOWN = new String[] {
+            "action.resetThemeColors",
             "autoSkipShorts",
             "autoSpeedIndex",
             "autoplayMode",
             "backgroundPlayback",
             "cellQualityIndex",
             "commentsHeaderMode",
+            "destination.themeStudio",
             "disableAutoCaptions",
             "frostedPivot",
             "hideEndScreenCards",
