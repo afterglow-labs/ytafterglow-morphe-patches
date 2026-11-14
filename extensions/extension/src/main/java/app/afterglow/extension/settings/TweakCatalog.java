@@ -356,6 +356,7 @@ public final class TweakCatalog {
             "hideShortsLike",
             "hideShortsMetapanel",
             "hideShortsMore",
+            "hideShortsPlayerLayer",
             "hideShortsPromoCards",
             "hideShortsRemix",
             "hideShortsSearch",

@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-14, Shorts-only checkpoint
+> Updated: 2026-11-14, Shorts player-layer checkpoint
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, private)
-> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. Shorts fullscreen combines native pinches, expanded content, idle overlays and continuity between reels. Shorts-only mode adds native live/cold routing, independent hidden tabs and its two-finger exit. There are 28 named tweaks. Key-level parity remains conservative at 116 done / 4 n/a / 79 todo, including partial native coverage; the full port is not complete.
+> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. Shorts fullscreen combines native pinches, expanded content, idle overlays and continuity between reels. Shorts-only mode adds native live/cold routing, independent hidden tabs and its two-finger exit. The independent Shorts layout tweak can now hide the native player layer while retaining video and gestures. There are 28 named tweaks. Key-level parity remains conservative at 117 done / 4 n/a / 78 todo, including partial native coverage; the full port is not complete.
 
 ## Goal
 
@@ -10,6 +10,41 @@ Port every YTAfterglow iOS tweak to Android YouTube **21.43.523**, exactly as it
 - Each Afterglow feature group is a separately named tweak in Morphe's list (names from `tools/tweaks.json`).
 - An Afterglow settings page lives inside YouTube's settings and shows only rows for tweaks that are installed and implemented.
 - Plumbing such as GmsCore/microG sign-in comes from Morphe's own "GmsCore support" patch, ticked in the same run.
+
+## Verified native Shorts player-layer checkpoint
+
+Build89 adds the default-OFF advanced Hide built-in player layer setting to the
+independent Shorts layout and buttons tweak. Lmpo.Y() retains its native S/o
+visibility state and masks only the final reel_player_overlay_container request.
+Weak controller bindings re-run native visibility on live preference/reset
+changes. Decoded video, parent input dispatch and native layout remain intact.
+The separate header, navigation and thin progress indicator remain available;
+native Clear Screen still controls its own header and exit button.
+
+427 settings checks and strict 28/29/30/1/3 selections pass. All 245 production
+input hashes and ZIP integrity match. Sixteen full and ten independent-install
+observations are visually reviewed: live hide/restore, native pause/resume, cold
+ON, decoded motion and actual page reset. The full installation also verifies
+Shorts-only escape and native pinch with the layer hidden. The independent
+installation exposes only its owning Shorts layout settings.
+
+An initial test expected fullscreen tabs to remain hidden after a settings
+round-trip. An unchanged-setting control showed the same fullscreen exit with
+the player-layer setting OFF, so that expectation was corrected without a
+production change. The independent Reset attempt stopped before tapping because
+the control was below the viewport; a bounded scroll-and-reset continuation
+completed it. Original failed evidence and interrupted wrappers are retained.
+The mode and standalone paused observations and standalone cleanup were saved
+before their wrappers ended during finalization; bounded continuation captured
+the same log buffers and verified that the app was stopped. Final logs have no app/extension
+errors or crashes. Defaults and Advanced OFF are restored, the full final APK is
+hash-verified and stopped. Physical devices and alternate layouts remain untested.
+
+Source and delivery provenance: execution-89.json, shorts-player-layer-audit-89.json
+and delivery-89.json under port-completion-20261113. The full port remains active.
+Continue About actions/preferences and diagnostic logging. The paused Shorts
+subscriptions carousel still needs a proven Android equivalent; it is not the
+ordinary Subscribe button. Read-only mapping is in next-shorts-layout-design.md.
 
 ## Verified Shorts-only checkpoint
 

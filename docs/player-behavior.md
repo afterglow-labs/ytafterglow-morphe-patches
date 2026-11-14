@@ -681,3 +681,26 @@ the emulator goldfish VP9 decoder service (UID 1013), with no target-app crash.
 The relationship to this feature change is not established. Later native-feed,
 pinch-feed and independent runs have empty crash buffers; raw tombstones remain
 in crash-shorts-progress-87-only.log and the execution audit.
+
+
+## Native Shorts player layer
+
+Hide built-in player layer is an advanced, default-OFF setting owned by Shorts
+layout and buttons. It masks Lmpo.Y()'s final native visibility argument for
+reel_player_overlay_container; the native S/o state remains unchanged. Weak
+controller bindings refresh attached views through that same native method when
+the preference, Lite Mode or reset changes. Detached controllers are pruned.
+
+The native action rail and footer hide while decoded video and parent touch
+dispatch remain available. Separate header, bottom navigation and thin progress
+are preserved. Native Clear Screen retains its own control over header and exit
+visibility. Turning the setting OFF restores the current native state.
+
+Build89 passes 427 settings checks, strict 28/29/30/1/3 selections and 245 source
+hashes. Sixteen full and ten independent emulator observations are visually
+reviewed, including live restoration, pause/resume, cold ON, actual reset and
+decoded motion. Full tests verify Shorts-only escape and pinch while hidden.
+An initial fullscreen-retention assertion was corrected by a settings round-trip
+with this setting already OFF and unchanged; no production correction was made.
+Failed/interrupted attempts remain in execution-89.json. Final app/extension/crash
+logs are clean. Physical devices and alternate server layouts remain untested.

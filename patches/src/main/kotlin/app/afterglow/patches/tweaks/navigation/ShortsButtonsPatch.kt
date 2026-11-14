@@ -40,7 +40,8 @@ private val shortsHeaderTagResourcePatch = resourcePatch {
 /** Bind only the native Shorts header options and paused Lens container. */
 internal val shortsButtonsHookPatch = bytecodePatch {
     compatibleWith(COMPATIBILITY_YOUTUBE)
-    dependsOn(afterglowExtensionPatch, afterglowLithoFilterPatch, shortsHeaderTagResourcePatch)
+    dependsOn(afterglowExtensionPatch, afterglowLithoFilterPatch, shortsHeaderTagResourcePatch,
+        shortsPlayerLayerHookPatch)
     execute {
         val header = Fingerprint(returnType = "V", parameters = listOf("L"), filters = listOf(
             resourceLiteral(ResourceType.ID, "reel_header_options_container"),

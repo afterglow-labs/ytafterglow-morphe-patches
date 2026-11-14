@@ -616,7 +616,9 @@
     "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "hideShortsPlayerLayer": {
-    "status": "todo"
+    "status": "done",
+    "where": "navigation/ShortsPlayerLayer.java + tweaks/navigation/ShortsPlayerLayerPatch.kt",
+    "note": "Independent default-OFF advanced Shorts layout setting masks the native overlay-container visibility request, preserving native state, decoded video and parent input. Live changes re-evaluate attached native controllers. Build89 passes strict 28/29/30/1/3 and 427 settings checks; 16 full and 10 independent Android 16 observations verify hide/restore, pause/resume, cold ON, actual reset and decoded motion. Full install also verifies Shorts-only escape and native pinch with the layer hidden. Separate header, navigation and progress remain native. Physical devices and alternate layouts untested."
   },
   "downloadRefreshMetadata": {
     "status": "todo"

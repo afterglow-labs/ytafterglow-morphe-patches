@@ -296,3 +296,12 @@ the emulator goldfish VP9 decoder service (UID 1013), with no target-app crash.
 The relationship to this feature change is not established. Later native-feed,
 pinch-feed and independent runs have empty crash buffers; raw tombstones remain
 in crash-shorts-progress-87-only.log and the execution audit.
+
+
+## Session Ledger Checkpoint — Native Shorts player layer, build 89
+
+- Shorts-only 87 is committed/pushed as `b8f6bbe2d59d69418b91d6ba9eccccc575a772c5`; delivery-87.json records the verified 243-input bundle and its historical emulator decoder crashes. Build89 adds independent advanced Hide built-in player layer, default OFF, through the narrow Lmpo.Y() visibility boundary. Native state, decoded video and parent input are preserved; weak bindings refresh live preference/reset changes.
+- 427 settings checks, strict 28/29/30/1/3, ZIP integrity and all 245 production hashes pass. Sixteen full and ten independent observations are visually reviewed: live hide/restore, pause/resume, cold ON, actual reset and decoded motion. Full tests also cover native pinch and Shorts-only escape while hidden. Header, tabs and separate thin progress remain outside the masked layer.
+- The original settings-round-trip assertion incorrectly expected fullscreen navigation retention. An unchanged-setting control reproduces the exit while this setting is OFF. No production change was needed. Interrupted ON navigation, mode and standalone pause/cleanup finalization plus the failed fullscreen assertion and pre-action Reset viewport check remain recorded. Bounded continuations completed the observations and verified the stopped app. Final logs have no app/extension errors or crashes. Defaults and Advanced OFF restored; final full APK restored, hash-verified and stopped.
+- Bundle: 8,678,736 bytes, SHA-256 `f73743b1e29a06e990433cd47e885fc9debd9c71e48f3258568f0b3d67b79fb5`. Execution and delivery provenance: execution-89.json, shorts-player-layer-audit-89.json, delivery-89.json. Physical devices and alternate layouts remain untested.
+- Parity: 117 done / 4 n/a / 78 todo. Full port remains active. Continue About actions/preferences and diagnostic logging; the paused Shorts subscriptions carousel has no proven Android mapping yet and must not be conflated with Subscribe.
