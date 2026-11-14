@@ -307,13 +307,19 @@
     "status": "todo"
   },
   "portraitFullscreen": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/PortraitFullscreenPatch.kt + playback/Fullscreen.java",
+    "note": "Strict 26/27/28-patch combinations pass. Android 16 sensor rotation: off leaves fullscreen for portrait; on retains fullscreen with native controls and correctly letterboxed decoded video; off again restores native rotation. The native maintainWatchState guard is filtered without forcing entry or changing Android rotation preferences. Physical/foldable/tablet runtime unverified."
   },
   "autoFullscreen": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/FullscreenPatch.kt + playback/Fullscreen.java + playback/FullscreenSession.java",
+    "note": "Strict 26/27/28-patch combinations pass. Android 16 verifies off/on automatic entry and no reentry after manual exit. The 750ms callback requires the same active local player/video, foreground maximized watch layout and current enabled preference; 15 session-race checks pass. Physical device, casting and live/DVR unverified."
   },
   "exitFullscreen": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/FullscreenPatch.kt + playback/Fullscreen.java",
+    "note": "Strict 26/27/28-patch combinations pass. Android 16: with auto entry off, the same 19-second clip stays fullscreen when exit is off and returns to portrait at completion when on, including immediate native autoplay. Delayed work is cancelled after a player/video change. Physical device, casting and live/DVR unverified."
   },
   "tapToSeek": {
     "status": "done",

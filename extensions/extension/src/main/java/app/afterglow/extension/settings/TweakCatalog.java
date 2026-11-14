@@ -319,6 +319,7 @@ public final class TweakCatalog {
 
     private static final String[] SHOWN = new String[] {
             "action.resetThemeColors",
+            "autoFullscreen",
             "autoSkipShorts",
             "autoSpeedIndex",
             "autoplayMode",
@@ -329,6 +330,7 @@ public final class TweakCatalog {
             "destination.themeStudio",
             "disableAmbientMode",
             "disableAutoCaptions",
+            "exitFullscreen",
             "frostedPivot",
             "hideEndScreenCards",
             "hidePlayerCollapseButton",
@@ -374,6 +376,7 @@ public final class TweakCatalog {
             "noTwoFingerSnapToChapter",
             "noVoiceSearchButton",
             "noYTLogo",
+            "portraitFullscreen",
             "premiumYTLogo",
             "redProgressBar",
             "removeDontRecommendMenu",

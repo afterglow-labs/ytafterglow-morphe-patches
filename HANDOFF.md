@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-14, independent double-tap controls, pinch-to-fill-preserving free zoom and marker fading
+> Updated: 2026-11-14, automatic fullscreen, exit on finish and portrait rotation
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, private)
-> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and five player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. There are 25 named tweaks. Key-level parity remains conservative at 87 done / 4 n/a / 108 todo, including partial native coverage; the full port is not complete.
+> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and five player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. There are 26 named tweaks. Key-level parity remains conservative at 90 done / 4 n/a / 105 todo, including partial native coverage; the full port is not complete.
 
 ## Goal
 
@@ -11,7 +11,24 @@ Port every YTAfterglow iOS tweak to Android YouTube **21.43.523**, exactly as it
 - An Afterglow settings page lives inside YouTube's settings and shows only rows for tweaks that are installed and implemented.
 - Plumbing such as GmsCore/microG sign-in comes from Morphe's own "GmsCore support" patch, ticked in the same run.
 
-## Current gesture checkpoint — 2026-11-14
+## Current fullscreen checkpoint — 2026-11-14
+
+Build 27 adds separately selectable **Fullscreen**: automatic entry after the iOS
+750ms delay, exit at playback completion, and retaining fullscreen through portrait
+rotation. Native entry/exit and orientation policy are used. Session checks cancel
+stale work; manual exit does not trigger reentry. All three settings default off.
+Android 16 verifies independent entry/exit, immediate native autoplay, portrait
+rotation with correctly letterboxed playback, restoration when disabled, and
+preservation of the native Shorts player with all three switches on.
+
+Strict validation passes 26/26 standalone, 27/27 with GmsCore and 28/28 with GmsCore
+plus Spoof video streams, all exit 0. 192 settings and 15 session-race checks pass.
+Candidate: `build-27/YTAfterglow-0.1.0-local.mpp` under the evidence root below;
+210 source inputs recorded. The emulator has signed `fullscreen-test-27.apk`.
+See [`docs/player-behavior.md`](docs/player-behavior.md). Continue the remaining
+native player overlay and parity work; the full port remains active.
+
+## Previous gesture checkpoint — 2026-11-14
 
 Build 24 adds independent ordinary/two-finger double-tap switches and disables
 continuous free zoom while preserving native pinch-to-fill. The switches reset

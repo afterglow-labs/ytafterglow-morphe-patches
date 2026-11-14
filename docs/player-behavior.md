@@ -113,3 +113,52 @@ The rest of the overlay options remain hidden and tracked as unfinished. Inline
 feed-player and physical-device behavior have not been runtime verified.
 The five switches and Advanced mode were restored off after testing.
 `runtime-overlay-18.log` has no errors and `crash-overlay-18.log` is empty.
+
+## Fullscreen
+
+The independently selectable **Fullscreen** patch uses the native `Lris.m()` and
+`Lris.n()` entry/exit methods. A weak bridge is captured from `NextGenWatchLayout`.
+Automatic entry waits 750 milliseconds after content activation, once per local
+player/video session. It checks the active video again, requires a foreground
+maximized watch player, and leaves minimized players, picture-in-picture, Shorts
+and ads alone. Manually leaving fullscreen does not immediately reenter it.
+
+Exit-on-finish acts after the native end-status update. Generation checks cancel
+pending work when the player/video changes, including A -> B -> A transitions.
+Portrait support filters the native `maintainWatchState` orientation guard while
+an existing watch player is fullscreen; it does not force fullscreen entry or
+rewrite Android's rotation preference.
+
+Builds 26 and 27 pass strict 26/26 standalone, 27/27 with GmsCore and 28/28 with
+GmsCore plus Spoof video streams. The session suite checks 15 cancellation and
+once-per-playback cases; build 27 settings checks pass 192/192. Runtime build 26
+confirms automatic entry off/on, manual exit without reentry and independent
+exit-on-finish: with auto entry off, the same 19-second video remains fullscreen
+at completion when exit is off, and returns to portrait when exit is on, including
+immediate native autoplay into another video. Build 27 keeps fullscreen through
+landscape-to-portrait rotation only when enabled; decoded video retains its aspect
+ratio with letterboxing, and the native timeline and fullscreen controls remain
+usable. Turning the setting off restores the original rotation behavior.
+
+Evidence: `fullscreen-auto-{off,on}-26.*`, `fullscreen-manual-exit-stays-26.*`,
+`fullscreen-default-ended-26-live.png`, `fullscreen-exit-on-ended-26-live.png`
+and the timestamped rotation samples in `fullscreen-exit-on-observations-26.json`.
+Cold launches select the intended fixture reliably; one reused VIEW intent left
+the previous video open and was excluded from the results.
+
+Portrait evidence: `portrait-native-return-27.xml`,
+`portrait-enabled-return-27.xml`, `portrait-fullscreen-playing-27.png` and
+`portrait-disabled-restored-27.xml`. The emulator acceleration was restored to its
+original value. Physical-device, foldable/tablet and casting runtime remain
+unverified.
+
+Build 27 also preserves the native Shorts player with all three fullscreen
+switches enabled (`fullscreen-excludes-shorts-27.*`). Controls reset restores all
+three to off. The isolated Fullscreen + GmsCore + Spoof video streams run writes
+a successful three-patch result and valid APK; its wrapper terminated with 143
+after saving the output, so `fullscreen-only-27/result-audit.json` records the
+separate result/ZIP audit. The three complete all-feature runs exited 0.
+
+Final `runtime-fullscreen-27.log` contains no Afterglow errors;
+`crash-fullscreen-27.log` is empty. `fullscreen-final-reset-27.xml` confirms all
+visible Controls switches are off; Advanced mode stayed off throughout this batch.

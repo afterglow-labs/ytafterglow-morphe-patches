@@ -172,6 +172,29 @@ public final class SettingsVisibilityTest {
         check("zoom reset restores one-finger gesture", false, PlayerBehavior.disableFreeZoom());
         check("zoom control visible for installed patch", true, SettingsBehavior.keyVisible("noFreeZoom"));
 
+        install();
+        AfterglowPrefs.setBool("autoFullscreen", true); AfterglowPrefs.setBool("exitFullscreen", true);
+        check("uninstalled fullscreen ignores imported auto entry", false, PlayerBehavior.autoFullscreen());
+        check("uninstalled fullscreen ignores imported exit", false, PlayerBehavior.exitFullscreen());
+        install("fullscreen");
+        check("installed fullscreen exposes auto entry", true, SettingsBehavior.keyVisible("autoFullscreen"));
+        check("installed fullscreen exposes exit", true, SettingsBehavior.keyVisible("exitFullscreen"));
+        check("installed fullscreen exposes portrait orientation", true, SettingsBehavior.keyVisible("portraitFullscreen"));
+        AfterglowPrefs.setBool("portraitFullscreen", true);
+        check("portrait fullscreen enabled", true, PlayerBehavior.portraitFullscreen());
+        for (boolean enter : new boolean[] {false, true}) {
+            for (boolean exit : new boolean[] {false, true}) {
+                AfterglowPrefs.setBool("autoFullscreen", enter); AfterglowPrefs.setBool("exitFullscreen", exit);
+                check("fullscreen entry independent " + enter + "/" + exit, enter, PlayerBehavior.autoFullscreen());
+                check("fullscreen exit independent " + enter + "/" + exit, exit, PlayerBehavior.exitFullscreen());
+            }
+        }
+        AfterglowPrefs.remove("autoFullscreen"); AfterglowPrefs.remove("exitFullscreen");
+        check("fullscreen entry reset off", false, PlayerBehavior.autoFullscreen());
+        check("fullscreen exit reset off", false, PlayerBehavior.exitFullscreen());
+        AfterglowPrefs.remove("portraitFullscreen");
+        check("portrait fullscreen reset off", false, PlayerBehavior.portraitFullscreen());
+
         install("player-overlay");
         for (String key : new String[] {"hideSubs", "hidePrevNext", "hidePlayerFullscreenButton",
                 "hidePlayerCollapseButton", "hidePlayerOverflowButton"}) {

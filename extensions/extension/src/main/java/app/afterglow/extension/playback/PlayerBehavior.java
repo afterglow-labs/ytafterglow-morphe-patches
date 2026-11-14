@@ -7,6 +7,18 @@ import app.afterglow.extension.settings.LiteMode;
 public final class PlayerBehavior {
     private PlayerBehavior() {}
 
+    public static boolean portraitFullscreen() {
+        return InstalledTweaks.has("fullscreen") && LiteMode.effectiveBool("portraitFullscreen");
+    }
+
+    public static boolean autoFullscreen() {
+        return InstalledTweaks.has("fullscreen") && LiteMode.effectiveBool("autoFullscreen");
+    }
+
+    public static boolean exitFullscreen() {
+        return InstalledTweaks.has("fullscreen") && LiteMode.effectiveBool("exitFullscreen");
+    }
+
     public static boolean tapToSeek() {
         return InstalledTweaks.has("player-gestures") && LiteMode.effectiveBool("tapToSeek");
     }
