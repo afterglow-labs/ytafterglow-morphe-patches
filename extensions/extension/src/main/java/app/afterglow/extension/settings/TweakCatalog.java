@@ -331,6 +331,7 @@ public final class TweakCatalog {
             "destination.themeStudio",
             "disableAmbientMode",
             "disableAutoCaptions",
+            "dontSnapToChapter",
             "exitFullscreen",
             "frostedPivot",
             "hideEndScreenCards",

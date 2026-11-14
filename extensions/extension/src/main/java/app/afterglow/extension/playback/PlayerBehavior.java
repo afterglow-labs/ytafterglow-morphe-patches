@@ -27,6 +27,11 @@ public final class PlayerBehavior {
         return InstalledTweaks.has("player-gestures") && LiteMode.effectiveBool("tapToSeek");
     }
 
+    /** Scrub release uses the finger's position, independently of chapter double-taps. */
+    public static boolean disableChapterSnap() {
+        return InstalledTweaks.has("player-gestures") && LiteMode.effectiveBool("dontSnapToChapter");
+    }
+
     /** Native classification keeps ordinary seeking and two-finger chapter skips independent. */
     public static boolean blockDoubleTap(boolean chapterSeek) {
         return InstalledTweaks.has("player-gestures") && LiteMode.effectiveBool(

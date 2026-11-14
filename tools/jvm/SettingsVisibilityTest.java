@@ -158,6 +158,22 @@ public final class SettingsVisibilityTest {
         check("two-finger control visible", true, SettingsBehavior.keyVisible("noTwoFingerSnapToChapter"));
 
         install();
+        AfterglowPrefs.setBool("dontSnapToChapter", true);
+        check("uninstalled chapter snap ignores imported preference", false, PlayerBehavior.disableChapterSnap());
+        check("uninstalled chapter snap hides its row", false, SettingsBehavior.keyVisible("dontSnapToChapter"));
+        install("player-gestures");
+        check("installed chapter snap honors preference", true, PlayerBehavior.disableChapterSnap());
+        check("installed chapter snap exposes its row", true, SettingsBehavior.keyVisible("dontSnapToChapter"));
+        check("chapter snap leaves tap seeking independent", false, PlayerBehavior.tapToSeek());
+        check("chapter snap leaves ordinary double taps independent", false, PlayerBehavior.blockDoubleTap(false));
+        check("chapter snap leaves two-finger seeking independent", false, PlayerBehavior.blockDoubleTap(true));
+        AfterglowPrefs.remove("dontSnapToChapter");
+        check("chapter snap resets to native", false, PlayerBehavior.disableChapterSnap());
+        AfterglowPrefs.setBool("noTwoFingerSnapToChapter", true);
+        check("two-finger switch does not disable scrub snapping", false, PlayerBehavior.disableChapterSnap());
+        AfterglowPrefs.remove("noTwoFingerSnapToChapter");
+
+        install();
         AfterglowPrefs.setBool("noFreeZoom", true);
         check("uninstalled zoom override preserves native on", true, PlayerBehavior.allowFreeZoom(true));
         check("uninstalled zoom override preserves native off", false, PlayerBehavior.allowFreeZoom(false));

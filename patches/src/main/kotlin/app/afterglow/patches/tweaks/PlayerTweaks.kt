@@ -8,6 +8,7 @@ import app.afterglow.patches.playback.freeZoomHookPatch
 import app.afterglow.patches.playback.fullscreenHookPatch
 import app.afterglow.patches.playback.portraitFullscreenHookPatch
 import app.afterglow.patches.playback.endTimeHookPatch
+import app.afterglow.patches.playback.chapterSnapHookPatch
 import app.afterglow.patches.litho.afterglowLithoFilterPatch
 import app.afterglow.patches.settings.afterglowSettingsPatch
 import app.afterglow.patches.shared.Constants.COMPATIBILITY_YOUTUBE
@@ -50,11 +51,11 @@ val ambientModeTweakPatch = bytecodePatch(
 @Suppress("unused")
 val playerGesturesTweakPatch = bytecodePatch(
     name = "Player gestures",
-    description = "Controls tap-to-seek, independent double-tap gestures, and free zoom while keeping pinch-to-fill.",
+    description = "Controls tap-to-seek, chapter snapping, independent double-tap gestures, and free zoom while keeping pinch-to-fill.",
     default = true,
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
-    dependsOn(afterglowSettingsPatch, tapToSeekHookPatch, doubleTapGestureHookPatch, freeZoomHookPatch)
+    dependsOn(afterglowSettingsPatch, tapToSeekHookPatch, chapterSnapHookPatch, doubleTapGestureHookPatch, freeZoomHookPatch)
     execute { markTweakInstalled("player-gestures") }
 }
 

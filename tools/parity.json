@@ -337,7 +337,9 @@
     "note": "Strict standalone/GmsCore/streaming validation and Android 16 paused-video tests pass: each gesture is independently allowed/blocked, both-on blocks both, reset restores both. Native server chapter availability is preserved; no forced chapter enablement. No physical-device test."
   },
   "dontSnapToChapter": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/ChapterSnapPatch.kt + playback/PlayerBehavior.java",
+    "note": "Native scrub release keeps the original finger position before seek/feedback, without altering chapter metadata. Strict standalone/GmsCore/streaming/isolated-gestures validation passes. Android 16 verifies live off/on/off, independent two-finger switch, portrait/fullscreen unsnapped stops and actual page reset restoring chapter boundaries. Physical devices, live/DVR and Shorts are not runtime verified."
   },
   "noFreeZoom": {
     "status": "done",

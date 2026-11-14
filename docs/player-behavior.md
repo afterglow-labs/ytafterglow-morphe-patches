@@ -258,3 +258,36 @@ Evidence in the directory above: `end-time-result-43.json`,
 `end-time-result-43-speed.json`, `end-time-*-43*.png`,
 `runtime-end-time-43.log` and `runtime-end-time-speed-43.log`. The bundle has 217
 recorded production inputs; delivery provenance is recorded separately.
+
+## Disable snap to chapter
+
+**Player gestures** now includes **Disable snap to chapter** in `Player > Controls`,
+default off and independent of **Disable two finger double tap**. It keeps the
+original finger position when a scrub ends. Native chapter metadata, the timeline,
+and chapter selection remain unchanged.
+
+On 21.43.523, `Ljsb.r()` computes a nearby chapter target using its distance/time
+window. The hook resolves the original `Larua.Q` position before native
+`Larua.P(J)` commits the seek. Replacing that invoke preserves incoming branch
+targets; the original seek and subsequent feedback comparison use the chosen
+position. With the switch off the native target passes through unchanged.
+
+Build 44 passes strict standalone/GmsCore/streaming validation (27/28/29), plus
+independent Player gestures isolation (1/1); all wrappers exit 0. Settings checks
+pass 216/216 and all 218 recorded production inputs match the bundle.
+
+The Android 16 emulator uses the published chapters of `rfscVS0vtbw` as its
+reference. In one paused-video session, native snapping reaches 1:45; enabling
+the switch allows 12:51 between chapters; disabling it restores snapping to
+15:06. Both switches together and the snap switch alone retain unsnapped
+positions. Fullscreen stops at 51:42, 55 seconds from the nearest chapter.
+The actual Controls **Reset to Defaults** restores a snap to 1:03:10. Native
+gesture timing can select different chapters; checks use the chapter boundary
+list rather than assuming every identical ADB swipe must select the same one.
+
+Portrait return and resumed decoded playback pass. Controls defaults are restored,
+Advanced mode remains off and the app is stopped. `runtime-chapter-44.log` has no
+errors and `crash-chapter-44.log` is empty. Evidence includes
+`chapter-result-44.json`, `chapter-reference-times.json`,
+`chapter-expanded-description-44.xml` and `chapter-*-44.png`. Physical-device,
+Shorts and live/DVR behavior are not runtime verified.
