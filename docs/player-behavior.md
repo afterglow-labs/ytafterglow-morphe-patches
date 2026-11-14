@@ -417,3 +417,29 @@ off and the app is stopped. Evidence: `loop-result-53.json`,
 `qa-loop-repeat-53.log`, runtime/crash logs and corresponding XML/PNG captures.
 Physical-device, Shorts, live/DVR, ads, casting and playlist-mode behavior remain
 unverified.
+
+## Native Music button and paid-promotion labels
+
+Build 54 adds the Music button to Player overlay and completes the native label
+bindings for Remove ads' independent Hide Paid Promotion cards switch. The two
+actual inflated TouchImageView binders in Lojg.h/l preserve the native ViewStub
+listener; paid-label TextViews bind in Lomq.a and Ljwx.L. Both use the existing
+weak, live visibility binding, preserving native fades/layout and restoration.
+The separate paid_content_overlay Litho filter remains independently gated.
+
+Strict standalone/GmsCore/streaming 28/29/30 and isolated Player overlay/Remove
+ads 1/1 pass, all wrappers exit 0. All 223 production input hashes match and ZIP
+integrity passes; 328 settings checks cover independent feature ownership.
+
+Android 16 completes seven recorded observations: both real switches, native
+portrait/fullscreen controls, decoded music/default playback and actual Overlay
+and Privacy resets. Defaults are restored, Advanced mode is off and the app is
+stopped. Runtime logs have no Afterglow errors; the crash buffer is empty.
+
+The official music video and sponsored-video baseline fixtures do not expose the
+target native controls, even with Remove ads disabled for the paid-label check.
+A preroll Sponsored badge is not the paid-content label. These two target visual
+hide/restore behaviors are **source verified, not runtime verified**. Physical
+devices remain untested. Evidence: native-badges-result-54.json,
+native-badges-baseline-53.json, paid-ltt-baseline-53.json, runtime/crash logs,
+strict result.json files and corresponding XML/PNG captures in the evidence root.

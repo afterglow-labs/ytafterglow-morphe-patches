@@ -132,6 +132,19 @@ internal val playerOverlayHookPatch = bytecodePatch {
         val watermarkRegister = (watermark.method.implementation!!.instructions[watermarkCast] as OneRegisterInstruction).registerA
         watermark.method.addInstructions(watermarkCast + 1,
             "invoke-static/range { v$watermarkRegister .. v$watermarkRegister }, $OVERLAY->watermark(Landroid/widget/ImageView;)V")
+        // Resolve the actual inflated button in its native binder. Do not replace
+        // ViewStub listeners or force a button YouTube did not provide to appear.
+        val musicBindings = Fingerprint(parameters = listOf(), returnType = "V", filters = listOf(
+            resourceLiteral(ResourceType.ID, "music_app_deeplink_button_view"),
+            checkCast("Lcom/google/android/libraries/youtube/common/ui/TouchImageView;", MatchAfterWithin(5))
+        )).matchAll()
+        require(musicBindings.size == 2) { "Native music button binders changed" }
+        for (music in musicBindings) {
+            val cast = music.instructionMatches.last().index
+            val register = (music.method.implementation!!.instructions[cast] as OneRegisterInstruction).registerA
+            music.method.addInstructions(cast + 1,
+                "invoke-static/range { v$register .. v$register }, $OVERLAY->music(Landroid/widget/ImageView;)V")
+        }
         println("Afterglow overlay title=${heading.method.definingClass}, actions=${actions.method.definingClass}, watermark=${watermark.method.definingClass}")
     }
 }

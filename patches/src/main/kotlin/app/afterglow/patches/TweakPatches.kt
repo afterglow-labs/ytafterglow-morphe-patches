@@ -81,7 +81,8 @@ val removeAdsTweakPatch = bytecodePatch(
     default = true,
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
-    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch, afterglowLithoFilterPatch, app.afterglow.patches.playback.videoAdsHookPatch)
+    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch, afterglowLithoFilterPatch, app.afterglow.patches.playback.videoAdsHookPatch,
+        app.afterglow.patches.playback.paidPromotionHookPatch)
     execute { markTweakInstalled("remove-ads") }
 }
 

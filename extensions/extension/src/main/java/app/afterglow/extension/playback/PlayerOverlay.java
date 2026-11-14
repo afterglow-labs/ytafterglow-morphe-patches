@@ -35,6 +35,8 @@ public final class PlayerOverlay {
     public static void shading(View view) { bind(view, "noDarkBg"); }
     public static void actions(View view) { bind(view, "noFullscreenActions"); }
     public static void watermark(ImageView view) { bind(view, "noWatermarks"); }
+    public static void music(ImageView view) { bind(view, "hidePlayerYouTubeMusicButton"); }
+    public static void paidPromotion(View view) { bind(view, "noPromotionCards", "remove-ads"); }
     public static void autoplay(View view) { bind(view, "autoplayMode", "autoplay"); }
 
     private static void bindNamed(View root, String name, String key) {

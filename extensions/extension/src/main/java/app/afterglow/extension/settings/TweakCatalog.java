@@ -339,6 +339,7 @@ public final class TweakCatalog {
             "hidePlayerCollapseButton",
             "hidePlayerFullscreenButton",
             "hidePlayerOverflowButton",
+            "hidePlayerYouTubeMusicButton",
             "hidePrevNext",
             "hideShorts",
             "hideShortsAudioTrack",

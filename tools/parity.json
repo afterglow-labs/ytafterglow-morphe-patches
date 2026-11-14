@@ -8,8 +8,9 @@
     "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "noPromotionCards": {
-    "status": "todo",
-    "note": "partial: Litho part done (FeedFilter/AdsFilter); player time-bar label is a View (paid_promotion_label_text_view) still to hook."
+    "status": "done",
+    "where": "playback/PaidPromotionPatch.kt + playback/PlayerOverlay.java + litho/AdsFilter.java",
+    "note": "Build 54: Two native paid-promotion TextView binders and the existing paid-content Litho filter use the independent Remove ads setting. Strict standalone/GmsCore/streaming 28/29/30 and isolated overlay/ads 1/1 pass; 328 settings checks. Emulator verifies settings, reset, preserved native controls and decoded playback. Target controls were absent in baseline fixtures, so visual hide/restore remains source verified only; physical-device behavior untested."
   },
   "noSearchHistory": {
     "status": "done",
@@ -416,7 +417,9 @@
     "note": "Strict 21.43.523 standalone/GmsCore validation passes. Android 16 portrait/fullscreen: actual switches hide and restore existing controls without restart; fades and native enabled states survive reset. Inline-feed and physical-device runtime remain unverified."
   },
   "hidePlayerYouTubeMusicButton": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/PlayerOverlayPatch.kt + playback/PlayerOverlay.java",
+    "note": "Build 54: Two native inflated Music button binders use the live visibility policy without replacing ViewStub listeners. Strict standalone/GmsCore/streaming 28/29/30 and isolated overlay/ads 1/1 pass; 328 settings checks. Emulator verifies settings, reset, preserved native controls and decoded playback. Target controls were absent in baseline fixtures, so visual hide/restore remains source verified only; physical-device behavior untested."
   },
   "hidePlayerCollapseButton": {
     "status": "done",

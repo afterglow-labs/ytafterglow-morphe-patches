@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-14, loop persistence verified
+> Updated: 2026-11-14, native Music and paid-promotion controls checkpoint
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, private)
-> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. There are 28 named tweaks. Key-level parity remains conservative at 102 done / 4 n/a / 93 todo, including partial native coverage; the full port is not complete.
+> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. There are 28 named tweaks. Key-level parity remains conservative at 104 done / 4 n/a / 91 todo, including partial native coverage; the full port is not complete.
 
 ## Goal
 
@@ -10,6 +10,29 @@ Port every YTAfterglow iOS tweak to Android YouTube **21.43.523**, exactly as it
 - Each Afterglow feature group is a separately named tweak in Morphe's list (names from `tools/tweaks.json`).
 - An Afterglow settings page lives inside YouTube's settings and shows only rows for tweaks that are installed and implemented.
 - Plumbing such as GmsCore/microG sign-in comes from Morphe's own "GmsCore support" patch, ticked in the same run.
+
+## Verified native controls checkpoint — 2026-11-14
+
+Build 54 binds both native inflated Music buttons and both paid-promotion
+TextViews. Remove ads and Player overlay remain independently selectable. Native
+ViewStub listeners, fades, layout and other controls are preserved. Strict
+standalone/GmsCore/streaming 28/29/30 and isolated overlay/ads 1/1 pass, all exit 0;
+328 settings checks and all 223 production input hashes pass.
+
+Android 16 verifies both actual switches, portrait/fullscreen controls, decoded
+playback and both page resets. Defaults are restored, Advanced mode is off and
+the app is stopped; no Afterglow errors and an empty crash buffer. The Music
+button and paid-content label were absent in baseline fixtures, including a
+sponsored-video check with Remove ads off. The preroll Sponsored badge is a
+different control. Target visual hide/restore is therefore source verified only,
+not claimed runtime verified. Physical-device behavior remains untested.
+
+Parity: **104 done / 4 n/a / 91 todo**, 28 named tweaks. Bundle:
+`build-54/YTAfterglow-0.1.0-local.mpp`; committed-source delivery provenance is in
+`delivery-54.json` under the evidence root. See `docs/player-behavior.md`.
+Continue the full port with Classic video quality: the native original quality
+list and quick-menu paths are mapped in `native-obm.txt`, `native-obk.txt` and
+`native-qqi.txt`; implementation and runtime checks remain pending.
 
 ## Verified loop checkpoint — 2026-11-14
 
@@ -38,9 +61,7 @@ Continue the remaining full port. Music button and paid-promotion labels are
 mapped in `next-native-controls-map.txt`; uncompiled drafts are in the evidence
 root. Native music binds the actual inflated TouchImageView in `Lojg.h/l`,
 preserving ViewStub listeners. Paid labels have two TextView binders in `Lomq`
-and `Ljwx`; the existing paid_content_overlay Litho filter is separate. Verify
-native availability before applying the drafts. No production edit for those
-controls yet.
+and `Ljwx`; the existing paid_content_overlay Litho filter is separate. See current work above for production edits and verification.
 
 ## Verified Captions checkpoint — 2026-11-14
 
