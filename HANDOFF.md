@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-14, Theme Studio editor/library, native gradients, Glow, Typography and Seek bar
+> Updated: 2026-11-14, native tap-to-seek and ambient-mode controls
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, private)
-> Session summary: Theme Studio now includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts and custom scrubbers work in the Android 16 emulator. There are 21 named tweaks. Key-level parity remains conservative at 56 done / 4 n/a / 139 todo, including partial native coverage; the full port is not complete.
+> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek and ambient-mode control work in the Android 16 emulator. There are 23 named tweaks. Key-level parity remains conservative at 58 done / 4 n/a / 137 todo, including partial native coverage; the full port is not complete.
 
 ## Goal
 
@@ -11,7 +11,17 @@ Port every YTAfterglow iOS tweak to Android YouTube **21.43.523**, exactly as it
 - An Afterglow settings page lives inside YouTube's settings and shows only rows for tweaks that are installed and implemented.
 - Plumbing such as GmsCore/microG sign-in comes from Morphe's own "GmsCore support" patch, ticked in the same run.
 
-## Current theme checkpoint — 2026-11-14
+## Current player checkpoint — 2026-11-14
+
+The current candidate is `build-17/YTAfterglow-0.1.0-local.mpp` under the evidence
+root below. **Player gestures** adds native tap-to-seek; **Disable ambient mode**
+suppresses the cinematic renderer without changing YouTube's own saved setting.
+Both default off and are independently selectable. Strict validation passes
+23/23 standalone and 24/24 with GmsCore; 97 settings checks pass. Actual emulator
+switches, the seek position change, and ambient lighting suppression were verified.
+See [`docs/player-behavior.md`](docs/player-behavior.md).
+
+## Delivered theme checkpoint — 2026-11-14
 
 The active checkout remains `/home/corey/projects/ytafterglow-morphe-patches`, `main`.
 The current candidate is `build-15/YTAfterglow-0.1.0-local.mpp` under

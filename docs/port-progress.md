@@ -50,3 +50,14 @@
 - Build 14 eliminated the hardware-bitmap errors, but its screenshot exposed an overbroad bitmap exclusion that also removed glow from the verified fullscreen button. Build 15 keeps verified player icon IDs eligible, while excluding anonymous artwork. Both strict build-15 runs now pass (21/21 and 22/22); final signing/install/fullscreen checks are in progress.
 
 - Build 15 is the validated theme delivery candidate: 8,481,002 bytes, SHA-256 4dea9bc06062fdb2985cbcc691d12db21c549444b1ca3836a7bad234a52fc3c8. Both strict runs exited 0, signature verification and installation passed, and all 187 recorded build inputs still match source. The fullscreen retest restores the verified bitmap icon's glow, leaves the thumbnail unchanged, and has no YTAfterglow errors or crashes. Screenshots/logs are fullscreen-controls-15.png, runtime-fullscreen-15.log and crash-fullscreen-15.log.
+
+## Player behavior continuation
+
+- Theme checkpoint committed and pushed to main as 0bdf544ce191713f639ede4636570c242b2753ce; remote main verified. Delivery: /mnt/c/Users/Corey/ytag-scratch/android/deliveries/YTAfterglow_Android_20261114T065902Z_yt21.43.523_0bdf544c.mpp. Matching .sha256 and .manifest.json include all 187 verified source input hashes.
+- Emulator build 15 has been restored to default typography and colors. The saved QA library remains.
+- Added next native boundaries: tap-to-seek delegates to verified Larua.S(I)/T(I) after Ljsb touch setup; disabling ambient mode empties only Lrir's cinematic renderer Optional and preserves loading state. Both settings remain todo/partial until strict and runtime verification.
+
+- Build 16 failed a conservative seek-bar parent guard: the actual inheritance is Ljsb -> Ljrq -> Larua. Build 17 validates the independently fingerprinted bar instead of assuming a direct parent. Strict runs now pass 23/23 standalone and 24/24 with GmsCore, both exit 0.
+- The signed build 17 installed and passed real UI toggles: tap-to-seek off leaves 0:01 unchanged, on seeks to about 0:15, and off again leaves 0:02 unchanged. Ambient lighting disappears with Afterglow enabled and returns with it disabled; the native Ambient preference stays on throughout the comparison. Both Afterglow switches and native ambient setting were restored off afterward.
+- 97 settings checks pass, including isolated install/import/reset/Lite Mode gates. Runtime log has no YTAfterglow errors; crash buffer is empty. Parity is now 58 done / 4 n/a / 137 todo. No physical-device or live/DVR validation is claimed.
+- Next: commit/push and deliver build 17; then implement the native player overlay visibility controls. The full port remains active.

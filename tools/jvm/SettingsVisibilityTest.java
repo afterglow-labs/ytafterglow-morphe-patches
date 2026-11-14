@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import app.afterglow.extension.InstalledTweaks;
+import app.afterglow.extension.playback.PlayerBehavior;
 import app.afterglow.extension.settings.AfterglowPrefs;
 import app.afterglow.extension.settings.TweakCatalog;
 import app.afterglow.extension.ui.SettingsModel.Page;
@@ -107,6 +108,32 @@ public final class SettingsVisibilityTest {
         check("gradient switch reflects effective default", true, SettingsBehavior.switchValue(gradient));
         AfterglowPrefs.setBool("seekBarGradient", false);
         check("gradient switch reflects explicit false", false, SettingsBehavior.switchValue(gradient));
+
+        // Imported preferences must not activate an uninstalled player patch.
+        install();
+        AfterglowPrefs.setBool("tapToSeek", true);
+        AfterglowPrefs.setBool("disableAmbientMode", true);
+        check("uninstalled tap gate stays off", false, PlayerBehavior.tapToSeek());
+        check("uninstalled ambient gate stays off", false, PlayerBehavior.disableAmbientMode());
+        install("player-gestures");
+        check("gesture patch honors stored tap choice", true, PlayerBehavior.tapToSeek());
+        check("gesture patch leaves ambient native", false, PlayerBehavior.disableAmbientMode());
+        check("gesture patch exposes tap setting", true, SettingsBehavior.keyVisible("tapToSeek"));
+        check("gesture patch hides ambient setting", false, SettingsBehavior.keyVisible("disableAmbientMode"));
+        install("ambient-mode");
+        check("ambient patch honors stored choice", true, PlayerBehavior.disableAmbientMode());
+        check("ambient patch leaves native gestures", false, PlayerBehavior.tapToSeek());
+        check("ambient patch exposes its setting", true, SettingsBehavior.keyVisible("disableAmbientMode"));
+        install("ambient-mode", "player-gestures");
+        AfterglowPrefs.remove("tapToSeek");
+        AfterglowPrefs.remove("disableAmbientMode");
+        check("tap reset preserves native behavior", false, PlayerBehavior.tapToSeek());
+        check("ambient reset preserves native behavior", false, PlayerBehavior.disableAmbientMode());
+        AfterglowPrefs.setBool("liteModeEnabled", true);
+        check("Lite Mode suppresses ambient rendering", true, PlayerBehavior.disableAmbientMode());
+        check("Lite Mode does not enable tap seeking", false, PlayerBehavior.tapToSeek());
+        AfterglowPrefs.setBool("liteModeEnabled", false);
+        check("leaving Lite Mode restores ambient choice", false, PlayerBehavior.disableAmbientMode());
 
         System.out.println((failures == 0 ? "PASS" : "FAIL") + " settings visibility: " + (checks - failures) + "/" + checks + " checks");
         System.exit(failures == 0 ? 0 : 1);

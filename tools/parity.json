@@ -140,7 +140,9 @@
     "note": "partial: verified native seek resources, gradient factory, final scrubber draw, PNG and motion policy. Android 16 image picker/size/reset controls, portrait/fullscreen playback and seeking verified; Shorts/live and promo scrubber coverage remains."
   },
   "disableAmbientMode": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/PlayerBehaviorPatch.kt + playback/PlayerBehavior.java",
+    "note": "Strict 21.43.523 application passes standalone and with GmsCore. Android 16 portrait playback: Afterglow suppresses cinematic lighting while YouTube ambient preference stays on. Default passes the native renderer through. Physical-device testing remains unverified."
   },
   "seekBarGradient": {
     "status": "todo",
@@ -272,7 +274,9 @@
     "status": "todo"
   },
   "tapToSeek": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/PlayerBehaviorPatch.kt + playback/PlayerBehavior.java",
+    "note": "Strict 21.43.523 application passes standalone and with GmsCore. Android 16: the same 75 percent tap leaves 0:01 unchanged when off and seeks to about 0:15 when on; delegates to native S/T handlers. Physical-device and live/DVR testing remain unverified."
   },
   "noDoubleTapToSeek": {
     "status": "todo"
