@@ -498,7 +498,9 @@
     "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "shortsProgress": {
-    "status": "todo"
+    "status": "done",
+    "where": "tweaks/navigation/ShortsProgressPatch.kt + navigation/ShortsProgressPolicy.java + navigation/ShortsProgress.java",
+    "note": "Build 80: Independent Shorts setting, default OFF. Two model reads map known disabled/pause-only policies to the native always-visible mode; OFF and unknown/unspecified values remain native. The immutable model and native lifecycle, panel, pause, seek and interactivity guards are preserved. Live refresh uses the attached Shorts content controller and native paused-state policy. 416 settings checks, strict 28/29/30/1/3 and 10 full plus 6 isolated emulator observations pass, including seeking, decoded playback, pause, both Shorts routes, Home and reset. Diagnostic79 confirms tested native models already use always-visible mode, so runtime verifies preservation; disabled/pause-only conversion is source/policy verified. Temporary logging removed. Physical-device, absent-model and alternate server-policy behavior remain unverified."
   },
   "pinchToFullscreenShorts": {
     "status": "todo"

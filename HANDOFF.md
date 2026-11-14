@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-14, Shorts header controls checkpoint
+> Updated: 2026-11-14, Shorts progress checkpoint
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, private)
-> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. There are 28 named tweaks. Key-level parity remains conservative at 113 done / 4 n/a / 82 todo, including partial native coverage; the full port is not complete.
+> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. There are 28 named tweaks. Key-level parity remains conservative at 114 done / 4 n/a / 81 todo, including partial native coverage; the full port is not complete.
 
 ## Goal
 
@@ -10,6 +10,46 @@ Port every YTAfterglow iOS tweak to Android YouTube **21.43.523**, exactly as it
 - Each Afterglow feature group is a separately named tweak in Morphe's list (names from `tools/tweaks.json`).
 - An Afterglow settings page lives inside YouTube's settings and shows only rows for tweaks that are installed and implemented.
 - Plumbing such as GmsCore/microG sign-in comes from Morphe's own "GmsCore support" patch, ticked in the same run.
+
+## Verified Shorts progress checkpoint
+
+Build 80 adds Enable progress bar to the independent Shorts tweak, default OFF.
+Two reads of the native immutable display model select always-visible progress
+when the known native policy disables it or limits it to pause. OFF, unspecified
+and unknown values preserve native behavior. Native panel, active-player, pause,
+visibility animation, interaction and seek guards remain intact. A preference
+change re-evaluates the attached Shorts controller through its native methods.
+
+416 settings checks and strict standalone/GmsCore/streaming/Shorts-only/
+Shorts-streaming 28/29/30/1/3 pass. The 239 production inputs match the final
+bundle; ZIP, signatures and installation pass. Ten full and six independent-install
+observations are visually verified: live setting changes, pause/resume, cold ON,
+native seeking, decoded playback, both Shorts routes, Home and actual page reset.
+The diagnostic run confirms the fixtures already use native always-visible mode;
+there is no claimed OFF/ON visual difference on those fixtures. Disabled and
+pause-only policy conversion is covered by source and JVM checks.
+
+Diagnostic 79 completed ten exploratory observations. Its first runner incorrectly
+expected the activity-root wrapper to disappear on Home; the wrapper is empty and
+the actual native bar is absent. The corrected check and bounded finisher pass
+without a source change. Raw failed-run evidence remains preserved. Build 80 removes
+only the bounded diagnostic logging. Final80's first recommended tab item stayed
+buffering; frame review caught it and the tab/reset cases were repeated on a
+playing item, retaining the initial evidence. Final log/wrapper results are recorded in
+execution-80.json; source differences are in source-delta-79-to-80.json.
+Defaults and Advanced OFF are restored, the full final APK is installed and the
+app is stopped. Physical devices, absent-model and alternate server-policy behavior
+remain unverified. The full port remains active at 114 done / 4 n/a / 81 todo.
+
+Evidence: shorts-progress-result-80.json, shorts-progress-isolated-result-80.json,
+shorts-progress-log-audit-80.json, artifact-80.json and delivery-80.json under
+port-completion-20261113. The preceding header delivery is delivery-78.json at
+62e723cd1073354e40e4e025ba517e5952d7e731.
+
+Next: native Shorts pinch and Shorts-only exit behavior. Native Latnq already
+recognizes pinches and drives Latnm clear mode; the capability and touch-path
+boundaries are mapped in next-shorts-pinch-*.txt and the implementation notes.
+No pinch or Shorts-only gesture implementation yet.
 
 ## Verified Shorts header controls checkpoint
 
@@ -45,10 +85,8 @@ active at 113 done / 4 n/a / 82 todo. Evidence: shorts-buttons-result-77.json,
 shorts-buttons-isolated-result-78.json, shorts-buttons-final-result-78.json,
 shorts-log-audit-78.json and delivery-78.json under port-completion-20261113.
 
-Next: native Shorts progress and pinch controls. The actual modern bar is the
-activity-root reel_time_bar wrapper, not the hidden legacy progress presenter.
-Native controller maps and the remaining state-policy question are recorded in
-next-shorts-progress-implementation-notes.txt. No progress implementation yet.
+Shorts progress is completed in the verified checkpoint above. Native pinch
+and Shorts-only exit controls remain active work.
 
 ## Verified Persistent progress bar checkpoint
 

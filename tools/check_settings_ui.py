@@ -251,7 +251,7 @@ def run_visibility_test() -> None:
     sources = [EXT / "Afterglow.java", EXT / "InstalledTweaks.java", EXT / "ui/SettingsModel.java",
                EXT / "ui/SettingsSpec.java", EXT / "ui/SettingsBehavior.java", EXT / "ui/SearchIndex.java",
                EXT / "playback/PlayerBehavior.java", EXT / "playback/Autoplay.java", EXT / "playback/Captions.java", EXT / "sponsorblock/SponsorCategory.java",
-               EXT / "navigation/Gate.java", EXT / "navigation/Subbar.java", EXT / "navigation/SubbarMargin.java", EXT / "navigation/SubbarAnimation.java",
+               EXT / "navigation/Gate.java", EXT / "navigation/ShortsProgressPolicy.java", EXT / "navigation/Subbar.java", EXT / "navigation/SubbarMargin.java", EXT / "navigation/SubbarAnimation.java",
                EXT / "sponsorblock/SponsorSettings.java", test]
     sources += sorted((EXT / "settings").glob("*.java")) + sorted((EXT / "i18n").glob("*.java"))
     with tempfile.TemporaryDirectory() as out:

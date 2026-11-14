@@ -577,3 +577,24 @@ and paused Mute stay available, and actual reset and decoded playback pass. The
 two changed files between 77 and 78 only broaden native icon classification.
 Camera/Lens visual behavior, physical devices and alternate server layouts remain
 unverified; native source and patch targets are confirmed. Full port unfinished.
+
+## Shorts progress
+
+Enable progress bar belongs to the independent Shorts tweak and defaults OFF.
+Android 21.43.523 uses a separate activity-root InlineTimeBarWrapper. The patch
+changes only two reads of its native controller's immutable display model:
+known disabled and pause-only modes become the existing always-visible mode.
+OFF, unspecified/unknown modes and absent models retain native behavior.
+
+The native controller still owns panel suppression, pause state, active-player
+checks, animations, interactivity and seeking. A live setting/import/reset/Lite
+change refreshes only an attached Shorts content controller; it calls the native
+normal policy, then the paused policy if the native pause flag is set. The shared
+activity-root wrapper alone is not treated as proof that Shorts is open.
+
+Build 80 has 416 settings checks and strict 28/29/30/1/3. Ten full and six isolated
+runtime observations verify native seeking, progress/playback, pause/resume,
+settings, cold ON, Home, Shorts-tab reuse and reset. Diagnostic79 showed the
+fixtures already use always-visible mode, so no new visual difference is claimed.
+Other native display policies are source/policy verified. Temporary logging is
+removed; physical devices and alternate/absent native models remain untested.

@@ -47,7 +47,7 @@ internal val shortsHooksPatch = bytecodePatch(
     description = "Hooks the Shorts player for the YTAfterglow Shorts settings.",
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
-    dependsOn(afterglowExtensionPatch, startupHooksPatch)
+    dependsOn(afterglowExtensionPatch, startupHooksPatch, shortsProgressHookPatch)
 
     execute {
         // region resumeShorts

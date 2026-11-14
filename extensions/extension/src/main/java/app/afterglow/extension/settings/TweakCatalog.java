@@ -412,6 +412,7 @@ public final class TweakCatalog {
             "seekBarScrubberImage",
             "seekBarScrubberSize",
             "shortsOnlyMode",
+            "shortsProgress",
             "shortsToRegular",
             "speedIndex",
             "sponsorBlockCategoryFiller",

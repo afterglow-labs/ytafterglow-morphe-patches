@@ -16,6 +16,7 @@ import app.afterglow.extension.playback.PlayerBehavior;
 import app.afterglow.extension.playback.Autoplay;
 import app.afterglow.extension.playback.Captions;
 import app.afterglow.extension.navigation.Subbar;
+import app.afterglow.extension.navigation.ShortsProgressPolicy;
 import app.afterglow.extension.settings.AfterglowPrefs;
 import app.afterglow.extension.settings.TweakCatalog;
 import app.afterglow.extension.sponsorblock.SponsorCategory;
@@ -146,6 +147,34 @@ public final class SettingsVisibilityTest {
             check("Shorts layout owns " + key, true, SettingsBehavior.keyVisible(key));
             check("Shorts native button defaults stay visible " + key, false, AfterglowPrefs.getBool(key));
         }
+
+        install("shorts");
+        AfterglowPrefs.remove("shortsProgress");
+        check("Shorts progress default OFF", false, ShortsProgressPolicy.enabled());
+        check("Shorts owner exposes progress", true, SettingsBehavior.keyVisible("shortsProgress"));
+        for (int mode : new int[]{-1, 0, 1, 2, 3, 4, Integer.MAX_VALUE}) {
+            check("Shorts progress OFF preserves native mode " + mode, mode, ShortsProgressPolicy.displayMode(mode));
+        }
+        AfterglowPrefs.setBool("shortsProgress", true);
+        check("Shorts progress enables disabled native bar", 2, ShortsProgressPolicy.displayMode(1));
+        check("Shorts progress retains always-visible native bar", 2, ShortsProgressPolicy.displayMode(2));
+        check("Shorts progress enables playing as well as paused bar", 2, ShortsProgressPolicy.displayMode(3));
+        for (int mode : new int[]{-1, 0, 4, Integer.MAX_VALUE}) {
+            check("Shorts progress preserves unknown mode " + mode, mode, ShortsProgressPolicy.displayMode(mode));
+        }
+        install("shorts-layout");
+        check("Layout owner does not expose progress", false, SettingsBehavior.keyVisible("shortsProgress"));
+        check("Layout owner does not override native progress", 1, ShortsProgressPolicy.displayMode(1));
+        install();
+        check("Uninstalled Shorts preserves native progress", 3, ShortsProgressPolicy.displayMode(3));
+        install("shorts");
+        AfterglowPrefs.setBool("shortsProgress", false);
+        AfterglowPrefs.setBool("liteModeEnabled", true);
+        check("Lite Mode enables Shorts progress without changing stored choice", 2, ShortsProgressPolicy.displayMode(1));
+        AfterglowPrefs.setBool("liteModeEnabled", false);
+        check("Leaving Lite Mode restores stored Shorts progress", 1, ShortsProgressPolicy.displayMode(1));
+        AfterglowPrefs.remove("shortsProgress");
+        check("Reset restores native Shorts progress", 3, ShortsProgressPolicy.displayMode(3));
 
         install();
         AfterglowPrefs.setBool("hideHeatwaves", true);

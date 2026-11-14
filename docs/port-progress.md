@@ -254,3 +254,11 @@
 - Eleven full observations on 77 plus six isolated and four final full observations on 78 verify live hide/restore, both Shorts routes, cold start, native menu/Search commands, preserved Mute/Home Search, actual reset and decoded playback. Only two native icon-classification files differ between 77 and 78; lifecycle hooks are identical.
 - Camera and Lens were absent in baseline fixtures, so visual behavior remains unverified. Earlier cold-only filtering, repeated-link QA and Advanced-mode QA ordering evidence are preserved. Runtime log results and exact wrapper exits are in execution-78.json and shorts-log-audit-78.json.
 - Parity: 113 done / 4 n/a / 82 todo. Source/delivery provenance: delivery-78.json. Physical-device and alternate-layout coverage remain untested; the full port continues.
+
+## 2026-11-14 — Independent native Shorts progress
+
+- Build 80 adds Enable progress bar, default OFF, to the independent Shorts tweak. It maps known disabled/pause-only model reads to native always-visible mode; models, pause/panel/active-state checks, seeking and unknown modes remain native.
+- Live preference refresh calls the current attached Shorts controller's normal and paused policy methods. Weak controller keys avoid retaining player instances.
+- 416 settings checks, strict 28/29/30/1/3, ZIP/signatures/installation and all 239 production hashes pass. Ten full and six isolated emulator observations verify setting changes, pause/resume, cold ON, seeking, both Shorts routes, Home, reset and advancing decoded frames.
+- Tested fixtures already show progress in native always-visible mode. Disabled/pause-only conversion is source/policy verified; physical devices and alternate/absent models remain unverified. Diagnostic79's empty-wrapper QA assertion was corrected, raw evidence retained, and its bounded logging removed in 80.
+- Exact wrapper/log results and committed-source delivery provenance are in execution-80.json and delivery-80.json. Parity: 114 done / 4 n/a / 81 todo. Full port incomplete.
