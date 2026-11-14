@@ -15,6 +15,7 @@ import app.afterglow.extension.InstalledTweaks;
 import app.afterglow.extension.playback.PlayerBehavior;
 import app.afterglow.extension.playback.Autoplay;
 import app.afterglow.extension.playback.Captions;
+import app.afterglow.extension.navigation.Subbar;
 import app.afterglow.extension.settings.AfterglowPrefs;
 import app.afterglow.extension.settings.TweakCatalog;
 import app.afterglow.extension.sponsorblock.SponsorCategory;
@@ -113,6 +114,23 @@ public final class SettingsVisibilityTest {
         check("gradient switch reflects effective default", true, SettingsBehavior.switchValue(gradient));
         AfterglowPrefs.setBool("seekBarGradient", false);
         check("gradient switch reflects explicit false", false, SettingsBehavior.switchValue(gradient));
+
+        install();
+        AfterglowPrefs.setBool("noSubbar", true);
+        check("uninstalled navigation preserves native chip rows", false, Subbar.hidden());
+        check("uninstalled navigation hides subbar setting", false, SettingsBehavior.keyVisible("noSubbar"));
+        install("navigation-bar");
+        check("navigation honors imported subbar choice", true, Subbar.hidden());
+        check("navigation exposes subbar setting", true, SettingsBehavior.keyVisible("noSubbar"));
+        AfterglowPrefs.remove("noSubbar");
+        check("subbar defaults preserve native rows", false, Subbar.hidden());
+        AfterglowPrefs.setBool("liteModeEnabled", true);
+        check("Lite Mode hides chip rows", true, Subbar.hidden());
+        install();
+        check("Lite Mode requires navigation owner", false, Subbar.hidden());
+        install("navigation-bar");
+        AfterglowPrefs.setBool("liteModeEnabled", false);
+        check("leaving Lite Mode restores native chip rows", false, Subbar.hidden());
 
         // Autoplay changes initial readiness only. Unrelated native flag bits survive.
         install();

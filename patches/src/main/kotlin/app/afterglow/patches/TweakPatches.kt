@@ -93,7 +93,9 @@ val navigationBarTweakPatch = bytecodePatch(
     default = true,
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
-    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch, afterglowLithoFilterPatch, app.afterglow.patches.tweaks.navigation.navigationBarHooksPatch)
+    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch, afterglowLithoFilterPatch,
+        app.afterglow.patches.tweaks.navigation.navigationBarHooksPatch,
+        app.afterglow.patches.tweaks.navigation.subbarHookPatch)
     execute { markTweakInstalled("navigation-bar") }
 }
 

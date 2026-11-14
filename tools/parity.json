@@ -53,8 +53,9 @@
     "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "noSubbar": {
-    "status": "todo",
-    "note": "partial: Litho chip bars done (subscriptions, channel, history, chips_shelf); Home/search/related chip rows are Views still to hook."
+    "status": "done",
+    "where": "tweaks/navigation/SubbarPatch.kt + navigation/Subbar.java + litho/filters/SubbarFilter.java",
+    "note": "Build 70: Native Home/search/related chip rows use reversible spacing and offscreen placement, preserving native animation heights and visibility. Existing Litho subscription/channel/history filters remain. Strict standalone/GmsCore/streaming/navigation-only 28/29/30/1 pass; 59 spacing/animation and 355 settings checks. Android 16 completes 17 observations, including live hide/restore, three cold Home controllers and cold search, preserved comments sort chips, actual page reset and decoded playback. No native chip-controller errors or target-app crashes; one shell UiAutomation helper crash is separately classified. Related/Litho targets are source verified, not all visually triggered; Lite Mode policy only; physical devices untested."
   },
   "noYTLogo": {
     "status": "done",

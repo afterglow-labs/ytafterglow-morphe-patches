@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-14, Hide HUD messages checkpoint
+> Updated: 2026-11-14, native Hide Subbar checkpoint
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, private)
-> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. There are 28 named tweaks. Key-level parity remains conservative at 106 done / 4 n/a / 89 todo, including partial native coverage; the full port is not complete.
+> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. There are 28 named tweaks. Key-level parity remains conservative at 107 done / 4 n/a / 88 todo, including partial native coverage; the full port is not complete.
 
 ## Goal
 
@@ -73,10 +73,46 @@ runtime-hud-65.log, crash-hud-65.log; delivery-65.json records committed-source
 provenance after commit/push. Classic quality's delivery is delivery-64.json at
 ea7f0605b2a1dc65c5a657af3ff7e31287aad069.
 
-Continue the full port with Hide Subbar. Existing Litho filters cover component
-rows; native feed/search RecyclerViews and related-chip mirrors are mapped in
-next-subbar-map.json/txt. Preserve comment sort chips and live OFF restoration.
-Constructor-cached heights must not remain zero after the switch turns off.
+The next checkpoint below completes native Hide Subbar. Native feed/search
+RecyclerViews and related-chip mirrors are mapped in next-subbar-map.json/txt.
+
+## Verified native Hide Subbar checkpoint
+
+Build 70 adds native Home, search and related-video chip rows to Navigation bar's
+Hide Subbar setting, alongside the existing Litho filters. It resolves the known
+container on attachment, moves it out of the viewport and cancels its occupied
+space with a reversible bottom margin. Native height requests, visibility,
+adapters and animation callbacks remain intact. New native margins/translations
+win over saved values; detach and OFF restore the bound row.
+
+The original zero-height candidate failed intermittently at cold search startup.
+Full native logs exposed SearchResultsChipBarCon's caught animation-constructor
+exception: `Target view height does not match expected height (0!=126)`.
+The final implementation preserves those dimensions. Diagnostic 68's temporary
+logging is removed. Build 69 then exposed a separate feed reveal request from
+zero while the hidden native row was already at full height; three OFF controls
+did not reproduce it. The final hook uses the actual start height only for that
+actively collapsed bound row, preserving native validation and completion
+callbacks. Builds 66-69 were not deliveries.
+
+- Strict standalone/GmsCore/streaming/navigation-only: 28/29/30/1, all exit 0.
+- 59 spacing and animation checks and 355 settings checks pass.
+- 230 production inputs match build 70; ZIP, signature and install pass.
+- Android 16 completes 17 observations: live Home/search hide/restore without
+  gaps, scrolling, three cold Home controllers and cold search, native comment sort chips,
+  actual Navigation reset and advancing decoded playback. Defaults and Advanced
+  off restored, app stopped. No native chip-controller exception, Afterglow error
+  or target-app crash. One shell UiAutomation helper (UID 2000, PID 31944)
+  crashed after a successful hierarchy dump; QA continued and exited 0. The raw
+  crash buffer is preserved and process attribution is in subbar-log-audit-70.json.
+- Related-video and Litho targets are source/strict verified; tested watch pages
+  did not expose a related chip row. Lite Mode's forced preference is policy
+  verified only; physical devices remain untested.
+
+Evidence: `port-completion-20261113/subbar-result-70-final.json` and full native
+runtime logs. Committed-source bundle provenance is recorded in delivery-70.json.
+Continue the most-replayed heatwave control, persistent progress bar and remaining full port. Key parity:
+107 done / 4 n/a / 88 todo; 28 named tweaks. The full port is still incomplete.
 
 ## Verified native controls checkpoint — 2026-11-14
 
