@@ -246,3 +246,11 @@
 - 382 settings checks; strict standalone/GmsCore/streaming and isolated Seek bar/Glow/Seek bar streaming 28/29/30/1/1/3 all pass. Nine full and five isolated runtime observations are visually verified, with decoded playback and actual settings restoration. Logs have no Afterglow errors or crashes.
 - Initial portrait expectations incorrectly required recoloring/expansion. The ineffective alpha hook from 73 and diagnostic code from 74 are removed; all 232 source hashes match the tested 72 bundle. Original assessments remain in evidence. Full QA wrapper 143 was completed by a successful bounded finisher; isolated runtime exits 0.
 - Parity: 109 done / 4 n/a / 86 todo. Provenance: delivery-72.json. Physical-device/live/DVR/Shorts/casting coverage remains untested. Continue native Shorts controls and the full port.
+
+## 2026-11-14 — Native and modern Shorts header controls
+
+- Build 78 implements the four independent Shorts layout header/Lens switches, default OFF. Native icon families match iOS; modern Search/More are tagged at conversion and bound on mount, with restoration before view recycling.
+- 57 identity, 394 settings and 46 existing player action checks pass. All five strict selections (28/29/30/1/3), signatures and installation pass; 236 production hashes match the bundle.
+- Eleven full observations on 77 plus six isolated and four final full observations on 78 verify live hide/restore, both Shorts routes, cold start, native menu/Search commands, preserved Mute/Home Search, actual reset and decoded playback. Only two native icon-classification files differ between 77 and 78; lifecycle hooks are identical.
+- Camera and Lens were absent in baseline fixtures, so visual behavior remains unverified. Earlier cold-only filtering, repeated-link QA and Advanced-mode QA ordering evidence are preserved. Runtime log results and exact wrapper exits are in execution-78.json and shorts-log-audit-78.json.
+- Parity: 113 done / 4 n/a / 82 todo. Source/delivery provenance: delivery-78.json. Physical-device and alternate-layout coverage remain untested; the full port continues.

@@ -4,6 +4,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
+import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -14,7 +15,7 @@ import app.afterglow.extension.settings.LiteMode;
 
 /** Native controls retain their layout, draw callbacks and native visibility state. */
 public final class PlayerOverlay {
-    private static final Map<View, Boolean> BOUND = new WeakHashMap<>();
+    private static final Map<View, WeakReference<Binding>> BOUND = new WeakHashMap<>();
 
     private PlayerOverlay() {}
 
@@ -49,12 +50,24 @@ public final class PlayerOverlay {
         bind(view, key, "player-overlay");
     }
 
-    private static void bind(View view, String key, String tweak) {
+    /** Shared native-view binding; every caller supplies its independent tweak owner. */
+    public static void bind(View view, String key, String tweak) {
         if (view == null || !InstalledTweaks.has(tweak) || BOUND.containsKey(view)) return;
-        BOUND.put(view, true);
         Binding binding = new Binding(view, key, tweak);
+        BOUND.put(view, new WeakReference<>(binding));
         view.addOnAttachStateChangeListener(binding);
         if (view.isAttachedToWindow()) binding.onViewAttachedToWindow(view);
+    }
+
+    /** Restore before a native renderer recycles a view for a different control. */
+    public static void unbind(View view, String tweak) {
+        WeakReference<Binding> reference = BOUND.get(view);
+        Binding binding = reference == null ? null : reference.get();
+        if (binding == null || !binding.tweak.equals(tweak)) return;
+        binding.restore();
+        binding.onViewDetachedFromWindow(view);
+        view.removeOnAttachStateChangeListener(binding);
+        BOUND.remove(view);
     }
 
     private static final class Binding implements View.OnAttachStateChangeListener,
@@ -105,17 +118,20 @@ public final class PlayerOverlay {
                     view.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
                     view.setFocusable(false);
                     hidden = true;
-                } else if (hidden) {
-                    if (view.getTranslationY() == appliedTranslation) view.setTranslationY(nativeTranslation);
-                    view.setImportantForAccessibility(accessibility);
-                    view.setFocusable(focusable);
-                    hidden = false;
-                }
+                } else restore();
             } catch (Throwable error) {
                 onViewDetachedFromWindow(view);
                 Afterglow.error("PlayerOverlay." + key, error);
             }
             return true;
+        }
+
+        void restore() {
+            if (!hidden) return;
+            if (view.getTranslationY() == appliedTranslation) view.setTranslationY(nativeTranslation);
+            view.setImportantForAccessibility(accessibility);
+            view.setFocusable(focusable);
+            hidden = false;
         }
     }
 }

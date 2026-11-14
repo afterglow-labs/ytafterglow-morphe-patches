@@ -518,16 +518,24 @@
     "why": "Android YouTube 21.43's Shorts player has no logo view (the icon exists only in the icon table)."
   },
   "hideShortsSearch": {
-    "status": "todo"
+    "status": "done",
+    "where": "tweaks/navigation/ShortsButtonsPatch.kt + navigation/ShortsButtons.java + navigation/ShortsHeaderBindings.java + litho/ShortsHeaderPolicy.java",
+    "note": "Build 78: Independent Shorts layout settings, default OFF. Native header icons match all corresponding iOS Search/Camera roles present in the Android enum; Lens binds its dedicated paused container. Modern Search/More use exact renderer identities carried through native view tags, with live visibility and restoration before recycling. Strict 28/29/30/1/3; 57 header identity and 394 settings checks pass. Eleven full observations on 77, six isolated and four final full observations on 78 are visually verified; 77-to-78 changes only broaden native icon classification. Native menu/Search command, Mute, Home Search, tab reuse, actual reset and decoded playback are preserved. Camera and Lens were absent in baseline fixtures: their hooks are source/patch verified, with visual behavior unverified. Physical devices untested."
   },
   "hideShortsCamera": {
-    "status": "todo"
+    "status": "done",
+    "where": "tweaks/navigation/ShortsButtonsPatch.kt + navigation/ShortsButtons.java + navigation/ShortsHeaderBindings.java + litho/ShortsHeaderPolicy.java",
+    "note": "Build 78: Independent Shorts layout settings, default OFF. Native header icons match all corresponding iOS Search/Camera roles present in the Android enum; Lens binds its dedicated paused container. Modern Search/More use exact renderer identities carried through native view tags, with live visibility and restoration before recycling. Strict 28/29/30/1/3; 57 header identity and 394 settings checks pass. Eleven full observations on 77, six isolated and four final full observations on 78 are visually verified; 77-to-78 changes only broaden native icon classification. Native menu/Search command, Mute, Home Search, tab reuse, actual reset and decoded playback are preserved. Camera and Lens were absent in baseline fixtures: their hooks are source/patch verified, with visual behavior unverified. Physical devices untested."
   },
   "hideShortsMore": {
-    "status": "todo"
+    "status": "done",
+    "where": "tweaks/navigation/ShortsButtonsPatch.kt + navigation/ShortsButtons.java + navigation/ShortsHeaderBindings.java + litho/ShortsHeaderPolicy.java",
+    "note": "Build 78: Independent Shorts layout settings, default OFF. Native header icons match all corresponding iOS Search/Camera roles present in the Android enum; Lens binds its dedicated paused container. Modern Search/More use exact renderer identities carried through native view tags, with live visibility and restoration before recycling. Strict 28/29/30/1/3; 57 header identity and 394 settings checks pass. Eleven full observations on 77, six isolated and four final full observations on 78 are visually verified; 77-to-78 changes only broaden native icon classification. Native menu/Search command, Mute, Home Search, tab reuse, actual reset and decoded playback are preserved. Camera and Lens were absent in baseline fixtures: their hooks are source/patch verified, with visual behavior unverified. Physical devices untested."
   },
   "hideShortsLens": {
-    "status": "todo"
+    "status": "done",
+    "where": "tweaks/navigation/ShortsButtonsPatch.kt + navigation/ShortsButtons.java + navigation/ShortsHeaderBindings.java + litho/ShortsHeaderPolicy.java",
+    "note": "Build 78: Independent Shorts layout settings, default OFF. Native header icons match all corresponding iOS Search/Camera roles present in the Android enum; Lens binds its dedicated paused container. Modern Search/More use exact renderer identities carried through native view tags, with live visibility and restoration before recycling. Strict 28/29/30/1/3; 57 header identity and 394 settings checks pass. Eleven full observations on 77, six isolated and four final full observations on 78 are visually verified; 77-to-78 changes only broaden native icon classification. Native menu/Search command, Mute, Home Search, tab reuse, actual reset and decoded playback are preserved. Camera and Lens were absent in baseline fixtures: their hooks are source/patch verified, with visual behavior unverified. Physical devices untested."
   },
   "hideShortsSubscriptions": {
     "status": "todo"

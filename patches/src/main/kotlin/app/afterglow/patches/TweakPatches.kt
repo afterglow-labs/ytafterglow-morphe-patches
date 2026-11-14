@@ -25,7 +25,8 @@ val shortsLayoutTweakPatch = bytecodePatch(
     default = true,
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
-    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch, afterglowLithoFilterPatch)
+    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch, afterglowLithoFilterPatch,
+        app.afterglow.patches.tweaks.navigation.shortsButtonsHookPatch)
     execute { markTweakInstalled("shorts-layout") }
 }
 

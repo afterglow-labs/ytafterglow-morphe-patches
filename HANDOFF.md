@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-14, persistent native progress checkpoint
+> Updated: 2026-11-14, Shorts header controls checkpoint
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, private)
-> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. There are 28 named tweaks. Key-level parity remains conservative at 109 done / 4 n/a / 86 todo, including partial native coverage; the full port is not complete.
+> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. There are 28 named tweaks. Key-level parity remains conservative at 113 done / 4 n/a / 82 todo, including partial native coverage; the full port is not complete.
 
 ## Goal
 
@@ -10,6 +10,45 @@ Port every YTAfterglow iOS tweak to Android YouTube **21.43.523**, exactly as it
 - Each Afterglow feature group is a separately named tweak in Morphe's list (names from `tools/tweaks.json`).
 - An Afterglow settings page lives inside YouTube's settings and shows only rows for tweaks that are installed and implemented.
 - Plumbing such as GmsCore/microG sign-in comes from Morphe's own "GmsCore support" patch, ticked in the same run.
+
+## Verified Shorts header controls checkpoint
+
+Build 78 adds Search, Camera, More and Lens settings to the independent Shorts
+layout tweak, all default OFF. Native icon roles match the iOS families present
+in Android; Lens binds its dedicated paused container. Modern Search and More
+receive exact role tags through the native Litho builder. Mounted controls use
+live visibility bindings, restored before native view recycling. Home's Search,
+paused Mute, native menu callbacks and video playback remain available.
+
+57 header identity checks, 394 settings checks and strict standalone/GmsCore/
+streaming/Shorts-only/Shorts-streaming 28/29/30/1/3 pass. All 236 production inputs
+match the final bundle; ZIP, signatures and installation pass. Eleven full-install
+observations on 77 and six isolated plus four final full observations on 78 are
+visually verified. Build 78 changes only native icon classification from 77;
+source-delta-77-to-78.json records the exact two files. The checks include live
+hide/restore, native More and Search commands, cold ON, paused playback, Home,
+actual Shorts-tab reuse, page reset and advancing decoded frames.
+
+Build 76's conversion-time removal worked only on a fresh toolbar. It was replaced
+by native mount/unmount bindings in 77. That runner later reported 143 after a
+repeated video link stayed on Home; a successful bounded finisher completed reset
+and the real Shorts-tab route. An initial isolated QA assertion also expected the
+category before Advanced mode was enabled; its corrected order passes without a
+source change. All raw failed-run evidence is retained. execution-78.json records
+the final wrapper and log results. Defaults and Advanced OFF are restored, the
+full final APK is installed, and the app is stopped.
+
+Camera and Lens did not appear in these fixtures; their hooks are source/patch
+verified, with visual hide/restore unverified. Physical devices, alternate server
+header layouts and live/casting behavior remain untested. The full port remains
+active at 113 done / 4 n/a / 82 todo. Evidence: shorts-buttons-result-77.json,
+shorts-buttons-isolated-result-78.json, shorts-buttons-final-result-78.json,
+shorts-log-audit-78.json and delivery-78.json under port-completion-20261113.
+
+Next: native Shorts progress and pinch controls. The actual modern bar is the
+activity-root reel_time_bar wrapper, not the hidden legacy progress presenter.
+Native controller maps and the remaining state-policy question are recorded in
+next-shorts-progress-implementation-notes.txt. No progress implementation yet.
 
 ## Verified Persistent progress bar checkpoint
 
@@ -42,9 +81,7 @@ under port-completion-20261113. Delivery provenance is in delivery-72.json.
 Physical devices, live/DVR, Shorts and casting remain untested.
 Key parity: 109 done / 4 n/a / 86 todo; the full port remains active.
 
-Next: native Shorts Search/Camera/More/Lens controls. Their native header icon
-and paused-Lens boundaries are mapped in next-shorts-implementation-notes.txt;
-confirm live hide/restore and independent owner behavior before claiming runtime.
+Shorts header controls are implemented in the verified checkpoint above.
 
 ## Verified Classic video quality checkpoint
 

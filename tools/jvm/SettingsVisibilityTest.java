@@ -138,6 +138,15 @@ public final class SettingsVisibilityTest {
         AfterglowPrefs.remove("persistentProgressBar");
         check("persistent reset restores native hidden track", 0, Float.floatToIntBits(PlayerBehavior.progressVisibility(0f)));
 
+        for (String key : new String[]{"hideShortsSearch", "hideShortsCamera", "hideShortsMore", "hideShortsLens"}) {
+            AfterglowPrefs.remove(key);
+            install("shorts", "player-overlay");
+            check("other player owners do not expose " + key, false, SettingsBehavior.keyVisible(key));
+            install("shorts-layout");
+            check("Shorts layout owns " + key, true, SettingsBehavior.keyVisible(key));
+            check("Shorts native button defaults stay visible " + key, false, AfterglowPrefs.getBool(key));
+        }
+
         install();
         AfterglowPrefs.setBool("hideHeatwaves", true);
         check("uninstalled seek bar preserves heatwaves", false, PlayerBehavior.hideHeatwaves());

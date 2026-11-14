@@ -552,3 +552,28 @@ independent Seek bar install and decoded playback pass (nine full and five isola
 observations). Six strict selections and 382 settings checks pass. Experimental
 whole-view alpha overriding and all diagnostics are removed. Physical devices,
 live/DVR, Shorts and casting remain untested.
+
+## Shorts header controls
+
+Search, Camera, More and Lens belong to the independent Shorts layout tweak and
+default OFF. They appear under Advanced mode → Shorts → Layout & Buttons.
+Native header images are classified using renderer enum names, covering all
+corresponding iOS Search/Camera icon families present in Android 21.43.523. The
+Lens hook binds only the dedicated paused-state container.
+
+The modern toolbar stays mounted while settings is open. Its Search image has
+the exact `top_bar_conditional_button_image_yt_delhi_search_24dp` identifier;
+More has `id.reel_more_button`. Classification is restricted to conditional
+buttons under `top_bar.e`; toolbar parents and the paused Mute toggle are kept.
+The patch carries a role through the native builder's view-tag map. Mount binds
+the view to live preferences; unmount restores native translation, focus and
+accessibility before recycling. The registration map holds weak keys and values.
+No translated labels, forced toolbar rebuild or global view traversal is needed.
+
+Build 78 passes strict 28/29/30/1/3, 57 identity and 394 settings checks. Runtime
+includes 11 full observations on 77 and 6 isolated plus 4 final full observations
+on 78. Search/More hide and restore live, native commands still open, Home Search
+and paused Mute stay available, and actual reset and decoded playback pass. The
+two changed files between 77 and 78 only broaden native icon classification.
+Camera/Lens visual behavior, physical devices and alternate server layouts remain
+unverified; native source and patch targets are confirmed. Full port unfinished.
