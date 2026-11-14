@@ -520,3 +520,18 @@ Evidence: `hud-result-65.json`, `hud-copy-{on,restored}-1-65.png`,
 `runtime-hud-65.log`, `crash-hud-65.log`. All native constructor paths pass source
 and strict validation, but not every message class was individually triggered.
 Physical-device, live/DVR and casting behavior remain unverified.
+
+## Native most-replayed graph
+
+`Hide most replayed graph` belongs to Seek bar and defaults off. A constructor
+fingerprint anchored by `heat_wave_background_color` identifies HeatMarkerView;
+only its `onDraw(Canvas)` call is gated. The native metadata, graph visibility
+controller, seeking and chapter preview remain available, so switching OFF
+restores the graph without rebuilding its model.
+
+Build 71 verifies portrait and fullscreen ON/OFF, cold ON, the actual Seek Bar
+reset and decoded playback, plus independent Seek bar settings and OFF/ON/OFF
+seeking. Six strict selections pass (28/29/30/1/1/3), with 365 settings checks.
+The shared SeekBarTheme dependency now includes Afterglow settings for isolated
+Seek bar and Glow; this does not add app-wide resource color replacements.
+Physical-device, live/DVR, Shorts and casting behavior remain untested.

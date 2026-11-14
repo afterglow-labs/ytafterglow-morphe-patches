@@ -7,6 +7,7 @@ package app.afterglow.patches.theme
 
 import app.afterglow.patches.shared.Constants.EXTENSION_PACKAGE
 import app.afterglow.patches.shared.afterglowExtensionPatch
+import app.afterglow.patches.settings.afterglowSettingsPatch
 import app.afterglow.patches.shared.invokeRegisters
 import app.afterglow.patches.shared.addMethod
 import app.afterglow.patches.shared.addFieldGetter
@@ -29,7 +30,7 @@ import com.android.tools.smali.dexlib2.iface.reference.MethodReference
 private const val SEEK = "$EXTENSION_PACKAGE/theme/SeekBarTheme;"
 
 internal val seekBarThemePatch = bytecodePatch {
-    dependsOn(afterglowExtensionPatch)
+    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch)
     execute {
         val bar = Fingerprint(returnType = "V", strings = listOf("timed_markers_width"))
         val draw = Fingerprint(classFingerprint = bar, name = "onDraw", parameters = listOf("Landroid/graphics/Canvas;"), returnType = "V").method

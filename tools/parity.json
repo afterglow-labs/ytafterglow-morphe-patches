@@ -115,7 +115,9 @@
     "status": "todo"
   },
   "hideHeatwaves": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/HeatwavesPatch.kt + playback/PlayerBehavior.java",
+    "note": "Build 71: Independent Seek bar preference gates native HeatMarkerView drawing only, preserving graph models, previews and touch/visibility callbacks. Default OFF. Strict standalone/GmsCore/streaming 28/29/30, Seek bar only/Glow only 1/1 and Seek bar streaming 3 pass. 365 settings checks. Android 16 verifies portrait/fullscreen hide and restoration, cold ON, actual Seek Bar reset, decoded playback, plus isolated settings routing and OFF/ON/OFF with native seeking. No Afterglow errors or target-app crashes. Crash buffers are empty. Physical devices, live/DVR, Shorts and casting untested; full port unfinished."
   },
   "theme_glowEnabled": {
     "status": "todo",

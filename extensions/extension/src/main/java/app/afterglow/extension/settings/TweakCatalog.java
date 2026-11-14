@@ -336,6 +336,7 @@ public final class TweakCatalog {
             "exitFullscreen",
             "frostedPivot",
             "hideEndScreenCards",
+            "hideHeatwaves",
             "hideOverlayTitle",
             "hidePlayerCollapseButton",
             "hidePlayerFullscreenButton",

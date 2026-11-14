@@ -7,6 +7,11 @@ import app.afterglow.extension.settings.LiteMode;
 public final class PlayerBehavior {
     private PlayerBehavior() {}
 
+    /** Hide only the most-replayed graph; native seeking and previews stay available. */
+    public static boolean hideHeatwaves() {
+        return InstalledTweaks.has("seek-bar") && LiteMode.effectiveBool("hideHeatwaves");
+    }
+
     /** Use the native skip-display branch so the message queue still receives its callbacks. */
     public static boolean hideHudMessages(boolean nativeSkip) {
         return nativeSkip || (InstalledTweaks.has("player-overlay")

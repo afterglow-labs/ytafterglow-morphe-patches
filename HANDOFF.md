@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-14, native Hide Subbar checkpoint
+> Updated: 2026-11-14, native replay-graph checkpoint
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, private)
-> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. There are 28 named tweaks. Key-level parity remains conservative at 107 done / 4 n/a / 88 todo, including partial native coverage; the full port is not complete.
+> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. There are 28 named tweaks. Key-level parity remains conservative at 108 done / 4 n/a / 87 todo, including partial native coverage; the full port is not complete.
 
 ## Goal
 
@@ -75,6 +75,50 @@ ea7f0605b2a1dc65c5a657af3ff7e31287aad069.
 
 The next checkpoint below completes native Hide Subbar. Native feed/search
 RecyclerViews and related-chip mirrors are mapped in next-subbar-map.json/txt.
+
+## Verified Hide most replayed graph checkpoint
+
+Build 71 adds the independent Seek bar setting, default OFF. The hook gates only
+HeatMarkerView.onDraw; native graph models, previews, seeking and visibility
+callbacks remain intact. It also repairs a concrete dependency gap: Seek bar
+and Glow selected alone now include Afterglow's activity and settings row.
+Both isolated APKs expose the implicit settings action in the target's cairo
+settings resource. No app-wide color-resource rewrite was added for this fix.
+
+365 settings checks and all six strict selections pass: standalone/GmsCore/
+streaming 28/29/30, Seek bar only/Glow only 1/1 and Seek bar with streaming 3.
+Build, strict, signature and install checks exit 0. All 231 production inputs
+match the tested bundle, whose ZIP integrity passes.
+
+Eight full-install observations verify native graph OFF/ON/OFF in portrait,
+cold ON, fullscreen ON/OFF, actual Seek Bar page reset and advancing decoded
+playback. Scrubber, chapter preview and seeking remain available. Four isolated
+observations verify the settings action, owner-filtered Themes page and native
+OFF/ON/OFF graph behavior with no other Afterglow feature installed.
+No Afterglow errors or target-app crashes. Crash buffers are empty.
+
+Two earlier QA attempts are retained: repeated relative scrubbing overran the
+video end, then a watch deep link left Home visible. The final runner normalizes
+position and requires the expected watch fixture before gestures. Neither
+required a production source change. An isolated QA assertion also mistook the
+disabled Theme Studio heading for a destination; the corrected check inspects
+clickable rows. Interrupted QA setup/install evidence is kept in execution-71.json.
+The isolated fixture also had a native preroll: QA now lets it play and uses
+YouTube's Skip button when offered before checking the graph.
+The final full and isolated wrappers exit 0.
+Defaults and Advanced off restored; full candidate restored and app stopped.
+
+Evidence: heatwave-result-71-final2.json, heatwave-isolated-result-71.json,
+independent-settings-resources-71.json and heatwave-log-audit-71.json under
+port-completion-20261113. Committed-source provenance is in delivery-71.json.
+Physical devices, live/DVR, Shorts and casting remain untested. Glow's isolated
+settings resources are package verified; isolated Glow runtime was not exercised.
+Key parity: 108 done / 4 n/a / 87 todo; 28 named tweaks. Full port incomplete.
+
+Continue persistent progress bar: the mapped native render fraction controls
+track height and paint alpha. Its control/input and animation state must stay
+native. Draft and bounded evidence are in PersistentProgressPatch.draft.kt and
+next-persistent-implementation-notes.txt; no production implementation yet.
 
 ## Verified native Hide Subbar checkpoint
 

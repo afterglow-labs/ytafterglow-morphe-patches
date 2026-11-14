@@ -108,12 +108,32 @@ public final class SettingsVisibilityTest {
         check("seek bar alone exposes image", true, SettingsBehavior.keyVisible("seekBarScrubberImage"));
         check("seek bar alone exposes played color", true, SettingsBehavior.keyVisible("theme_seekBar"));
         check("unimplemented live scrubber hidden", false, SettingsBehavior.keyVisible("theme_seekBarScrubberLive"));
-        check("unimplemented heatwaves hidden", false, SettingsBehavior.keyVisible("hideHeatwaves"));
+        check("seek bar alone exposes heatwaves", true, SettingsBehavior.keyVisible("hideHeatwaves"));
         Row gradient = SettingsBehavior.row("effects.seekBarGradient");
         AfterglowPrefs.remove("seekBarGradient");
         check("gradient switch reflects effective default", true, SettingsBehavior.switchValue(gradient));
         AfterglowPrefs.setBool("seekBarGradient", false);
         check("gradient switch reflects explicit false", false, SettingsBehavior.switchValue(gradient));
+
+        install();
+        AfterglowPrefs.setBool("hideHeatwaves", true);
+        check("uninstalled seek bar preserves heatwaves", false, PlayerBehavior.hideHeatwaves());
+        check("uninstalled seek bar hides heatwave setting", false, SettingsBehavior.keyVisible("hideHeatwaves"));
+        install("glow");
+        check("shared seek styling does not install heatwave control", false, PlayerBehavior.hideHeatwaves());
+        install("seek-bar");
+        check("seek bar honors imported heatwave choice", true, PlayerBehavior.hideHeatwaves());
+        check("seek bar exposes heatwave setting", true, SettingsBehavior.keyVisible("hideHeatwaves"));
+        AfterglowPrefs.remove("hideHeatwaves");
+        check("heatwave defaults preserve native graph", false, PlayerBehavior.hideHeatwaves());
+        AfterglowPrefs.setBool("liteModeEnabled", true);
+        check("Lite Mode does not force heatwave setting", false, PlayerBehavior.hideHeatwaves());
+        AfterglowPrefs.setBool("hideHeatwaves", true);
+        check("Lite Mode honors explicit heatwave choice", true, PlayerBehavior.hideHeatwaves());
+        AfterglowPrefs.setBool("liteModeEnabled", false);
+        check("leaving Lite Mode keeps heatwave choice", true, PlayerBehavior.hideHeatwaves());
+        AfterglowPrefs.remove("hideHeatwaves");
+        check("heatwave reset restores native graph", false, PlayerBehavior.hideHeatwaves());
 
         install();
         AfterglowPrefs.setBool("noSubbar", true);
