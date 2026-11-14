@@ -18,10 +18,14 @@ public final class ShortsFullscreen {
         void afterglow_setClear(boolean clear);
     }
     public interface BottomController { void afterglow_refreshBottomHeight(); }
-    public interface NavigationController { void afterglow_setBottomHidden(boolean hidden); }
+    public interface NavigationController {
+        void afterglow_setBottomHidden(boolean hidden);
+        boolean afterglow_selectShorts();
+    }
     public interface GestureController {
         ClearController afterglow_clearController();
         boolean afterglow_canAutoHide();
+        View afterglow_playerView();
     }
 
     private static WeakReference<ClearController> active = new WeakReference<>(null);
@@ -136,6 +140,7 @@ public final class ShortsFullscreen {
     /** Observe the native dispatcher without consuming or replacing its gestures. */
     public static void touch(GestureController source, MotionEvent event) {
         try {
+            ShortsOnlyMode.touch(source, event);
             if (!ShortsFullscreenPolicy.enabled() || source == null || event == null) return;
             if (gesture.get() != source) gesture = new WeakReference<>(source);
             int action = event.getActionMasked();
@@ -220,10 +225,22 @@ public final class ShortsFullscreen {
                 && view.isShown() && controller != null && tabsHiddenByPinch;
     }
 
-    private static void updateBottom() {
-        BottomBinding binding = bottom.get();
-        if (binding != null) binding.apply(fullscreen());
+    private static boolean hidesBottom() {
+        return ShortsOnlyMode.hidesTabs() || fullscreen();
     }
+
+    static void updateBottom() {
+        BottomBinding binding = bottom.get();
+        if (binding != null) binding.apply(hidesBottom());
+    }
+
+    static boolean selectShorts() {
+        NavigationController controller = navigation.get();
+        return controller != null && controller.afterglow_selectShorts();
+    }
+
+    /** Escape clears any previous pinch ownership so navigation can return. */
+    static void exitShortsOnlyMode() { release(true); }
 
     private static void preferenceChanged() {
         try {
@@ -240,8 +257,7 @@ public final class ShortsFullscreen {
         active.clear();
         content.clear();
         if (view != null) view.removeOnAttachStateChangeListener(CONTENT_ATTACHMENT);
-        BottomBinding binding = bottom.get();
-        if (binding != null) binding.apply(false);
+        updateBottom();
         if (showOverlay && controller != null && view != null && view.isAttachedToWindow()) {
             controller.afterglow_setClear(false);
         }
@@ -274,7 +290,10 @@ public final class ShortsFullscreen {
         }
 
         @Override public boolean onPreDraw() {
-            try { apply(fullscreen()); }
+            try {
+                ShortsOnlyMode.beforeDraw(view);
+                apply(hidesBottom());
+            }
             catch (Throwable error) {
                 if (observer != null && observer.isAlive()) observer.removeOnPreDrawListener(this);
                 observer = null;

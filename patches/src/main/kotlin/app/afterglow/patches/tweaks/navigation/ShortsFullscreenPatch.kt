@@ -21,6 +21,7 @@ private const val CLEAR = "$EXTENSION_PACKAGE/navigation/ShortsFullscreen\$Clear
 private const val BOTTOM = "$EXTENSION_PACKAGE/navigation/ShortsFullscreen\$BottomController;"
 private const val NAVIGATION = "$EXTENSION_PACKAGE/navigation/ShortsFullscreen\$NavigationController;"
 private const val GESTURE = "$EXTENSION_PACKAGE/navigation/ShortsFullscreen\$GestureController;"
+private const val ONLY = "$EXTENSION_PACKAGE/navigation/ShortsOnlyMode;"
 
 /** Keep native recognition, clear-mode rendering and bottom-height notifications. */
 internal val shortsFullscreenHookPatch = bytecodePatch {
@@ -110,6 +111,12 @@ internal val shortsFullscreenHookPatch = bytecodePatch {
             move-result v0
             return v0
         """)
+        touchHost.addPublicMethod("afterglow_playerView", emptyList(), "Landroid/view/View;", 2, """
+            iget-object v0, p0, ${touchHost.type}->g:Latnq;
+            invoke-virtual { v0 }, ${pinch.type}->a()Landroid/view/View;
+            move-result-object v0
+            return-object v0
+        """)
         touch.method.addInstructions(0,
             "invoke-static/range { p0 .. p1 }, $FULLSCREEN->touch(${GESTURE}Landroid/view/MotionEvent;)V")
 
@@ -166,6 +173,19 @@ internal val shortsFullscreenHookPatch = bytecodePatch {
             custom = { method, cls -> cls.type == "Lrun;" && method.name == "N" })
         val navigationHost = navigationShow.classDef
         navigationHost.interfaces.add(NAVIGATION)
+        require(navigationHost.methods.any { it.name == "z" && it.parameterTypes == listOf("Ljava/lang/String;", "Z") })
+        navigationHost.addPublicMethod("afterglow_selectShorts", emptyList(), "Z", 3, """
+            const-string v0, "FEshorts"
+            invoke-virtual { p0, v0 }, ${navigationHost.type}->u(Ljava/lang/String;)Z
+            move-result v1
+            if-eqz v1, :missing_shorts_tab
+            const/4 v1, 0x1
+            invoke-virtual { p0, v0, v1 }, ${navigationHost.type}->z(Ljava/lang/String;Z)V
+            return v1
+            :missing_shorts_tab
+            const/4 v1, 0x0
+            return v1
+        """)
         navigationHost.addPublicMethod("afterglow_setBottomHidden", listOf("Z"), "V", 3, """
             if-eqz p1, :show_tabs
             invoke-virtual { p0 }, ${navigationHost.type}->I()V
@@ -177,6 +197,17 @@ internal val shortsFullscreenHookPatch = bytecodePatch {
         """)
         navigationShow.method.addInstructions(0,
             "invoke-static/range { p0 .. p0 }, $FULLSCREEN->bindNavigation($NAVIGATION)V")
+        val back = Fingerprint(returnType = "Z", parameters = emptyList(), filters = listOf(
+            methodCall(smali = "Lkpt;->hG()Z"), methodCall(smali = "Latec;->bd()Z")
+        ), custom = { method, cls -> cls.type == "Lmoz;" && method.name == "hG" })
+        back.method.implementation!!.instructions.withIndex().filter { it.value.opcode == Opcode.RETURN }
+            .asReversed().forEach { (index, instruction) ->
+                val result = (instruction as OneRegisterInstruction).registerA
+                back.method.addInstructionsAtControlFlowLabel(index, """
+                    ${invokeStatic(result, method = "$ONLY->consumeBack(Z)Z")}
+                    move-result v$result
+                """)
+            }
         println("Afterglow Shorts fullscreen: native ${pinch.type}, ${clearHost.type}, ${barHost.type}")
     }
 }

@@ -273,3 +273,26 @@
 - Eight focused, nineteen full and thirteen isolated observations and their motion frames are visually reviewed. The initial isolated hold assertion expected idle clear mode, but native long hold opens the options sheet; a bounded continuation verifies its guard and completes native exit/reset without source changes. An intervening wrapper exited 143; the installed isolated APK hash was checked before continuation. Full install's interrupted wrapper is also retained with installed APK hash proof.
 - All five final log sets have zero app/extension errors or crashes and no shell-helper crashes. Exact wrapper outcomes, cleanup and delivery provenance are in execution-85.json and delivery-85.json. Native OFF-capability forcing is source/policy verified because the baseline already enables it; native video aspect-ratio fitting is preserved. Physical devices and alternate server layouts remain untested.
 - Parity: 115 done / 4 n/a / 80 todo. Full port incomplete. Next: Shorts-only mode with independent tab hiding, live/cold native routing, two-finger 500ms escape, localized toast and delayed restoration; retain pinch independence and native touch handling.
+
+## Session Ledger Checkpoint — Shorts-only mode in progress
+
+- Fullscreen 85 committed and pushed as `7fbf9d2ee5bf7b52861343cb5b748b12836113fb`. Delivery `YTAfterglow_Android_20261114T200940Z_yt21.43.523_7fbf9d2e.mpp` has all 242 inputs verified against committed blobs. The full APK was restored, hash-matched and stopped with defaults restored.
+- Added ShortsOnlyMode around the existing native bottom layout and touch bridges. It observes two stable pointers for 500ms even with pinch fullscreen OFF, clears the mode preference, shows the existing translation, and restores tabs after one second. Touch movement/loss and view focus/attachment guard the timer; re-enable cancels the delayed restore. Live ON uses the native Shorts shortcut with the current main component.
+- Build 86 passes 427 settings checks and all strict 28/29/30/1/3 combinations. Its 243 production hashes match and ZIP integrity passes. Emulator installation succeeds. Runtime default OFF and Home baseline pass; live routing, gesture cancellation, timed escape, cold startup, Back, pinch independence and reset remain in progress. No Shorts-only parity completion or delivery claimed.
+
+- Build 87 fixes warm entry and Back, and passes strict 28/29/30/1/3 plus 427 settings checks. Thirty reviewed observations retain successes and failed probes. Native feed identity testing catches blocked swipes while Shorts-only is ON; the same feed advances after OFF. Build87 is not deliverable. A hidden accessibility Next control tap only paused the video; it is not navigation evidence. Diagnostic build88 traces native RecyclerView/player events, Back and bottom-layout callbacks without changing those decisions. Independent install is deferred until the navigation failure is fixed. Raw evidence and original production files are retained under port-completion-20261113.
+
+
+## Session Ledger Checkpoint — Shorts-only mode, build 87 verified
+
+- The earlier blocked-navigation attribution is withdrawn. Diagnostic88 shows complete native swipe delivery, no blocked-list flag, no layout interruption and no Back callback during those gestures. Sustained drags on the original, hash-verified build87 advance SkyeRanks -> yano11onay -> NiloChip with decoded motion and hidden tabs. A further SkyeRanks -> GlobalHoopss change preserves pinch Clear Screen. No production gesture change was needed; all diagnostic code was removed.
+- Thirty-eight full and thirteen independent-install observations are reviewed. Live/cold routing, native Back/panels, negative holds, two-finger exit with pinch OFF/ON, preference preservation, confirmation cancellation, live OFF, Home, actual reset and decoded motion pass. Some recommended clips buffered; their cases verify routing/layout only.
+- Independent escape and reset wrappers exited 143 after partial captures. Fresh bounded observations complete both without overwriting the originals; installation and APK hashes are verified. Cleanup restores defaults and Advanced OFF, the full final APK is restored and hash-matched, and the app is stopped. Full/native/pinch/independent log audits have no app/extension errors or crashes.
+- Strict 28/29/30/1/3, 427 settings checks, ZIP integrity and 243 production input hashes pass. Bundle: 8,672,424 bytes, SHA-256 `9348f3384d88f1efd6bef438c2ca32c8088e21f9db562ab6e756cd5b63000bfc`. Exact execution and delivery provenance are in execution-87.json and delivery-87.json. Physical devices and alternate layouts remain untested.
+- Parity: 116 done / 4 n/a / 79 todo. The full port continues with the native Shorts player-layer setting; Lmpo.Y() owns the narrow overlay visibility boundary. Preserve the separate decoded video and native gesture dispatch.
+
+Build87 log qualification: the earlier full run contains two SIGSEGV crashes in
+the emulator goldfish VP9 decoder service (UID 1013), with no target-app crash.
+The relationship to this feature change is not established. Later native-feed,
+pinch-feed and independent runs have empty crash buffers; raw tombstones remain
+in crash-shorts-progress-87-only.log and the execution audit.

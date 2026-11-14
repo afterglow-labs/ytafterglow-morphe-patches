@@ -637,3 +637,47 @@ cover that correction without a production change. All final app/extension/crash
 logs are clean. The native capability was already ON in the baseline; enabling an
 OFF capability is policy/source verified. Physical devices and alternate server
 layouts remain untested.
+
+## Shorts-only mode
+
+Shorts-only mode belongs to the independent Shorts tweak and defaults OFF. Its
+existing confirmation and translations are retained. Cold startup uses YouTube's
+native Shorts action. Live enable foregrounds the main activity, waits for its
+focused frame, then uses the exact native `Lrun.z("FEshorts", true)` tab command
+used by YouTube's startup handler. Tabs remain available while entry is pending.
+
+Tab hiding is independent of pinch fullscreen. The native Shorts touch dispatcher
+observes exactly two pointers held within touch slop for 500ms. Movement, pointer
+loss/cancel and an inactive, detached or unfocused player prevent the escape.
+The accepted hold writes the mode OFF, shows the existing localized toast, clears
+pinch ownership, and restores tabs after one second. Re-enabling cancels that
+restoration. Native event consumption, play/pause and the one-finger options sheet
+remain intact. Native Back handlers close panels first; an unhandled Back remains
+inside Shorts while this mode is enabled.
+
+Build87 passes all strict 28/29/30/1/3 combinations and 427 settings checks.
+Runtime live/cold entry, native Back and panel handling, rejected short/moving/
+single-pointer holds, timed escape with pinch OFF/ON, preserved pinch preference,
+Home after OFF, confirmation cancellation and page reset pass. Known fixed clips
+play advancing frames. A metadata-gated run verifies two successive native feed
+changes with sustained drags while tabs remain hidden.
+
+Earlier short injected swipes retained the same clip. Diagnostic88 shows complete
+native list delivery without a blocked-list flag, layout interruption or Back
+call during those gestures; a sustained ON swipe advances. No production change
+was made for that investigation. All traces are removed from release source,
+which again matches the 243 build87 inputs. Failed assertions are retained in the
+external evidence directory. Some recommended clips buffered, so their captures
+prove routing/layout only; the fixed clips and confirmed feed changes separately
+prove decoded motion. A further confirmed clip change retains pinch Clear Screen
+and hidden tabs. Thirty-eight full and thirteen independent-install observations
+are reviewed; independent routing, Back, escape, native Home and actual page reset
+pass. Interrupted escape/reset captures were completed in bounded continuations
+with original evidence retained. All final logs have no app/extension crashes or
+errors. Physical devices and alternate layouts remain untested.
+
+Build87 log qualification: the earlier full run contains two SIGSEGV crashes in
+the emulator goldfish VP9 decoder service (UID 1013), with no target-app crash.
+The relationship to this feature change is not established. Later native-feed,
+pinch-feed and independent runs have empty crash buffers; raw tombstones remain
+in crash-shorts-progress-87-only.log and the execution audit.

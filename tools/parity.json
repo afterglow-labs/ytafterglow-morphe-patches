@@ -484,8 +484,9 @@
     "status": "todo"
   },
   "shortsOnlyMode": {
-    "status": "todo",
-    "note": "partial: Shorts start page done; tab-bar hiding and exit gesture not yet"
+    "status": "done",
+    "note": "Independent default-OFF Shorts mode: native live/cold routing, hidden tabs, two-finger 500ms escape, localized toast, one-second restoration and native Back panel handling. Strict 28/29/30/1/3 and 427 settings checks pass. Full and independent Android 16 runs verify routing, negative holds, pinch independence, preference preservation, live OFF, reset and decoded motion. Confirmed feed changes retain hidden tabs and pinch Clear Screen. Short injected swipes were inconsistent; sustained drags pass without a production gesture change. Diagnostic code removed; physical devices and alternate layouts untested.",
+    "where": "navigation/ShortsOnlyMode.java + navigation/ShortsFullscreen.java + tweaks/navigation/ShortsFullscreenPatch.kt + navigation/StartupHooks.java"
   },
   "autoSkipShorts": {
     "status": "done",

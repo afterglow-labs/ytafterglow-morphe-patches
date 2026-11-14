@@ -39,8 +39,8 @@ internal const val SHORTS_HOOKS = "$EXTENSION_PACKAGE/navigation/ShortsHooks;"
  * TweakPatches.kt depends on this patch.
  *
  * [shortsFullscreenHookPatch] connects the native pinch recognizer, clear-mode
- * rendering and tab/content insets. Shorts-only tab hiding and its two-finger
- * exit gesture remain pending; implement the exit route before hiding its tabs.
+ * rendering and tab/content insets. Its native touch bridge also supports
+ * Shorts-only tab hiding and the independent two-finger exit gesture.
  */
 internal val shortsHooksPatch = bytecodePatch(
     description = "Hooks the Shorts player for the YTAfterglow Shorts settings.",

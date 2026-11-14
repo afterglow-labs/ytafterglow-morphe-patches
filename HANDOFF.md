@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-14, Shorts fullscreen checkpoint
+> Updated: 2026-11-14, Shorts-only checkpoint
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, private)
-> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. Shorts fullscreen now combines native pinches, expanded content, idle overlays and continuity between reels. There are 28 named tweaks. Key-level parity remains conservative at 115 done / 4 n/a / 80 todo, including partial native coverage; the full port is not complete.
+> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. Shorts fullscreen combines native pinches, expanded content, idle overlays and continuity between reels. Shorts-only mode adds native live/cold routing, independent hidden tabs and its two-finger exit. There are 28 named tweaks. Key-level parity remains conservative at 116 done / 4 n/a / 79 todo, including partial native coverage; the full port is not complete.
 
 ## Goal
 
@@ -10,6 +10,47 @@ Port every YTAfterglow iOS tweak to Android YouTube **21.43.523**, exactly as it
 - Each Afterglow feature group is a separately named tweak in Morphe's list (names from `tools/tweaks.json`).
 - An Afterglow settings page lives inside YouTube's settings and shows only rows for tweaks that are installed and implemented.
 - Plumbing such as GmsCore/microG sign-in comes from Morphe's own "GmsCore support" patch, ticked in the same run.
+
+## Verified Shorts-only checkpoint
+
+Build 87 completes independent tab hiding, native cold routing and live entry
+through Lrun.z("FEshorts", true). Tabs remain available until that command is
+ready. Two stable pointers held for 500ms turn the mode OFF, show its localized
+toast and restore navigation after one second. Escape clears pinch ownership,
+preserves its preference, and retains native touch handling. Native Back closes
+panels first, then keeps the Shorts root. Live OFF and actual page reset restore
+navigation; rejected short/moving/single-pointer holds leave the mode enabled.
+
+Strict standalone/GmsCore/streaming/independent selections pass 28/29/30/1/3;
+427 settings checks pass. All 243 production hashes match the tested bundle.
+Thirty-eight full and thirteen independent-install observations are visually
+reviewed. Known fixed clips play advancing frames. Confirmed feed changes
+SkyeRanks -> yano11onay -> NiloChip retain hidden tabs; a further confirmed
+SkyeRanks -> GlobalHoopss change retains pinch Clear Screen and hidden tabs.
+The independent installation exposes only the Shorts owner and verifies live/
+cold routing, Back, exit, preference state, Home and actual reset.
+
+Short injected swipes initially retained a clip. Diagnostic88 showed complete
+native event delivery, no blocked-list flag, no layout interruption and no Back
+call during swipes; a sustained ON swipe advanced. The earlier attribution to
+blocked navigation is withdrawn. No production correction was made. All traces
+were removed and every source hash again matches build87. Failed assertions,
+interrupted wrappers and successful bounded continuations remain in the evidence.
+Some recommended clips buffered; their observations cover routing/layout only.
+Timed screenshots include capture overhead. The earlier full run contains two
+crashes in the emulator goldfish VP9 decoder service (UID 1013), with no target-app
+crash; their relationship to the feature change is not established. Subsequent
+feed, pinch and independent runs have empty crash buffers. Physical devices
+remain untested.
+
+The full final APK is restored and hash-verified, defaults and Advanced are OFF,
+and the app is stopped. Exact results and committed delivery provenance are in
+execution-87.json, shorts-only-audit-87.json and delivery-87.json under
+port-completion-20261113. Diagnostic build88 must not be delivered.
+
+The full port remains active. Next: the independent Shorts layout setting that
+hides the native player overlay, preserving decoded video, native visibility
+requests, pinch and the Shorts-only escape. Its mapped boundary is Lmpo.Y().
 
 ## Verified Shorts fullscreen checkpoint
 
