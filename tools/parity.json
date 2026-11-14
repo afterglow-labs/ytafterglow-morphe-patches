@@ -261,10 +261,12 @@
   "disableAutoCaptions": {
     "status": "done",
     "where": "extensions/extension/src/main/java/app/afterglow/extension/playback/ + patches/.../playback/",
-    "note": "patch applies on 21.43.523; not yet confirmed on a device"
+    "note": "Build 52 replaces the timing gate with native ON/ON_RECOMMENDED server-hint suppression and the muted-caption flag. 316 policy/settings checks and strict 27/28/29/1 pass; Android 16 verifies manual choices remain usable independently and with remembering ON. Forced server-hint/muted runtime cases remain unverified."
   },
   "rememberCaptionState": {
-    "status": "todo"
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/playback/Captions.java + patches/.../playback/CaptionsPatch.kt",
+    "note": "Build 52: native manual enabled/language writes recorded atomically; native initial selection and unavailable-language fallback preserved. Strict 27/28/29 plus Captions-only 1 pass. Android 16 verifies ON/OFF cold starts, Arabic persistence, English fallback without overwriting Arabic, fullscreen, native Next Video and page reset. Physical device, Shorts, live/DVR and casting untested."
   },
   "rememberLoop": {
     "status": "todo"

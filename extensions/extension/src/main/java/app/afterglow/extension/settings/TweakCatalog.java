@@ -385,6 +385,7 @@ public final class TweakCatalog {
             "portraitFullscreen",
             "premiumYTLogo",
             "redProgressBar",
+            "rememberCaptionState",
             "removeDontRecommendMenu",
             "removeDownloadMenu",
             "removeIndicators",

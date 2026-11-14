@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-14, autoplay initial readiness
+> Updated: 2026-11-14, caption persistence verified
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, private)
-> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. There are 27 named tweaks. Key-level parity remains conservative at 100 done / 4 n/a / 95 todo, including partial native coverage; the full port is not complete.
+> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. There are 27 named tweaks. Key-level parity remains conservative at 101 done / 4 n/a / 94 todo, including partial native coverage; the full port is not complete.
 
 ## Goal
 
@@ -11,7 +11,39 @@ Port every YTAfterglow iOS tweak to Android YouTube **21.43.523**, exactly as it
 - An Afterglow settings page lives inside YouTube's settings and shows only rows for tweaks that are installed and implemented.
 - Plumbing such as GmsCore/microG sign-in comes from Morphe's own "GmsCore support" patch, ticked in the same run.
 
-## Current Autoplay checkpoint — 2026-11-14
+## Verified Captions checkpoint — 2026-11-14
+
+Build 52 remembers the native enabled/language preference in one atomic private
+record and restores it through YouTube's initial selection path. Disable auto
+captions now gates server ON/ON_RECOMMENDED hints independently; the old 150ms
+startup window is removed. Manual choices retain precedence.
+
+Strict standalone/GmsCore/streaming 27/28/29 and isolated Captions 1/1 pass, all
+exit 0; 316 settings checks and all 218 production input hashes pass. Android 16
+verifies remembered ON/OFF, both switches together, portrait/fullscreen, native
+Next Video, page reset and decoded playback. Arabic survives cold starts; an
+English-only video falls back to English captions, and reopening the original
+video restores Arabic. One other native recommendation stalled at 0:00 after
+media HTTP 413; it is not counted as caption fallback proof. Native English/OFF,
+Playback defaults and Advanced off are restored; app stopped, no Afterglow errors
+and empty crash buffers. Server-hint/muted suppression is source/policy verified;
+physical-device, Shorts, live/DVR, ads and casting behavior remain untested.
+
+Parity: **101 done / 4 n/a / 94 todo**, 27 named tweaks. Bundle:
+`build-52/YTAfterglow-0.1.0-local.mpp` under the evidence root below. Source and
+unique delivery provenance are recorded in `delivery-52.json`. See
+`docs/player-behavior.md`. Earlier caption builds 47/50 failed cold persistence;
+49 was diagnostic and 51 used unrelated generic settings notifications. None is
+a delivery.
+
+Continue Remember loop mode and the remaining full port. Loop baseline build 50
+verifies native Off -> manual On -> cold Off. `Lobh` owns the watch menu;
+`Lasjv.k(int)` delegates through `Lasjs` to active-player `Lasij.q(int)`. Native
+watch menu modes are ON=2/OFF=0. Five explicit user action sites are mapped;
+automatic new-video resets must not overwrite the preference. Drafts and
+`loop-native-map-notes.txt` are in the evidence root; no loop production edit yet.
+
+## Delivered Autoplay checkpoint — 2026-11-14
 
 Build 45 completes Autoplay's initial-paused behavior and binds the native switch
 for live visibility. It changes only the new load's private `playWhenReady` flag;

@@ -322,3 +322,52 @@ live hiding/restoration is source-verified, not runtime-proven here. Off-mode Sh
 live/DVR, casting, ads and physical-device behavior remain untested. Runtime logs
 contain no Afterglow errors and crash buffers are empty. Playback defaults are
 restored, Advanced mode remains off, and the app is stopped.
+
+## Caption persistence and automatic caption policy
+
+**Captions** includes the two original independent Playback switches, both default
+off. Remember caption state records the viewer's native caption preference write,
+including its language identifier, and restores it through YouTube's initial
+track-selection path. Disable auto captions suppresses only server ON and
+ON_RECOMMENDED hints and the muted-device automatic-caption flag. Manual CC
+controls and an explicitly remembered ON choice remain available.
+
+On 21.43.523, `Laspd.m` sends the native enabled/language preference to `Laslu`,
+then sets the recent-choice bit. Initial loading calls `Laspd.n` directly, so it
+does not overwrite the extension's record. `Laspd.j` and its language selector
+use the saved choice when requested; their existing track fallback is retained.
+The device-caption fallbacks are suppressed for the remembered choice without
+changing Android's accessibility settings. `Lasqy.d` supplies the named server
+hint enum. Replacing its shared return ensures incoming branches reach the hook.
+The old 150ms startup window and delayed CC toggle are removed.
+
+Native preference persistence is feature-gated in the baseline. Diagnostic build
+49 confirms manual ON is written while that storage gate is off; forcing the
+local gate in build 50 still fails cold-start persistence. The final implementation
+stores one Android-private `android_caption_choice` string in Afterglow preferences.
+The enabled flag and native language id are atomic, and the targeted notification
+leaves unrelated playback listeners alone. Absent/malformed records fall back to
+native values. Remembering off or an uninstalled Captions patch leaves native
+reads/writes unchanged. Whole-domain preference reset clears the record.
+
+Build 52 passes 316 settings/policy checks, strict standalone/GmsCore/streaming
+27/28/29, and Captions-only isolation 1/1, all exit 0. All 218 production inputs
+match. The Android 16 emulator completes 20 observations covering remembered ON
+and OFF through cold starts, independent caption switches, both together,
+portrait/fullscreen, native Next Video, manual choices with remembering off,
+actual Playback-page reset and resumed decoded playback. A UI test initially
+missed a temporarily hidden control; revealing it and checking the native PAUSED
+state allowed the remaining checks to complete without a source change.
+
+Language verification selects Arabic in the native menu and retains that selection
+through a cold start. The English-only fixed video `6IegDENuxU4` falls back to
+English and renders captions over decoded playback; returning to `rfscVS0vtbw`
+restores Arabic, proving fallback did not overwrite the saved preference. A native
+Next recommendation first stalled at 0:00 after media HTTP 413. That failed load
+is recorded separately and is not counted as caption fallback proof. Native
+English/OFF and Playback defaults are restored, Advanced mode is off and the app
+is stopped. Runtime logs have no Afterglow errors; crash buffers are empty. Evidence: `captions-result-52.json`, `qa-captions-52.log`,
+`qa-captions-52-resume.log`, `runtime-captions-52.log`, `crash-captions-52.log`
+and corresponding XML/PNG captures. Server-hint/muted-auto policy is source and
+unit verified; no forced server-hint runtime fixture is claimed. Physical-device,
+Shorts captions, live/DVR, ads and casting behavior are not runtime verified.

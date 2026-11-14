@@ -67,7 +67,7 @@ val videoQualityTweakPatch = bytecodePatch(
 @Suppress("unused")
 val captionsTweakPatch = bytecodePatch(
     name = "Captions",
-    description = "Lets you keep captions from turning on by themselves.",
+    description = "Remembers your caption choice and lets you prevent server and muted-device captions from turning on automatically.",
     default = true,
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)

@@ -14,6 +14,7 @@ import java.util.Set;
 import app.afterglow.extension.InstalledTweaks;
 import app.afterglow.extension.playback.PlayerBehavior;
 import app.afterglow.extension.playback.Autoplay;
+import app.afterglow.extension.playback.Captions;
 import app.afterglow.extension.settings.AfterglowPrefs;
 import app.afterglow.extension.settings.TweakCatalog;
 import app.afterglow.extension.sponsorblock.SponsorCategory;
@@ -36,6 +37,7 @@ public final class SettingsVisibilityTest {
 
     private static int failures;
     private static int checks;
+    private enum CaptionHint { UNKNOWN, OFF, ON, ON_RECOMMENDED, NEW_STATE }
 
     public static void main(String[] args) throws Exception {
         MemPrefs prefs = new MemPrefs();
@@ -131,6 +133,79 @@ public final class SettingsVisibilityTest {
         AfterglowPrefs.remove("autoplayMode");
         check("autoplay reset restores native flags", 7, Autoplay.startFlags(7));
         check("autoplay reset restores native switch", false, Autoplay.hideAutoplaySwitch());
+
+        install();
+        AfterglowPrefs.setBool("rememberCaptionState", true);
+        AfterglowPrefs.setBool("disableAutoCaptions", true);
+        check("uninstalled captions preserve native remembered false", false, Captions.rememberChoice(false));
+        check("uninstalled captions preserve native remembered true", true, Captions.rememberChoice(true));
+        check("uninstalled captions preserve server ON", false, Captions.ignoreServerState(CaptionHint.ON));
+        check("uninstalled captions preserve muted behavior", true, Captions.allowMutedAutoCaptions(true));
+        check("uninstalled captions preserve device behavior", true, Captions.respectDeviceSetting(true));
+        check("uninstalled remember captions row hidden", false, SettingsBehavior.keyVisible("rememberCaptionState"));
+        install("captions");
+        check("caption patch alone exposes remember choice", true, SettingsBehavior.keyVisible("rememberCaptionState"));
+        for (boolean remember : new boolean[]{false, true}) {
+            for (boolean disableAuto : new boolean[]{false, true}) {
+                AfterglowPrefs.setBool("rememberCaptionState", remember);
+                AfterglowPrefs.setBool("disableAutoCaptions", disableAuto);
+                String c = "captions " + remember + "/" + disableAuto + ": ";
+                check(c + "remembered choice independent", remember, Captions.rememberChoice(false));
+                check(c + "native recent viewer choice retained", true, Captions.rememberChoice(true));
+                check(c + "device setting independence", !remember, Captions.respectDeviceSetting(true));
+                check(c + "native device false retained", false, Captions.respectDeviceSetting(false));
+                check(c + "server ON", disableAuto, Captions.ignoreServerState(CaptionHint.ON));
+                check(c + "server ON_RECOMMENDED", disableAuto, Captions.ignoreServerState(CaptionHint.ON_RECOMMENDED));
+                check(c + "server OFF retained", false, Captions.ignoreServerState(CaptionHint.OFF));
+                check(c + "server UNKNOWN retained", false, Captions.ignoreServerState(CaptionHint.UNKNOWN));
+                check(c + "new server state retained", false, Captions.ignoreServerState(CaptionHint.NEW_STATE));
+                check(c + "null server state retained", false, Captions.ignoreServerState(null));
+                check(c + "muted auto captions independent", !disableAuto, Captions.allowMutedAutoCaptions(true));
+                check(c + "native muted false retained", false, Captions.allowMutedAutoCaptions(false));
+            }
+        }
+        AfterglowPrefs.remove("rememberCaptionState"); AfterglowPrefs.remove("disableAutoCaptions");
+        check("captions reset preserves native choice", false, Captions.rememberChoice(false));
+        check("captions reset preserves native hint", false, Captions.ignoreServerState(CaptionHint.ON));
+
+        AfterglowPrefs.remove("android_caption_choice");
+        AfterglowPrefs.setBool("rememberCaptionState", true);
+        install();
+        Captions.onManualChoice(true, "fr");
+        check("uninstalled caption write ignored", false, AfterglowPrefs.contains("android_caption_choice"));
+        install("captions");
+        check("no saved caption choice preserves native on", true, Captions.restoreEnabled(true));
+        check("no saved caption choice preserves native off", false, Captions.restoreEnabled(false));
+        Captions.onManualChoice(true, "fr");
+        check("manual ON overrides native off", true, Captions.restoreEnabled(false));
+        check("saved language overrides native language", "fr", Captions.restoreLanguage("en"));
+        AfterglowPrefs.setBool("disableAutoCaptions", true);
+        check("disable auto preserves explicit saved ON", true, Captions.restoreEnabled(false));
+        Captions.onManualChoice(null, "de");
+        check("null native selection never erases saved language", "fr", Captions.restoreLanguage("en"));
+        AfterglowPrefs.setBool("rememberCaptionState", false);
+        Captions.onManualChoice(false, "");
+        check("disabled remembering preserves native off", false, Captions.restoreEnabled(false));
+        check("disabled remembering preserves native language", "en", Captions.restoreLanguage("en"));
+        AfterglowPrefs.setBool("rememberCaptionState", true);
+        check("disabled recording did not erase saved ON", true, Captions.restoreEnabled(false));
+        Captions.onManualChoice(false, "");
+        check("manual OFF overrides native on", false, Captions.restoreEnabled(true));
+        check("manual OFF clears remembered language", "en", Captions.restoreLanguage("en"));
+        Captions.onManualChoice(true, null);
+        check("missing saved language uses native fallback", "en", Captions.restoreLanguage("en"));
+        install();
+        check("uninstalled captions ignore imported saved ON", false, Captions.restoreEnabled(false));
+        AfterglowPrefs.remove("rememberCaptionState"); AfterglowPrefs.remove("disableAutoCaptions");
+        AfterglowPrefs.remove("android_caption_choice");
+
+        install("captions");
+        AfterglowPrefs.setBool("rememberCaptionState", true);
+        AfterglowPrefs.setString("android_caption_choice", "invalid");
+        check("malformed saved choice preserves native on", true, Captions.restoreEnabled(true));
+        check("malformed saved choice preserves native off", false, Captions.restoreEnabled(false));
+        check("malformed saved choice preserves native language", "en", Captions.restoreLanguage("en"));
+        AfterglowPrefs.remove("rememberCaptionState"); AfterglowPrefs.remove("android_caption_choice");
 
         // Imported preferences must not activate an uninstalled player patch.
         install();

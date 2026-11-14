@@ -1,88 +1,91 @@
-/*
- * YTAfterglow for Android.
- *
- * Adapted from the AutoCaptionsPatch class of Morphe patches v2.2.0
- * (https://github.com/MorpheApp/morphe-patches, GPLv3). Modified for YTAfterglow:
- * driven by the iOS settings. Not an official Morphe file.
+/* Caption integration originally adapted from Morphe patches (GPLv3). See NOTICE.
+ * Native caption policy for the two independently controlled iOS preferences.
  */
-
 package app.afterglow.extension.playback;
-
-import android.os.SystemClock;
-
-import java.util.concurrent.atomic.AtomicLong;
 
 import app.afterglow.extension.Afterglow;
 import app.afterglow.extension.InstalledTweaks;
 import app.afterglow.extension.settings.LiteMode;
-import app.afterglow.extension.video.VideoState;
+import app.afterglow.extension.settings.AfterglowPrefs;
 
-/**
- * iOS "captions" tweak.
- *
- * <p>{@code disableAutoCaptions} ("Disable auto captions: prevents automatic activation of
- * captions"). While on, captions start disabled when a video starts, and the captions YouTube
- * turns on by itself while the device is muted stay off. During the first 150 ms after a video's
- * information loads YouTube's start decision reads as "disabled"; after that the viewer's own
- * taps on the captions button are kept, as on iOS where the captions button is unaffected.
- */
+
 @SuppressWarnings("unused")
 public final class Captions {
-    private static final String TWEAK = "captions";
-    /** Window after a video's information loads during which the start decision is forced. */
-    private static final long START_WINDOW_MS = 150;
-
-    /** End of the start window; MAX_VALUE while a video loads, before its information. */
-    private static final AtomicLong START_WINDOW_END = new AtomicLong(Long.MAX_VALUE);
-    private static boolean installed;
-
+    // One atomic, Android-private value: "0" (off) or "1:" + the native track id.
+    // Its targeted notification does not refresh unrelated playback settings.
+    private static final String CHOICE = "android_caption_choice";
     private Captions() {}
 
-    /** Injection point, at startup. */
-    public static synchronized void install() {
-        if (installed) return;
-        installed = true;
+    private static boolean enabled(String key) {
+        return InstalledTweaks.has("captions") && LiteMode.effectiveBool(key);
+    }
+
+    /** Prefer YouTube's stored viewer choice over the device/server initial state. */
+    public static boolean rememberChoice(boolean nativeRecentChoice) {
         try {
-            VideoState.addListener(new VideoState.Listener() {
-                @Override
-                public void onPlayerCreated() {
-                    START_WINDOW_END.set(Long.MAX_VALUE);
-                }
-            });
+            return nativeRecentChoice || enabled("rememberCaptionState");
         } catch (Throwable error) {
-            Afterglow.error("Captions.install", error);
+            Afterglow.error("Captions.rememberChoice", error);
+            return nativeRecentChoice;
         }
     }
 
-    private static boolean disableAutoCaptionsOn() {
-        return InstalledTweaks.has(TWEAK) && LiteMode.effectiveBool("disableAutoCaptions");
-    }
-
-    /** Injection point: a video's information loaded; opens the start window once. */
-    public static void videoInformationLoaded() {
+    /** Called only where the native manager writes an explicit viewer selection. */
+    public static void onManualChoice(Boolean selected, String language) {
         try {
-            START_WINDOW_END.compareAndSet(Long.MAX_VALUE, SystemClock.uptimeMillis() + START_WINDOW_MS);
+            if (selected == null || !enabled("rememberCaptionState")) return;
+            AfterglowPrefs.setString(CHOICE, selected
+                    ? "1:" + (language == null ? "" : language) : "0");
         } catch (Throwable error) {
-            Afterglow.error("Captions.videoInformationLoaded", error);
+            Afterglow.error("Captions.onManualChoice", error);
         }
     }
 
-    /** Injection point: YouTube's "captions start disabled" decision. */
-    public static boolean disableAutoCaptions(boolean original) {
+    public static boolean restoreEnabled(boolean nativeEnabled) {
         try {
-            if (!disableAutoCaptionsOn()) return original;
-            if (SystemClock.uptimeMillis() >= START_WINDOW_END.get()) return original;
-            return true;
+            String saved = enabled("rememberCaptionState") ? AfterglowPrefs.getString(CHOICE) : null;
+            if ("0".equals(saved)) return false;
+            return saved != null && saved.startsWith("1:") || nativeEnabled;
         } catch (Throwable error) {
-            Afterglow.error("Captions.disableAutoCaptions", error);
-            return original;
+            Afterglow.error("Captions.restoreEnabled", error);
+            return nativeEnabled;
         }
     }
 
-    /** Injection point: the flag that shows captions by themselves on a muted device. */
+    public static String restoreLanguage(String nativeLanguage) {
+        try {
+            String saved = enabled("rememberCaptionState") ? AfterglowPrefs.getString(CHOICE) : null;
+            if (saved != null && saved.startsWith("1:") && saved.length() > 2) return saved.substring(2);
+        } catch (Throwable error) {
+            Afterglow.error("Captions.restoreLanguage", error);
+        }
+        return nativeLanguage;
+    }
+
+    /** Match iOS respectDeviceCaptionSetting: remembered viewer choices take precedence. */
+    public static boolean respectDeviceSetting(boolean nativeEnabled) {
+        try {
+            return nativeEnabled && !enabled("rememberCaptionState");
+        } catch (Throwable error) {
+            Afterglow.error("Captions.respectDeviceSetting", error);
+            return nativeEnabled;
+        }
+    }
+
+    /** Drop only a server recommendation to enable captions. Viewer taps are untouched. */
+    public static boolean ignoreServerState(Enum<?> nativeState) {
+        try {
+            return nativeState != null && enabled("disableAutoCaptions")
+                    && ("ON".equals(nativeState.name()) || "ON_RECOMMENDED".equals(nativeState.name()));
+        } catch (Throwable error) {
+            Afterglow.error("Captions.ignoreServerState", error);
+            return false;
+        }
+    }
+
     public static boolean allowMutedAutoCaptions(boolean original) {
         try {
-            return original && !disableAutoCaptionsOn();
+            return original && !enabled("disableAutoCaptions");
         } catch (Throwable error) {
             Afterglow.error("Captions.allowMutedAutoCaptions", error);
             return original;
