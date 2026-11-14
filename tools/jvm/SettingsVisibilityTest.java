@@ -17,6 +17,7 @@ import app.afterglow.extension.playback.Autoplay;
 import app.afterglow.extension.playback.Captions;
 import app.afterglow.extension.navigation.Subbar;
 import app.afterglow.extension.navigation.ShortsProgressPolicy;
+import app.afterglow.extension.navigation.ShortsFullscreenPolicy;
 import app.afterglow.extension.settings.AfterglowPrefs;
 import app.afterglow.extension.settings.TweakCatalog;
 import app.afterglow.extension.sponsorblock.SponsorCategory;
@@ -149,6 +150,24 @@ public final class SettingsVisibilityTest {
         }
 
         install("shorts");
+        AfterglowPrefs.remove("pinchToFullscreenShorts");
+        check("Shorts pinch defaults OFF", false, ShortsFullscreenPolicy.enabled());
+        check("Shorts exposes pinch setting", true, SettingsBehavior.keyVisible("pinchToFullscreenShorts"));
+        check("Shorts pinch OFF preserves disabled capability", false, ShortsFullscreenPolicy.capability(false));
+        check("Shorts pinch OFF preserves native capability", true, ShortsFullscreenPolicy.capability(true));
+        AfterglowPrefs.setBool("pinchToFullscreenShorts", true);
+        check("Shorts pinch enables native recognizer", true, ShortsFullscreenPolicy.capability(false));
+        check("Shorts pinch preserves enabled recognizer", true, ShortsFullscreenPolicy.capability(true));
+        install("shorts-layout");
+        check("Layout does not own pinch behavior", false, SettingsBehavior.keyVisible("pinchToFullscreenShorts"));
+        check("Layout does not force pinch capability", false, ShortsFullscreenPolicy.capability(false));
+        install();
+        check("Absent Shorts preserves native pinch", true, ShortsFullscreenPolicy.capability(true));
+        check("Absent Shorts does not enable pinch", false, ShortsFullscreenPolicy.capability(false));
+        install("shorts");
+        AfterglowPrefs.remove("pinchToFullscreenShorts");
+        check("Shorts pinch reset restores native capability", false, ShortsFullscreenPolicy.capability(false));
+
         AfterglowPrefs.remove("shortsProgress");
         check("Shorts progress default OFF", false, ShortsProgressPolicy.enabled());
         check("Shorts owner exposes progress", true, SettingsBehavior.keyVisible("shortsProgress"));

@@ -38,16 +38,15 @@ internal const val SHORTS_HOOKS = "$EXTENSION_PACKAGE/navigation/ShortsHooks;"
  * shortsOnlyMode's Shorts start page comes from [startupHooksPatch]. The named "Shorts" patch in
  * TweakPatches.kt depends on this patch.
  *
- * Not ported: shortsOnlyMode's hidden tab bar and two-finger exit gesture, and
- * pinchToFullscreenShorts. Both need a gesture recognizer on the Shorts player's fragment view
- * (`ShortsBottomBarContainerFingerprint` hands it over) and the bottom bar container hook to hide
- * the tab bar; without the exit gesture, hiding the bar could leave no way back to settings.
+ * [shortsFullscreenHookPatch] connects the native pinch recognizer, clear-mode
+ * rendering and tab/content insets. Shorts-only tab hiding and its two-finger
+ * exit gesture remain pending; implement the exit route before hiding its tabs.
  */
 internal val shortsHooksPatch = bytecodePatch(
     description = "Hooks the Shorts player for the YTAfterglow Shorts settings.",
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
-    dependsOn(afterglowExtensionPatch, startupHooksPatch, shortsProgressHookPatch)
+    dependsOn(afterglowExtensionPatch, startupHooksPatch, shortsProgressHookPatch, shortsFullscreenHookPatch)
 
     execute {
         // region resumeShorts

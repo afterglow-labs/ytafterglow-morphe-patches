@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-14, Shorts progress checkpoint
+> Updated: 2026-11-14, Shorts fullscreen checkpoint
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, private)
-> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. There are 28 named tweaks. Key-level parity remains conservative at 114 done / 4 n/a / 81 todo, including partial native coverage; the full port is not complete.
+> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. Shorts fullscreen now combines native pinches, expanded content, idle overlays and continuity between reels. There are 28 named tweaks. Key-level parity remains conservative at 115 done / 4 n/a / 80 todo, including partial native coverage; the full port is not complete.
 
 ## Goal
 
@@ -10,6 +10,52 @@ Port every YTAfterglow iOS tweak to Android YouTube **21.43.523**, exactly as it
 - Each Afterglow feature group is a separately named tweak in Morphe's list (names from `tools/tweaks.json`).
 - An Afterglow settings page lives inside YouTube's settings and shows only rows for tweaks that are installed and implemented.
 - Plumbing such as GmsCore/microG sign-in comes from Morphe's own "GmsCore support" patch, ticked in the same run.
+
+## Verified Shorts fullscreen checkpoint
+
+Shorts progress build 80 is committed and pushed as
+9296769ddcb743d006cc8604430156a982895265. Its verified 239-input bundle is
+recorded in delivery-80.json. All ten full and six isolated observations pass;
+the first recommended tab item buffered, and the two affected checks passed on
+a playing feed item after visual review caught it. Raw evidence is retained.
+
+The unmodified build80 pinch baseline already enters/exits native Clear Screen;
+its bottom tabs remain visible. Candidates81/82 located two separate retained
+126-pixel insets. Build 84 connects native navigation hide/show and suppresses the
+Shorts fragment's compensating margin only while fullscreen owns the hidden bar.
+Both the content and player expand from a bottom coordinate of 2211 to 2337.
+Its guarded three-second timer, native tap play/pause, comments-panel guard,
+native exit, live OFF and actual page reset pass. Seventeen full observations
+completed before the next-reel test caught native clear reset restoring the tabs.
+That failure is retained in qa-shorts-fullscreen-84.log; build 84 is not delivered.
+Its strict 28/29/30/1/3 results pass, with interrupted 29/30 runs retained and fresh
+retry directories used. Settings 427/427 pass; the source snapshot has 242 inputs.
+
+Build 85 preserves the chosen tab/overlay state across a native reel-model reset
+while the same player remains attached, focused and outside an engagement panel.
+It reapplies after the new native observers mount; leaving the player still
+releases ownership. All eight focused continuity observations and their paired
+frames are visually verified, with clean app/extension/crash logs. Strict
+28/29/30/1/3 and 427 settings checks pass. The install wrapper was terminated
+after installation; the device base APK SHA-256 exactly matches candidate85.apk,
+and the continuity probe completed in a fresh wrapper. Nineteen full regression
+observations and thirteen independent-install observations are complete and
+visually reviewed, including advancing frame pairs. The independent run initially
+expected idle clear mode after a long hold; native YouTube opens its options sheet.
+The original failed assertion is retained. A bounded continuation verifies the
+sheet guard, native exit and actual page reset without a production change.
+An intervening continuation wrapper exited 143; the installed isolated APK hash
+was verified before resuming. All five final log sets have no app, extension or
+shell-helper crashes. The setting defaults OFF; native aspect-ratio fitting stays
+unchanged. The baseline already enables the native pinch capability, so forcing
+an OFF capability is source/policy verified. Physical devices remain untested.
+
+Final execution, strict results, artifact hashes and delivery provenance are in
+execution-85.json, shorts-fullscreen-validation-85.json, artifact-85.json and
+delivery-85.json under port-completion-20261113. Pinch parity is done. The next
+active item is full Shorts-only mode: hidden tabs and the iOS two-finger,
+half-second exit with a localized toast and one-second navigation restoration.
+The native boundaries and iOS mapping are in next-shorts-only-design.md.
 
 ## Verified Shorts progress checkpoint
 
@@ -46,10 +92,8 @@ shorts-progress-log-audit-80.json, artifact-80.json and delivery-80.json under
 port-completion-20261113. The preceding header delivery is delivery-78.json at
 62e723cd1073354e40e4e025ba517e5952d7e731.
 
-Next: native Shorts pinch and Shorts-only exit behavior. Native Latnq already
-recognizes pinches and drives Latnm clear mode; the capability and touch-path
-boundaries are mapped in next-shorts-pinch-*.txt and the implementation notes.
-No pinch or Shorts-only gesture implementation yet.
+Native Shorts pinch is completed in the checkpoint above. Full Shorts-only mode
+and its exit gesture are next; the existing startup route alone remains partial.
 
 ## Verified Shorts header controls checkpoint
 

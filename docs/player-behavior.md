@@ -598,3 +598,42 @@ settings, cold ON, Home, Shorts-tab reuse and reset. Diagnostic79 showed the
 fixtures already use always-visible mode, so no new visual difference is claimed.
 Other native display policies are source/policy verified. Temporary logging is
 removed; physical devices and alternate/absent native models remain untested.
+
+## Shorts fullscreen
+
+Pinch to Fullscreen belongs to the independent Shorts tweak and defaults OFF.
+The patch enables the native pinch capability only when requested; OFF preserves
+the original capability. YouTube still recognizes the gesture, applies its scale
+thresholds and renders Clear Screen. Its own Exit Clear Screen remains available.
+
+An accepted pinch binds the actual player and clear-mode controller through weak
+references. Pinch-out hides the native bottom container, calls the navigation
+controller's hide path, and suppresses the Shorts fragment's replacement bottom
+margin. Both native height notifications and browse insets are updated. Pinch-in
+restores the native layout; the extension does not stretch the video or invent a
+fixed bar height. On the emulator, the player gains the existing 126-pixel tab area.
+
+Tab visibility and overlay visibility are separate. Pinch-in and taps show the
+native overlay, then schedule a three-second idle hide. A native hold that opens
+the options sheet keeps that sheet intact through the panel guard. Tapping
+while fullscreen keeps the tabs hidden. The existing touch dispatcher retains
+control of event consumption, play/pause, scrolling and native hold behavior.
+Idle work requires the same attached, visible and focused player plus the native
+engagement-panel eligibility guard. Pointer activity, reset, OFF and detachment
+cancel pending work.
+
+YouTube resets clear mode when a new reel's observers mount. While the same
+player remains eligible, the extension reapplies the chosen overlay state on
+the main queue and retains the independent tab state. Leaving that player
+releases ownership. Live preference/import/reset changes restore native state.
+
+Build 85 passes 427 settings checks and strict 28/29/30/1/3 selections. Eight
+focused, nineteen full and thirteen independent-install observations are visually
+reviewed. They verify fullscreen and idle continuity, native play/pause, native
+exit, comments/options guards, live OFF, Home, actual reset and advancing decoded
+frames. The original isolated hold assertion incorrectly expected idle clear mode
+instead of the native options sheet; retained evidence and bounded completion
+cover that correction without a production change. All final app/extension/crash
+logs are clean. The native capability was already ON in the baseline; enabling an
+OFF capability is policy/source verified. Physical devices and alternate server
+layouts remain untested.

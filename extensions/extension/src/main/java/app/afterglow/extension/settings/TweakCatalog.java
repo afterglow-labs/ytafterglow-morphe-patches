@@ -391,6 +391,7 @@ public final class TweakCatalog {
             "noWatermarks",
             "noYTLogo",
             "persistentProgressBar",
+            "pinchToFullscreenShorts",
             "portraitFullscreen",
             "premiumYTLogo",
             "redProgressBar",
