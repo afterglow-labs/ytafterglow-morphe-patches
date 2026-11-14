@@ -7,6 +7,10 @@ import app.afterglow.extension.settings.LiteMode;
 public final class PlayerBehavior {
     private PlayerBehavior() {}
 
+    public static boolean showEndTime() {
+        return InstalledTweaks.has("video-end-time") && LiteMode.effectiveBool("videoEndTime");
+    }
+
     public static boolean portraitFullscreen() {
         return InstalledTweaks.has("fullscreen") && LiteMode.effectiveBool("portraitFullscreen");
     }

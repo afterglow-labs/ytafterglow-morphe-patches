@@ -7,11 +7,23 @@ import app.afterglow.patches.playback.doubleTapGestureHookPatch
 import app.afterglow.patches.playback.freeZoomHookPatch
 import app.afterglow.patches.playback.fullscreenHookPatch
 import app.afterglow.patches.playback.portraitFullscreenHookPatch
+import app.afterglow.patches.playback.endTimeHookPatch
 import app.afterglow.patches.litho.afterglowLithoFilterPatch
 import app.afterglow.patches.settings.afterglowSettingsPatch
 import app.afterglow.patches.shared.Constants.COMPATIBILITY_YOUTUBE
 import app.afterglow.patches.shared.markTweakInstalled
 import app.morphe.patcher.patch.bytecodePatch
+
+@Suppress("unused")
+val endTimeTweakPatch = bytecodePatch(
+    name = "Playback end time",
+    description = "Adds the expected playback finish time to the native player bar, accounting for playback speed.",
+    default = true,
+) {
+    compatibleWith(COMPATIBILITY_YOUTUBE)
+    dependsOn(afterglowSettingsPatch, endTimeHookPatch)
+    execute { markTweakInstalled("video-end-time") }
+}
 
 @Suppress("unused")
 val fullscreenTweakPatch = bytecodePatch(

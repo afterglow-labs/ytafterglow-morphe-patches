@@ -453,10 +453,14 @@
     "note": "Strict 21.43.523 validation and Android 16 runtime pass. Title, controls shading and fullscreen actions hide/restore independently; modern watermark disappears during playback and returns when disabled. Combined portrait/fullscreen controls, fading and reset verified. Legacy watermark is source/patch-validated; physical devices and inline feeds unverified."
   },
   "videoEndTime": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/EndTimeFormat.java + playback/PlayerEndTime.java + playback/EndTimePatch.kt",
+    "note": "Independent install and default-off settings; iOS rounded remaining-time/rate calculation and US 12/24-hour formats. Strict standalone/GmsCore/streaming/isolation and Android 16 portrait/fullscreen, paused 2x/0.25x, new video, Shorts exclusion and live reset pass. Deferred native text handling preserves the native minimum width on reset. Physical-device, live/DVR and casting behavior unverified."
   },
   "24hrFormat": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/EndTimeFormat.java + playback/PlayerEndTime.java + playback/EndTimePatch.kt",
+    "note": "Independent install and default-off settings; iOS rounded remaining-time/rate calculation and US 12/24-hour formats. Strict standalone/GmsCore/streaming/isolation and Android 16 portrait/fullscreen, paused 2x/0.25x, new video, Shorts exclusion and live reset pass. Deferred native text handling preserves the native minimum width on reset. Physical-device, live/DVR and casting behavior unverified."
   },
   "pauseOnOverlay": {
     "status": "todo"

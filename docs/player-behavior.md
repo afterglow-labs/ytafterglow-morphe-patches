@@ -222,3 +222,39 @@ Evidence under the directory above: `watch-actions-result-40.json`,
 `portrait-baseline-{before-settings,save-hidden,save-restored}-40.*` and
 `runtime-portrait-baseline-40.log`. The 46 action-filter and 196 settings checks
 also pass. Physical-device, tablet/foldable and casting behavior remain untested.
+
+## Playback end time
+
+The independently selectable **Playback end time** patch adds **Show playback end
+time** and **24-hour format** to the advanced `Player > Overlay` page. Both default
+off. The clock uses iOS's calculation: round duration and elapsed time separately
+to seconds, subtract, then divide by playback speed. Formats are US `h:mm a` and
+`HH:mm`, in the device's current timezone. Unknown duration/position is left alone.
+
+The hook binds `time_bar_total_time` in `Lomq.a(View)`. It keeps the native styled
+text and adds one suffix, observing native text, playback and preference changes.
+Weak view bindings follow attachment; pre-draw notices paused speed changes and
+a duration that arrives after the label binds. Main-queue deferral lets native
+`Loff.e` finish measuring its temporary text before the clock is appended. Build
+42's synchronous watcher had polluted that native minimum-width cache; build 43
+fixes it without overriding YouTube's layout properties.
+
+Build 43 passes strict application: 27 Afterglow patches standalone, 28 with
+GmsCore, 29 with GmsCore plus Spoof video streams, and one independently selected
+Playback end time patch. All wrappers exit 0. The formatter passes 21 checks
+including separate rounding, rate fallback, midnight, noon, locale and DST;
+settings visibility and independent installation pass 207/207.
+
+The Android 16 emulator verifies both clock formats in portrait/fullscreen,
+format-only independence, live disable/reset, native 2x/0.25x selection while
+paused, continued playback, fresh long-video duration and transitions from Shorts.
+Native Shorts has no appended clock. A cold off baseline and actual Overlay
+**Reset to Defaults** have the same 135px total-duration width on the long fixture.
+Native speed is restored to 1x, overlay settings to defaults, Advanced mode off
+and the app stopped. Both final runtime logs have no errors; crash buffers are
+empty. Physical-device, live/DVR and casting behavior are not runtime verified.
+
+Evidence in the directory above: `end-time-result-43.json`,
+`end-time-result-43-speed.json`, `end-time-*-43*.png`,
+`runtime-end-time-43.log` and `runtime-end-time-speed-43.log`. The bundle has 217
+recorded production inputs; delivery provenance is recorded separately.

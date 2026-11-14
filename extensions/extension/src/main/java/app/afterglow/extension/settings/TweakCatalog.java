@@ -318,6 +318,7 @@ public final class TweakCatalog {
         };
 
     private static final String[] SHOWN = new String[] {
+            "24hrFormat",
             "action.resetThemeColors",
             "autoFullscreen",
             "autoSkipShorts",
@@ -445,6 +446,7 @@ public final class TweakCatalog {
             "theme_seekBarLive",
             "theme_seekBarScrubber",
             "theme_tabLabelSizeMode",
+            "videoEndTime",
             "wiFiQualityIndex",
         };
 

@@ -195,6 +195,26 @@ public final class SettingsVisibilityTest {
         AfterglowPrefs.remove("portraitFullscreen");
         check("portrait fullscreen reset off", false, PlayerBehavior.portraitFullscreen());
 
+        install();
+        AfterglowPrefs.setBool("videoEndTime", true);
+        check("uninstalled end time ignores imported setting", false, PlayerBehavior.showEndTime());
+        check("uninstalled end time hides its row", false, SettingsBehavior.keyVisible("videoEndTime"));
+        install("video-end-time");
+        check("installed end time exposes its row", true, SettingsBehavior.keyVisible("videoEndTime"));
+        check("installed end time exposes independent clock format", true, SettingsBehavior.keyVisible("24hrFormat"));
+        check("installed end time honors imported setting", true, PlayerBehavior.showEndTime());
+        AfterglowPrefs.remove("videoEndTime");
+        check("end time defaults off", false, PlayerBehavior.showEndTime());
+        AfterglowPrefs.setBool("24hrFormat", true);
+        check("clock format alone never enables end time", false, PlayerBehavior.showEndTime());
+        AfterglowPrefs.setBool("advancedMode", false);
+        check("end time page follows advanced gate", false, SettingsBehavior.shown(SettingsBehavior.row("player.overlay")));
+        AfterglowPrefs.setBool("advancedMode", true);
+        check("end time alone exposes advanced overlay page", true, SettingsBehavior.shown(SettingsBehavior.row("player.overlay")));
+        AfterglowPrefs.remove("24hrFormat");
+        check("clock format defaults to twelve hour", false, AfterglowPrefs.getBool("24hrFormat"));
+        check("end time does not expose native overlay hides", false, SettingsBehavior.keyVisible("hideSubs"));
+
         install("player-overlay");
         for (String key : new String[] {"hideSubs", "hidePrevNext", "hidePlayerFullscreenButton",
                 "hidePlayerCollapseButton", "hidePlayerOverflowButton", "hideOverlayTitle",

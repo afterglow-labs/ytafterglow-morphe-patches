@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-14, live native action-row refresh
+> Updated: 2026-11-14, native playback end time
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, private)
-> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. There are 26 named tweaks. Key-level parity remains conservative at 96 done / 4 n/a / 99 todo, including partial native coverage; the full port is not complete.
+> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes. There are 27 named tweaks. Key-level parity remains conservative at 98 done / 4 n/a / 97 todo, including partial native coverage; the full port is not complete.
 
 ## Goal
 
@@ -11,7 +11,28 @@ Port every YTAfterglow iOS tweak to Android YouTube **21.43.523**, exactly as it
 - An Afterglow settings page lives inside YouTube's settings and shows only rows for tweaks that are installed and implemented.
 - Plumbing such as GmsCore/microG sign-in comes from Morphe's own "GmsCore support" patch, ticked in the same run.
 
-## Current native action refresh checkpoint — 2026-11-14
+## Current playback end-time checkpoint — 2026-11-14
+
+Build 43 adds independently selectable **Playback end time** with the two original
+iOS switches, both default off. The native duration label preserves its styling,
+accounts for playback speed and switches live between 12/24-hour clocks. Native
+text updates are deferred until YouTube finishes measuring its own label; this
+fixes the minimum-width cache issue found in build 42.
+
+Strict standalone/GmsCore/streaming runs pass 27/28/29, and end-time-only isolation
+passes 1/1; all exit 0. There are 217 verified production inputs. The emulator
+checks portrait/fullscreen formats, native paused 2x/0.25x, new videos, Shorts
+exclusion and actual page reset. The long-video reset restores the native 135px
+width. Runtime logs have no errors; crash buffers are empty. Native speed is 1x,
+overlay defaults restored, Advanced mode off and the app stopped.
+
+21 clock checks and 207 settings checks pass. Parity: **98 done / 4 n/a / 97 todo**,
+27 named tweaks. See [`docs/player-behavior.md`](docs/player-behavior.md). Bundle:
+`build-43/YTAfterglow-0.1.0-local.mpp` in the evidence root below. Commit/push and
+deliver this checkpoint, then continue chapter snapping and the remaining full
+port. Physical-device, live/DVR and casting behavior remains unverified.
+
+## Previous native action refresh checkpoint — 2026-11-14
 
 Share and Save now refresh live under the video and in landscape fullscreen,
 independently and together. The shared native reactive component bridge retains
@@ -33,8 +54,8 @@ playback; standalone Player buttons and menus isolation passes 1/1, exit 0.
 The final runtime log has no errors and the crash buffer is empty. Hide switches
 are restored off, diagnostic properties are INFO and the app is stopped.
 46 action-filter and 196 settings checks pass. Parity is
-**96 done / 4 n/a / 99 todo**, with 26 named tweaks. Commit/push and deliver this checkpoint, then continue playback end time and
-the remaining full port.
+**96 done / 4 n/a / 99 todo**, with 26 named tweaks. Committed/pushed as
+`9cf78d24`; exact delivery provenance is in `delivery-41.json` under the evidence root.
 
 ## Previous native overlay checkpoint — 2026-11-14
 
