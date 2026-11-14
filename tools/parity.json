@@ -342,25 +342,35 @@
     "status": "todo"
   },
   "hidePlayerFullscreenButton": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/PlayerOverlayPatch.kt + playback/PlayerOverlay.java",
+    "note": "Strict 21.43.523 standalone/GmsCore validation passes. Android 16 portrait/fullscreen: actual switches hide and restore existing controls without restart; fades and native enabled states survive reset. Inline-feed and physical-device runtime remain unverified."
   },
   "hidePlayerOverflowButton": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/PlayerOverlayPatch.kt + playback/PlayerOverlay.java",
+    "note": "Strict 21.43.523 standalone/GmsCore validation passes. Android 16 portrait/fullscreen: actual switches hide and restore existing controls without restart; fades and native enabled states survive reset. Inline-feed and physical-device runtime remain unverified."
   },
   "hidePlayerYouTubeMusicButton": {
     "status": "todo"
   },
   "hidePlayerCollapseButton": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/PlayerOverlayPatch.kt + playback/PlayerOverlay.java",
+    "note": "Strict 21.43.523 standalone/GmsCore validation passes. Android 16 portrait/fullscreen: actual switches hide and restore existing controls without restart; fades and native enabled states survive reset. Inline-feed and physical-device runtime remain unverified."
   },
   "hideSubs": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/PlayerOverlayPatch.kt + playback/PlayerOverlay.java",
+    "note": "Strict 21.43.523 standalone/GmsCore validation passes. Android 16 portrait/fullscreen: actual switches hide and restore existing controls without restart; fades and native enabled states survive reset. Inline-feed and physical-device runtime remain unverified."
   },
   "noHUDMsgs": {
     "status": "todo"
   },
   "hidePrevNext": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/PlayerOverlayPatch.kt + playback/PlayerOverlay.java",
+    "note": "Strict 21.43.523 standalone/GmsCore validation passes. Android 16 portrait/fullscreen: actual switches hide and restore existing controls without restart; fades and native enabled states survive reset. Inline-feed and physical-device runtime remain unverified."
   },
   "replacePrevNext": {
     "status": "todo"

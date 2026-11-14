@@ -46,3 +46,38 @@ Evidence includes `tap-enabled-after-17.png`, `ambient-native-paused-17.png`,
 `ambient-forced-off-player-17.png` and `ambient-native-preference-preserved-17.xml`.
 No physical-device or live/DVR proof is claimed. The full Android port remains in
 progress; see `tools/parity.json` for each preference's status.
+
+## Player overlay
+
+The independently selectable **Player overlay** patch exposes five switches in
+`Player > Overlay` when Advanced mode is enabled:
+
+- Hide Fullscreen button
+- Hide More button
+- Hide Collapse button
+- Hide Subtitles button
+- Hide Previous and Next buttons
+
+All default off. Bindings attach at the native controls (`Lolx.E`), captions
+(`Loex`), collapse (`Lrud`) and fullscreen (`Loft`) controllers. Hiding moves the
+control outside the viewport and removes its accessibility/focus target. Its
+native visibility, enabled state, layout and draw callbacks remain unchanged;
+the modern fullscreen button requires those callbacks for control fades.
+Restoring the setting restores the properties Afterglow changed. Bindings detach
+their listeners with the view, and cache preferences until their revision changes.
+
+Build 18 passes strict `--validate` application: 24/24 standalone, 25/25 with
+GmsCore, both exit 0. Settings checks pass 106/106. Its signed APK installed on the
+Android 16 emulator. The default controls, all five live hide switches, individual
+fullscreen-button restoration, orientation changes, playback fades and Reset to
+Defaults were exercised. No restart was needed between hide and restore. The
+restored Previous button remains natively disabled, and the other controls keep
+their original enabled/clickable states.
+
+Evidence in the same directory: `overlay-default-player-18.png`,
+`overlay-live-hidden-18-dismissed.png`, `overlay-fullscreen-faded-18.png`,
+`overlay-fullscreen-restored-18.png` and `overlay-portrait-restored-18.xml`.
+The rest of the overlay options remain hidden and tracked as unfinished. Inline
+feed-player and physical-device behavior have not been runtime verified.
+The five switches and Advanced mode were restored off after testing.
+`runtime-overlay-18.log` has no errors and `crash-overlay-18.log` is empty.

@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-14, native tap-to-seek and ambient-mode controls
+> Updated: 2026-11-14, native player overlay, tap-to-seek and ambient-mode controls
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, private)
-> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek and ambient-mode control work in the Android 16 emulator. There are 23 named tweaks. Key-level parity remains conservative at 58 done / 4 n/a / 137 todo, including partial native coverage; the full port is not complete.
+> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and five player overlay hide switches work in the Android 16 emulator. There are 24 named tweaks. Key-level parity remains conservative at 63 done / 4 n/a / 132 todo, including partial native coverage; the full port is not complete.
 
 ## Goal
 
@@ -13,12 +13,14 @@ Port every YTAfterglow iOS tweak to Android YouTube **21.43.523**, exactly as it
 
 ## Current player checkpoint — 2026-11-14
 
-The current candidate is `build-17/YTAfterglow-0.1.0-local.mpp` under the evidence
+The current candidate is `build-18/YTAfterglow-0.1.0-local.mpp` under the evidence
 root below. **Player gestures** adds native tap-to-seek; **Disable ambient mode**
 suppresses the cinematic renderer without changing YouTube's own saved setting.
-Both default off and are independently selectable. Strict validation passes
-23/23 standalone and 24/24 with GmsCore; 97 settings checks pass. Actual emulator
-switches, the seek position change, and ambient lighting suppression were verified.
+Both default off and are independently selectable. **Player overlay** adds five
+live hide switches for fullscreen, More, collapse, subtitles and previous/next.
+Strict validation passes 24/24 standalone and 25/25 with GmsCore; 106 settings
+checks pass. Actual emulator switches, the seek position change, ambient lighting
+suppression, portrait/fullscreen control hides, playback fades and reset were verified.
 See [`docs/player-behavior.md`](docs/player-behavior.md).
 
 ## Delivered theme checkpoint — 2026-11-14

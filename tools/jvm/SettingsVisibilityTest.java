@@ -135,6 +135,18 @@ public final class SettingsVisibilityTest {
         AfterglowPrefs.setBool("liteModeEnabled", false);
         check("leaving Lite Mode restores ambient choice", false, PlayerBehavior.disableAmbientMode());
 
+        install("player-overlay");
+        for (String key : new String[] {"hideSubs", "hidePrevNext", "hidePlayerFullscreenButton",
+                "hidePlayerCollapseButton", "hidePlayerOverflowButton"}) {
+            check("overlay patch exposes " + key, true, SettingsBehavior.keyVisible(key));
+        }
+        check("overlay patch does not enable gestures", false, SettingsBehavior.keyVisible("tapToSeek"));
+        check("overlay patch keeps unfinished replacement controls hidden", false, SettingsBehavior.keyVisible("replacePrevNext"));
+        AfterglowPrefs.setBool("advancedMode", false);
+        check("overlay page follows iOS advanced gate", false, SettingsBehavior.shown(SettingsBehavior.row("player.overlay")));
+        AfterglowPrefs.setBool("advancedMode", true);
+        check("overlay page appears with advanced mode", true, SettingsBehavior.shown(SettingsBehavior.row("player.overlay")));
+
         System.out.println((failures == 0 ? "PASS" : "FAIL") + " settings visibility: " + (checks - failures) + "/" + checks + " checks");
         System.exit(failures == 0 ? 0 : 1);
     }
