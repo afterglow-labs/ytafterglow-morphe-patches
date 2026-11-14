@@ -19,6 +19,7 @@ import app.afterglow.extension.settings.ScrubberImage;
 import app.afterglow.extension.settings.ThemePalette;
 import app.afterglow.extension.settings.ThemeRole;
 import app.afterglow.extension.settings.ThemeStore;
+import app.afterglow.extension.sponsorblock.SponsorMarkers;
 
 /** Native seek-bar color boundary and the verified final scrubber-circle draw. */
 public final class SeekBarTheme {
@@ -59,8 +60,9 @@ public final class SeekBarTheme {
                     withAlpha(color == null ? 0xFFFF0033 : color, alpha), style, view.getResources().getDisplayMetrics().density);
         } catch (Throwable error) { Afterglow.error("SeekBarTheme.trackGlow", error); }
         finally {
+            SponsorMarkers.draw(view, canvas);
             // The native draw only saves/restores the canvas; it does not transform
-            // coordinates. Draw the thumb after track bloom so the bloom cannot cover it.
+            // coordinates. Keep the thumb above both track bloom and segment markers.
             if (frame != null && frame.pending) {
                 frame.pending = false;
                 renderScrubber(canvas, frame.x, frame.y, frame.radius, frame.paint);
@@ -99,7 +101,8 @@ public final class SeekBarTheme {
     public static void drawScrubber(Canvas canvas, float x, float y, float radius, Paint original) {
         View view = bar.get();
         Frame frame = view == null ? null : FRAMES.get(view);
-        if (frame == null || (!InstalledTweaks.has("seek-bar") && !InstalledTweaks.has("glow"))) {
+        if (frame == null || (!InstalledTweaks.has("seek-bar") && !InstalledTweaks.has("glow")
+                && !InstalledTweaks.has("sponsorblock"))) {
             canvas.drawCircle(x, y, radius, original); return;
         }
         frame.x = x; frame.y = y; frame.radius = radius; frame.paint.set(original); frame.pending = true;

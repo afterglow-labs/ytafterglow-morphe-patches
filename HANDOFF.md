@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-14, native player overlay, tap-to-seek and ambient-mode controls
+> Updated: 2026-11-14, SponsorBlock skip/undo and markers in watch playback and Shorts
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, private)
-> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and five player overlay hide switches work in the Android 16 emulator. There are 24 named tweaks. Key-level parity remains conservative at 63 done / 4 n/a / 132 todo, including partial native coverage; the full port is not complete.
+> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and five player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. There are 25 named tweaks. Key-level parity remains conservative at 84 done / 4 n/a / 111 todo, including partial native coverage; the full port is not complete.
 
 ## Goal
 
@@ -10,6 +10,23 @@ Port every YTAfterglow iOS tweak to Android YouTube **21.43.523**, exactly as it
 - Each Afterglow feature group is a separately named tweak in Morphe's list (names from `tools/tweaks.json`).
 - An Afterglow settings page lives inside YouTube's settings and shows only rows for tweaks that are installed and implemented.
 - Plumbing such as GmsCore/microG sign-in comes from Morphe's own "GmsCore support" patch, ticked in the same run.
+
+## Current SponsorBlock checkpoint — 2026-11-14
+
+Build 20 adds the independently selectable **SponsorBlock** patch: all 21 iOS
+preferences, nine independent skip/marker categories, a hash-prefix client,
+active-player native seeking, a four-second Undo notice and timeline markers.
+87 policy, 151 settings and 438 theme checks pass. Strict runs pass 25/25 standalone,
+26/26 with GmsCore and 27/27 with GmsCore plus official **Spoof video streams**.
+Android 16 verifies watch/fullscreen and Shorts markers, skip/undo, category/marker
+independence, the Shorts-only switch and reset. See [`docs/sponsorblock.md`](docs/sponsorblock.md).
+
+Shorts initially stalled because native Onesie media requests received HTTP 413.
+Official **Spoof video streams** fixes playback in this emulator; select it alongside
+GmsCore for subsequent runtime checks. `tools/verify_bundle.py --official-patch
+"Spoof video streams"` selects it from `--gms-bundle`. The Afterglow bundle does not
+include or automatically enable the official client. The emulator now has the
+signed `sponsor-streaming-test-20.apk`, with Afterglow settings restored to defaults.
 
 ## Current player checkpoint — 2026-11-14
 

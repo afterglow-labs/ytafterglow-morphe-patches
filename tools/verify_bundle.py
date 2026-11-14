@@ -16,8 +16,13 @@ def main():
     parser.add_argument("--desktop-jar", type=Path, required=True)
     parser.add_argument("--java", default="/usr/lib/jvm/java-21-openjdk-amd64/bin/java")
     parser.add_argument("--gms-bundle", type=Path)
+    parser.add_argument("--official-patch", action="append", default=[],
+                        help="Additional playback/plumbing patch from --gms-bundle; repeat to combine")
+    parser.add_argument("--patch", action="append", help="Select only these Afterglow patches; repeat to combine (default: all)")
     parser.add_argument("--out", type=Path, required=True, help="New output directory; existing evidence is never overwritten")
     args = parser.parse_args()
+    if args.official_patch and not args.gms_bundle:
+        parser.error("--official-patch requires --gms-bundle")
     for path in (args.bundle, args.apk, args.desktop_jar, args.gms_bundle):
         if path is not None and not path.is_file():
             parser.error(f"Missing input: {path}")
@@ -26,6 +31,11 @@ def main():
         names += re.findall(r'\b(?:bytecodePatch|resourcePatch|rawResourcePatch)\(\s*name\s*=\s*"([^"\n]+)"', source.read_text())
     if not names or len(names) != len(set(names)):
         parser.error("Expected a nonempty, unique set of named patches")
+    if args.patch:
+        unknown = set(args.patch) - set(names)
+        if unknown:
+            parser.error(f"Unknown Afterglow patches: {sorted(unknown)}")
+        names = [name for name in names if name in set(args.patch)]
     if args.out.exists():
         parser.error(f"Output directory already exists: {args.out}; choose a new run directory")
     args.out.mkdir(parents=True)
@@ -35,6 +45,9 @@ def main():
     if args.gms_bundle:
         command += ["-p", str(args.gms_bundle.resolve()), "-e", "GmsCore support"]
         expected.add("GmsCore support")
+        for name in dict.fromkeys(args.official_patch):
+            command += ["-e", name]
+            expected.add(name)
     command += ["-p", str(args.bundle.resolve())]
     for name in names:
         command += ["-e", name]

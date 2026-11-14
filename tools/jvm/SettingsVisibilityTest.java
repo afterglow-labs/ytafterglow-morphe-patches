@@ -15,6 +15,8 @@ import app.afterglow.extension.InstalledTweaks;
 import app.afterglow.extension.playback.PlayerBehavior;
 import app.afterglow.extension.settings.AfterglowPrefs;
 import app.afterglow.extension.settings.TweakCatalog;
+import app.afterglow.extension.sponsorblock.SponsorCategory;
+import app.afterglow.extension.sponsorblock.SponsorSettings;
 import app.afterglow.extension.ui.SettingsModel.Page;
 import app.afterglow.extension.ui.SettingsModel.Row;
 import app.afterglow.extension.ui.SettingsModel.SearchEntry;
@@ -146,6 +148,37 @@ public final class SettingsVisibilityTest {
         check("overlay page follows iOS advanced gate", false, SettingsBehavior.shown(SettingsBehavior.row("player.overlay")));
         AfterglowPrefs.setBool("advancedMode", true);
         check("overlay page appears with advanced mode", true, SettingsBehavior.shown(SettingsBehavior.row("player.overlay")));
+
+        install();
+        check("SponsorBlock stays off when uninstalled", false, SponsorSettings.current().shouldRun(false));
+        install("sponsorblock");
+        check("SponsorBlock defaults on", true, SponsorSettings.current().shouldRun(false));
+        check("SponsorBlock defaults on in Shorts", true, SponsorSettings.current().shouldRun(true));
+        check("SponsorBlock markers default on", true, SponsorSettings.current().markers);
+        check("SponsorBlock has two default skip categories", 2, SponsorSettings.current().skipCategories.size());
+        check("SponsorBlock has all nine default markers", 9, SponsorSettings.current().markerCategories.size());
+        for (SponsorCategory category : SponsorCategory.values()) {
+            check("skip default " + category.id, category.skipByDefault, SponsorSettings.current().skipCategories.contains(category));
+            check("category switch visible " + category.id, true, SettingsBehavior.keyVisible(category.skipKey));
+            check("marker switch visible " + category.id, true, SettingsBehavior.keyVisible(category.markerKey));
+        }
+        AfterglowPrefs.setBool("sponsorBlockShortsEnabled", false);
+        check("Shorts switch suppresses only Shorts", false, SponsorSettings.current().shouldRun(true));
+        check("Shorts switch leaves watch-page enabled", true, SponsorSettings.current().shouldRun(false));
+        AfterglowPrefs.setBool("sponsorBlockMarkerSponsor", false);
+        check("sponsor marker can be hidden", false, SponsorSettings.current().markerCategories.contains(SponsorCategory.SPONSOR));
+        check("hiding marker preserves sponsor skip", true, SponsorSettings.current().skipCategories.contains(SponsorCategory.SPONSOR));
+        AfterglowPrefs.setBool("sponsorBlockCategoryInteraction", false);
+        check("interaction skip can be disabled", false, SponsorSettings.current().skipCategories.contains(SponsorCategory.INTERACTION));
+        check("disabling skip preserves interaction marker", true, SponsorSettings.current().markerCategories.contains(SponsorCategory.INTERACTION));
+        AfterglowPrefs.setBool("sponsorBlockEnabled", false);
+        check("master disables all playback", false, SponsorSettings.current().shouldRun(false));
+        for (String key : TweakCatalog.tweak("sponsorblock").keys) AfterglowPrefs.remove(key);
+        check("SponsorBlock reset restores master", true, SponsorSettings.current().shouldRun(false));
+        check("SponsorBlock reset restores Shorts", true, SponsorSettings.current().shouldRun(true));
+        check("SponsorBlock reset restores marker categories", 9, SponsorSettings.current().markerCategories.size());
+        check("SponsorBlock reset restores skip categories", 2, SponsorSettings.current().skipCategories.size());
+        check("SponsorBlock alone does not expose theme controls", false, SettingsBehavior.keyVisible("seekBarScrubberImage"));
 
         System.out.println((failures == 0 ? "PASS" : "FAIL") + " settings visibility: " + (checks - failures) + "/" + checks + " checks");
         System.exit(failures == 0 ? 0 : 1);

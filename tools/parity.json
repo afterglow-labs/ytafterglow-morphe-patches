@@ -149,67 +149,109 @@
     "note": "partial: verified native seek resources, gradient factory, final scrubber draw, PNG and motion policy. Android 16 image picker/size/reset controls, portrait/fullscreen playback and seeking verified; Shorts/live and promo scrubber coverage remains."
   },
   "sponsorBlockEnabled": {
-    "status": "todo"
+    "status": "done",
+    "note": "87 JVM policy and 151 settings checks; strict 21.43.523 standalone/GmsCore/streaming combinations pass. Android 16 verifies watch/fullscreen and Shorts markers, native skip/undo, independent marker/category switches and reset. Shorts playback required official Spoof video streams alongside GmsCore. Physical device and casting remain unverified.",
+    "where": "tweaks/SponsorBlockTweak.kt + sponsorblock/*.java + shared VideoState/SeekBarTheme adapters"
   },
   "sponsorBlockShortsEnabled": {
-    "status": "todo"
+    "status": "done",
+    "note": "87 JVM policy and 151 settings checks; strict 21.43.523 standalone/GmsCore/streaming combinations pass. Android 16 verifies watch/fullscreen and Shorts markers, native skip/undo, independent marker/category switches and reset. Shorts playback required official Spoof video streams alongside GmsCore. Physical device and casting remain unverified.",
+    "where": "tweaks/SponsorBlockTweak.kt + sponsorblock/*.java + shared VideoState/SeekBarTheme adapters"
   },
   "sponsorBlockMarkersEnabled": {
-    "status": "todo"
+    "status": "done",
+    "note": "87 JVM policy and 151 settings checks; strict 21.43.523 standalone/GmsCore/streaming combinations pass. Android 16 verifies watch/fullscreen and Shorts markers, native skip/undo, independent marker/category switches and reset. Shorts playback required official Spoof video streams alongside GmsCore. Physical device and casting remain unverified.",
+    "where": "tweaks/SponsorBlockTweak.kt + sponsorblock/*.java + shared VideoState/SeekBarTheme adapters"
   },
   "sponsorBlockMarkerSponsor": {
-    "status": "todo"
+    "status": "done",
+    "note": "87 JVM policy and 151 settings checks; strict 21.43.523 standalone/GmsCore/streaming combinations pass. Android 16 verifies watch/fullscreen and Shorts markers, native skip/undo, independent marker/category switches and reset. Shorts playback required official Spoof video streams alongside GmsCore. Physical device and casting remain unverified.",
+    "where": "tweaks/SponsorBlockTweak.kt + sponsorblock/*.java + shared VideoState/SeekBarTheme adapters"
   },
   "sponsorBlockMarkerInteraction": {
-    "status": "todo"
+    "status": "done",
+    "note": "87 JVM policy and 151 settings checks; strict 21.43.523 standalone/GmsCore/streaming combinations pass. Android 16 verifies watch/fullscreen and Shorts markers, native skip/undo, independent marker/category switches and reset. Shorts playback required official Spoof video streams alongside GmsCore. Physical device and casting remain unverified.",
+    "where": "tweaks/SponsorBlockTweak.kt + sponsorblock/*.java + shared VideoState/SeekBarTheme adapters"
   },
   "sponsorBlockMarkerSelfPromo": {
-    "status": "todo"
+    "status": "done",
+    "note": "87 JVM policy and 151 settings checks; strict 21.43.523 standalone/GmsCore/streaming combinations pass. Android 16 verifies watch/fullscreen and Shorts markers, native skip/undo, independent marker/category switches and reset. Shorts playback required official Spoof video streams alongside GmsCore. Physical device and casting remain unverified.",
+    "where": "tweaks/SponsorBlockTweak.kt + sponsorblock/*.java + shared VideoState/SeekBarTheme adapters"
   },
   "sponsorBlockMarkerIntro": {
-    "status": "todo"
+    "status": "done",
+    "note": "87 JVM policy and 151 settings checks; strict 21.43.523 standalone/GmsCore/streaming combinations pass. Android 16 verifies watch/fullscreen and Shorts markers, native skip/undo, independent marker/category switches and reset. Shorts playback required official Spoof video streams alongside GmsCore. Physical device and casting remain unverified.",
+    "where": "tweaks/SponsorBlockTweak.kt + sponsorblock/*.java + shared VideoState/SeekBarTheme adapters"
   },
   "sponsorBlockMarkerOutro": {
-    "status": "todo"
+    "status": "done",
+    "note": "87 JVM policy and 151 settings checks; strict 21.43.523 standalone/GmsCore/streaming combinations pass. Android 16 verifies watch/fullscreen and Shorts markers, native skip/undo, independent marker/category switches and reset. Shorts playback required official Spoof video streams alongside GmsCore. Physical device and casting remain unverified.",
+    "where": "tweaks/SponsorBlockTweak.kt + sponsorblock/*.java + shared VideoState/SeekBarTheme adapters"
   },
   "sponsorBlockMarkerPreview": {
-    "status": "todo"
+    "status": "done",
+    "note": "87 JVM policy and 151 settings checks; strict 21.43.523 standalone/GmsCore/streaming combinations pass. Android 16 verifies watch/fullscreen and Shorts markers, native skip/undo, independent marker/category switches and reset. Shorts playback required official Spoof video streams alongside GmsCore. Physical device and casting remain unverified.",
+    "where": "tweaks/SponsorBlockTweak.kt + sponsorblock/*.java + shared VideoState/SeekBarTheme adapters"
   },
   "sponsorBlockMarkerHook": {
-    "status": "todo"
+    "status": "done",
+    "note": "87 JVM policy and 151 settings checks; strict 21.43.523 standalone/GmsCore/streaming combinations pass. Android 16 verifies watch/fullscreen and Shorts markers, native skip/undo, independent marker/category switches and reset. Shorts playback required official Spoof video streams alongside GmsCore. Physical device and casting remain unverified.",
+    "where": "tweaks/SponsorBlockTweak.kt + sponsorblock/*.java + shared VideoState/SeekBarTheme adapters"
   },
   "sponsorBlockMarkerFiller": {
-    "status": "todo"
+    "status": "done",
+    "note": "87 JVM policy and 151 settings checks; strict 21.43.523 standalone/GmsCore/streaming combinations pass. Android 16 verifies watch/fullscreen and Shorts markers, native skip/undo, independent marker/category switches and reset. Shorts playback required official Spoof video streams alongside GmsCore. Physical device and casting remain unverified.",
+    "where": "tweaks/SponsorBlockTweak.kt + sponsorblock/*.java + shared VideoState/SeekBarTheme adapters"
   },
   "sponsorBlockMarkerMusicOfftopic": {
-    "status": "todo"
+    "status": "done",
+    "note": "87 JVM policy and 151 settings checks; strict 21.43.523 standalone/GmsCore/streaming combinations pass. Android 16 verifies watch/fullscreen and Shorts markers, native skip/undo, independent marker/category switches and reset. Shorts playback required official Spoof video streams alongside GmsCore. Physical device and casting remain unverified.",
+    "where": "tweaks/SponsorBlockTweak.kt + sponsorblock/*.java + shared VideoState/SeekBarTheme adapters"
   },
   "sponsorBlockCategorySponsor": {
-    "status": "todo"
+    "status": "done",
+    "note": "87 JVM policy and 151 settings checks; strict 21.43.523 standalone/GmsCore/streaming combinations pass. Android 16 verifies watch/fullscreen and Shorts markers, native skip/undo, independent marker/category switches and reset. Shorts playback required official Spoof video streams alongside GmsCore. Physical device and casting remain unverified.",
+    "where": "tweaks/SponsorBlockTweak.kt + sponsorblock/*.java + shared VideoState/SeekBarTheme adapters"
   },
   "sponsorBlockCategoryInteraction": {
-    "status": "todo"
+    "status": "done",
+    "note": "87 JVM policy and 151 settings checks; strict 21.43.523 standalone/GmsCore/streaming combinations pass. Android 16 verifies watch/fullscreen and Shorts markers, native skip/undo, independent marker/category switches and reset. Shorts playback required official Spoof video streams alongside GmsCore. Physical device and casting remain unverified.",
+    "where": "tweaks/SponsorBlockTweak.kt + sponsorblock/*.java + shared VideoState/SeekBarTheme adapters"
   },
   "sponsorBlockCategorySelfPromo": {
-    "status": "todo"
+    "status": "done",
+    "note": "87 JVM policy and 151 settings checks; strict 21.43.523 standalone/GmsCore/streaming combinations pass. Android 16 verifies watch/fullscreen and Shorts markers, native skip/undo, independent marker/category switches and reset. Shorts playback required official Spoof video streams alongside GmsCore. Physical device and casting remain unverified.",
+    "where": "tweaks/SponsorBlockTweak.kt + sponsorblock/*.java + shared VideoState/SeekBarTheme adapters"
   },
   "sponsorBlockCategoryIntro": {
-    "status": "todo"
+    "status": "done",
+    "note": "87 JVM policy and 151 settings checks; strict 21.43.523 standalone/GmsCore/streaming combinations pass. Android 16 verifies watch/fullscreen and Shorts markers, native skip/undo, independent marker/category switches and reset. Shorts playback required official Spoof video streams alongside GmsCore. Physical device and casting remain unverified.",
+    "where": "tweaks/SponsorBlockTweak.kt + sponsorblock/*.java + shared VideoState/SeekBarTheme adapters"
   },
   "sponsorBlockCategoryOutro": {
-    "status": "todo"
+    "status": "done",
+    "note": "87 JVM policy and 151 settings checks; strict 21.43.523 standalone/GmsCore/streaming combinations pass. Android 16 verifies watch/fullscreen and Shorts markers, native skip/undo, independent marker/category switches and reset. Shorts playback required official Spoof video streams alongside GmsCore. Physical device and casting remain unverified.",
+    "where": "tweaks/SponsorBlockTweak.kt + sponsorblock/*.java + shared VideoState/SeekBarTheme adapters"
   },
   "sponsorBlockCategoryPreview": {
-    "status": "todo"
+    "status": "done",
+    "note": "87 JVM policy and 151 settings checks; strict 21.43.523 standalone/GmsCore/streaming combinations pass. Android 16 verifies watch/fullscreen and Shorts markers, native skip/undo, independent marker/category switches and reset. Shorts playback required official Spoof video streams alongside GmsCore. Physical device and casting remain unverified.",
+    "where": "tweaks/SponsorBlockTweak.kt + sponsorblock/*.java + shared VideoState/SeekBarTheme adapters"
   },
   "sponsorBlockCategoryHook": {
-    "status": "todo"
+    "status": "done",
+    "note": "87 JVM policy and 151 settings checks; strict 21.43.523 standalone/GmsCore/streaming combinations pass. Android 16 verifies watch/fullscreen and Shorts markers, native skip/undo, independent marker/category switches and reset. Shorts playback required official Spoof video streams alongside GmsCore. Physical device and casting remain unverified.",
+    "where": "tweaks/SponsorBlockTweak.kt + sponsorblock/*.java + shared VideoState/SeekBarTheme adapters"
   },
   "sponsorBlockCategoryFiller": {
-    "status": "todo"
+    "status": "done",
+    "note": "87 JVM policy and 151 settings checks; strict 21.43.523 standalone/GmsCore/streaming combinations pass. Android 16 verifies watch/fullscreen and Shorts markers, native skip/undo, independent marker/category switches and reset. Shorts playback required official Spoof video streams alongside GmsCore. Physical device and casting remain unverified.",
+    "where": "tweaks/SponsorBlockTweak.kt + sponsorblock/*.java + shared VideoState/SeekBarTheme adapters"
   },
   "sponsorBlockCategoryMusicOfftopic": {
-    "status": "todo"
+    "status": "done",
+    "note": "87 JVM policy and 151 settings checks; strict 21.43.523 standalone/GmsCore/streaming combinations pass. Android 16 verifies watch/fullscreen and Shorts markers, native skip/undo, independent marker/category switches and reset. Shorts playback required official Spoof video streams alongside GmsCore. Physical device and casting remain unverified.",
+    "where": "tweaks/SponsorBlockTweak.kt + sponsorblock/*.java + shared VideoState/SeekBarTheme adapters"
   },
   "backgroundPlayback": {
     "status": "done",

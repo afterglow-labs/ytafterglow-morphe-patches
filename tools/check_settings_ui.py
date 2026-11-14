@@ -250,7 +250,8 @@ def run_visibility_test() -> None:
         return
     sources = [EXT / "Afterglow.java", EXT / "InstalledTweaks.java", EXT / "ui/SettingsModel.java",
                EXT / "ui/SettingsSpec.java", EXT / "ui/SettingsBehavior.java", EXT / "ui/SearchIndex.java",
-               EXT / "playback/PlayerBehavior.java", test]
+               EXT / "playback/PlayerBehavior.java", EXT / "sponsorblock/SponsorCategory.java",
+               EXT / "sponsorblock/SponsorSettings.java", test]
     sources += sorted((EXT / "settings").glob("*.java")) + sorted((EXT / "i18n").glob("*.java"))
     with tempfile.TemporaryDirectory() as out:
         compiled = subprocess.run([str(javac), "-encoding", "UTF-8", "-nowarn", "-classpath", str(android_jar), "-d", out]
