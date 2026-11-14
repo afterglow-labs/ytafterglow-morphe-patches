@@ -7,6 +7,12 @@ import app.afterglow.extension.settings.LiteMode;
 public final class PlayerBehavior {
     private PlayerBehavior() {}
 
+    /** Keep native Advanced requests; Classic mode promotes only the quick-menu choice. */
+    public static boolean useClassicQualityMenu(boolean nativeAdvanced) {
+        return nativeAdvanced || (InstalledTweaks.has("video-quality")
+                && LiteMode.effectiveBool("classicQuality"));
+    }
+
     public static boolean rememberLoop() {
         return InstalledTweaks.has("loop") && LiteMode.effectiveBool("rememberLoop");
     }

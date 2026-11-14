@@ -275,7 +275,9 @@
     "note": "Build 53: explicit native loop choices restore after the iOS three-second delay, with stale-session and startup-recording guards. Strict 28/29/30 plus loop-only 1 pass; 26 race and 323 settings checks. Android 16 verifies ON/OFF cold starts, fullscreen, disabled-recording preservation, warm navigation, actual 19-second repeat, Autoplay Off/manual Play and page reset. Physical-device, Shorts, live/DVR, ads, casting and playlist mode 1 untested."
   },
   "classicQuality": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/ClassicQualityMenu.java + QualitySheetIdentity.java + playback/VideoQualityPatch.kt",
+    "note": "Build 64: legacy native selector and per-sheet modern Advanced action preserve native selection. Modern sheets wait for actual resolution entries, with attachment/identity/setting guards. Strict 28/29/30 and isolated quality 1/3 pass; 3707 parser and 336 settings checks. Android 16 verifies populated watch lists, manual 360p/720p/480p, fullscreen, live OFF, unrelated speed menu and page reset. Shorts ON/OFF menu shapes pass; its selection remains Auto/1080p in both native OFF and Classic ON comparisons, so Shorts selection persistence is not proven. Physical-device/live/DVR/casting/ads behavior untested."
   },
   "noContentWarning": {
     "status": "done",

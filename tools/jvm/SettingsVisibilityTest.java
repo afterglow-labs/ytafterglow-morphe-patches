@@ -247,6 +247,19 @@ public final class SettingsVisibilityTest {
         check("leaving Lite Mode restores ambient choice", false, PlayerBehavior.disableAmbientMode());
 
         install();
+        AfterglowPrefs.setBool("classicQuality", true);
+        check("uninstalled classic quality preserves quick menu", false, PlayerBehavior.useClassicQualityMenu(false));
+        check("uninstalled classic quality preserves Advanced", true, PlayerBehavior.useClassicQualityMenu(true));
+        check("uninstalled classic quality hides setting", false, SettingsBehavior.keyVisible("classicQuality"));
+        install("video-quality");
+        check("classic quality promotes quick menu", true, PlayerBehavior.useClassicQualityMenu(false));
+        check("classic quality preserves Advanced", true, PlayerBehavior.useClassicQualityMenu(true));
+        check("classic quality exposes setting", true, SettingsBehavior.keyVisible("classicQuality"));
+        AfterglowPrefs.remove("classicQuality");
+        check("classic quality reset restores quick menu", false, PlayerBehavior.useClassicQualityMenu(false));
+        check("classic quality reset preserves Advanced", true, PlayerBehavior.useClassicQualityMenu(true));
+
+        install();
         AfterglowPrefs.setBool("noDoubleTapToSeek", true);
         AfterglowPrefs.setBool("noTwoFingerSnapToChapter", true);
         check("uninstalled single-finger gate preserves native", false, PlayerBehavior.blockDoubleTap(false));

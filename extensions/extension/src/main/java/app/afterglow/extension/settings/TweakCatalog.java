@@ -326,6 +326,7 @@ public final class TweakCatalog {
             "autoplayMode",
             "backgroundPlayback",
             "cellQualityIndex",
+            "classicQuality",
             "commentsHeaderMode",
             "destination.glowLab",
             "destination.themeStudio",

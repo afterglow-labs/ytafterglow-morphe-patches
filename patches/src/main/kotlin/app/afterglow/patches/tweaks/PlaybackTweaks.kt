@@ -57,7 +57,7 @@ val contentWarningTweakPatch = bytecodePatch(
 @Suppress("unused")
 val videoQualityTweakPatch = bytecodePatch(
     name = "Video quality",
-    description = "Lets you pick the default video quality for Wi-Fi and for mobile data.",
+    description = "Sets default Wi-Fi and mobile-data quality and restores the classic resolution menu.",
     default = true,
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)

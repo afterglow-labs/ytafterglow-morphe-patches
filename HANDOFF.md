@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-14, native Music and paid-promotion controls checkpoint
+> Updated: 2026-11-14, Classic video quality checkpoint
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, private)
-> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. There are 28 named tweaks. Key-level parity remains conservative at 104 done / 4 n/a / 91 todo, including partial native coverage; the full port is not complete.
+> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. There are 28 named tweaks. Key-level parity remains conservative at 105 done / 4 n/a / 90 todo, including partial native coverage; the full port is not complete.
 
 ## Goal
 
@@ -10,6 +10,45 @@ Port every YTAfterglow iOS tweak to Android YouTube **21.43.523**, exactly as it
 - Each Afterglow feature group is a separately named tweak in Morphe's list (names from `tools/tweaks.json`).
 - An Afterglow settings page lives inside YouTube's settings and shows only rows for tweaks that are installed and implemented.
 - Plumbing such as GmsCore/microG sign-in comes from Morphe's own "GmsCore support" patch, ticked in the same run.
+
+## Verified Classic video quality checkpoint
+
+Build 64 is the current production candidate. The mounted Advanced action now
+exposes its own native command, and a bounded parser waits for real resolution
+entries in that command before clicking. This fixes the proven race boundary:
+the first action has an empty model, and a reactive rebind supplies the formats.
+The guard rechecks the current command, sheet identity, setting and attachment
+before invoking the native callback outside the draw traversal. No fixed wait,
+global pending flag, reflection or diagnostic logging remains.
+
+3707 parser and 336 settings checks pass. Strict standalone/GmsCore/streaming
+28/29/30 and quality-only/quality-streaming 1/3 all exit 0; 225 input hashes match.
+The watch runtime matrix passes direct populated lists, manual 360p/720p/480p,
+fullscreen, live OFF, unrelated speed menu and actual Playback reset. Shorts
+ON/OFF selects the native resolution list/three-choice menu, but selection stays
+Auto/1080p with both Classic ON and the native OFF Data saver choice. That
+selection limitation is recorded rather than claimed working. Playback remains
+decoded, with no Afterglow errors and empty crash buffers.
+
+Independent-install runtime also passes on the 19-second watch fixture: direct
+240p/144p list, dismissal/reopen, live OFF restoring the quick menu, and decoded
+playback. Only the three Video quality settings appear. The long-video fixture
+stalls in a native preroll; its buffering evidence is preserved. The automation
+now scopes the player gear by resource ID to avoid the ad's identically named
+button. Full candidate 64 is restored by the runner; Classic ends OFF. Delivery
+provenance is recorded in delivery-64.json after commit/push.
+
+Continue the full port with Hide HUD messages. Native skip-display callbacks,
+all message-view constructors and root_pill_container are mapped. The draft and
+baseline helper are in the evidence root, outside production. The pane footer is
+a separate view and must remain untouched.
+
+Native identity: Latqo root path 1/168777401/3/172035250/1. Mounted command route:
+ComponentHost -> hfq -> hhl.b -> vmu.E -> vrs.e -> xso.y -> MessageLite bytes.
+Builds 55/58/59 failed runtime; 56/57/60/61/63 were diagnostics; 62 failed strict
+validation before installation. Evidence: classic-quality-result-64.json,
+classic-quality-shorts-result-64.json, quality-command-{0,1}-63.bin and source
+maps. Validation outputs use the Linux cache with evidence-directory symlinks.
 
 ## Verified native controls checkpoint — 2026-11-14
 

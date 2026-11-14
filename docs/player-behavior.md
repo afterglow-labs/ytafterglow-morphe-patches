@@ -443,3 +443,55 @@ hide/restore behaviors are **source verified, not runtime verified**. Physical
 devices remain untested. Evidence: native-badges-result-54.json,
 native-badges-baseline-53.json, paid-ltt-baseline-53.json, runtime/crash logs,
 strict result.json files and corresponding XML/PNG captures in the evidence root.
+
+## Classic video quality
+
+Video quality also exposes Classic video quality, default off. The legacy native
+selector preserves availability checks and explicit Advanced requests. Modern
+server-driven quality sheets are identified from their own adapter item; a
+mounted Advanced row opens the native resolution list only after its own command
+contains available formats. The first rendered row contains an empty model, so
+clicking on the first draw produces an empty list. A native reactive rebind
+populates the action. The guard checks that actual data, then rechecks the sheet,
+attachment and setting before invoking the native callback outside drawing.
+
+There is no fixed startup delay or global menu flag. Native selection, callbacks
+and unrelated menus remain under YouTube's control. Native click listeners are
+observed on ComponentHost and cleared by its original unbind call. The command
+is read through fingerprinted native bridges; no reflection or diagnostic
+logging remains. Unrecognized data leaves the ordinary quick menu available.
+
+Build 64 passes strict standalone/GmsCore/streaming 28/29/30 and quality-only 1
+plus quality/GmsCore/streaming 3, all wrapper exits 0. The 3707 parser checks
+include real empty/populated native commands and every truncated prefix; 336
+settings checks pass. All 225 production inputs match the built bundle.
+
+The Android 16 watch-page matrix verifies direct populated resolution lists,
+manual 360p/720p/480p selection, fullscreen, live ON/OFF, the unrelated playback
+speed menu, and actual Playback page reset. OFF restores the four-choice quick
+menu while retaining the viewer's selected quality. Cold reset returns Auto.
+Native 360p playback and explicit Play/Pause checks at 720p/480p pass.
+
+Shorts ON opens its native five-resolution list; OFF restores the three native
+quality modes. Its quality label and selected state stay Auto/1080p after both
+a specific resolution with Classic ON and native Data saver with Classic OFF,
+including a paused comparison. Selection persistence is therefore not proven
+for this fixture. Decoded Shorts playback remains working. No Afterglow errors
+or crashes occur in either matrix; the switch ends OFF.
+
+The initial automation attempt missed the gear after controls faded. A later
+watch transition stalled after a toggle-based playback test; the corrected
+explicit Play/Pause followup and a separate native 360p baseline pass. Both
+failed attempts are preserved, and no cause is inferred solely from that timing.
+Evidence is in classic-quality-result-64.json, classic-quality-shorts-result-64.json,
+the native playback comparisons, corresponding XML/PNG captures and runtime/crash
+logs. Physical devices, live/DVR, casting and ads remain untested.
+
+An independent installation containing only Video quality plus official GmsCore
+and stream support passes cold open, dismissal/reopen, live OFF and decoded
+playback on the 19-second watch fixture. The native 240p/144p list appears directly;
+OFF restores all four quick choices. Its settings contain only Wi-Fi, cellular
+quality and Classic. The full configuration is restored afterwards. The earlier
+long-video attempt stalled in a native preroll; another attempt clicked the ad's
+More options button. Those failures are retained, and the helper now selects the
+player gear by its resource ID. See classic-quality-isolated-result-64.json.
