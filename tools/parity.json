@@ -707,8 +707,9 @@
     "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "autoplayMode": {
-    "status": "todo",
-    "note": "partial: hide-switch mode done; 'off' mode has no hook yet"
+    "status": "done",
+    "where": "extensions/.../playback/Autoplay.java, PlayerOverlay.java; patches/.../playback/AutoplayPatch.kt",
+    "note": "Initial load readiness uses native configuration flags, preserving manual Play and next-video autonav. Off + hidden binds the native overlay switch for live visibility without changing its saved state. Build 45 strict 27/28/29 and Autoplay-only 1 pass; Android 16 verifies both Off modes, manual Play, fullscreen, actual reset and native Next Video. Default Shorts decoded playback is verified. Native overlay switch is absent in the baseline, so its hide/restore remains source-verified; Off-mode Shorts, live/DVR, casting, ads and physical-device behavior untested."
   },
   "commentsHeaderMode": {
     "status": "todo",

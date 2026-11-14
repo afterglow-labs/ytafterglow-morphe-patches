@@ -15,73 +15,97 @@
 package app.afterglow.patches.playback
 
 import app.afterglow.patches.shared.Constants.COMPATIBILITY_YOUTUBE
+import app.afterglow.patches.shared.Constants.EXTENSION_PACKAGE
+import app.afterglow.patches.shared.addMethod
 import app.afterglow.patches.shared.afterglowExtensionPatch
-import app.afterglow.patches.video.debugMatch
+import app.afterglow.patches.shared.invokeRegisters
+import app.afterglow.patches.shared.smali
 import app.morphe.patcher.Fingerprint
-import app.morphe.patcher.extensions.InstructionExtensions.addInstructionsWithLabels
-import app.morphe.patcher.extensions.InstructionExtensions.getInstruction
+import app.morphe.patcher.InstructionLocation.MatchAfterImmediately
+import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
+import app.morphe.patcher.fieldAccess
 import app.morphe.patcher.literal
 import app.morphe.patcher.methodCall
-import app.morphe.patcher.patch.PatchException
+import app.morphe.patcher.opcode
 import app.morphe.patcher.patch.bytecodePatch
 import app.morphe.patcher.resource.ResourceType
 import app.morphe.patcher.resourceLiteral
-import app.morphe.patcher.util.smali.ExternalLabel
 import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.Opcode
 import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
 import com.android.tools.smali.dexlib2.iface.instruction.ReferenceInstruction
-import com.android.tools.smali.dexlib2.iface.reference.MethodReference
+import com.android.tools.smali.dexlib2.iface.reference.FieldReference
 
-private const val AUTOPLAY_CLASS = "$EXTENSION_PLAYBACK/Autoplay;"
+private const val AUTOPLAY_CLASS = "$EXTENSION_PACKAGE/playback/Autoplay;"
 
-/** Builds the player controls layout, including the Autoplay switch (R.id.autonav_toggle). */
-internal object PlayerControlsLayoutConstructorFingerprint : Fingerprint(
-    accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
-    returnType = "V",
-    filters = listOf(
-        literal(159962),
-        resourceLiteral(ResourceType.ID, "player_control_previous_button_touch_area"),
-        resourceLiteral(ResourceType.ID, "player_control_next_button_touch_area"),
-        methodCall(parameters = listOf("Landroid/view/View;", "I")),
-    ),
-)
-
-/**
- * The "Off + hidden" option (2) of the iOS setting `autoplayMode` (tweak "autoplay"): iOS hides
- * the Autoplay switch of the player overlay. Here the code that inflates the switch from its
- * view stub is skipped when the player controls are built.
- */
-internal val autoplayHookPatch = bytecodePatch(
-    description = "Hides the player's Autoplay switch when YTAfterglow is set to.",
-) {
+/** Initial load readiness and live visibility are independent of next-video autonav. */
+internal val autoplayHookPatch = bytecodePatch {
     compatibleWith(COMPATIBILITY_YOUTUBE)
     dependsOn(afterglowExtensionPatch)
-
     execute {
-        val layout = PlayerControlsLayoutConstructorFingerprint.method
-        debugMatch("playerControlsLayout", layout)
-        val toggleIndex = Fingerprint(filters = listOf(resourceLiteral(ResourceType.ID, "autonav_toggle")))
-            .match(layout).instructionMatches.first().index
-        val instructions = layout.implementation!!.instructions
-        // The switch is inflated from its ViewStub by the first call taking (ViewStub, x).
-        val inflateIndex = (toggleIndex until instructions.size).firstOrNull { index ->
-            val instruction = instructions[index]
-            val parameters = ((instruction as? ReferenceInstruction)?.reference as? MethodReference)?.parameterTypes
-            instruction.opcode == Opcode.INVOKE_VIRTUAL && parameters?.size == 2 &&
-                parameters.first().toString() == "Landroid/view/ViewStub;"
-        } ?: throw PatchException("No Autoplay switch inflation in $layout")
-        val register = layout.getInstruction<OneRegisterInstruction>(toggleIndex).registerA
-        if (register > 15) throw PatchException("Autoplay switch id register v$register is too high")
+        val load = Fingerprint(parameters = listOf("L"), returnType = "V", strings = listOf(
+            "MedialibPlayer.loadVideo(cpn=%s playWhenReady=%b positionMs=%s playerEvents=[%d] videoId=%s volume=%s pauseOnLastFrame=%b)"
+        )).method
+        val model = load.parameterTypes.single().toString()
+        // The native log identifies flag 2 as playWhenReady. Follow its interface
+        // getter into the copied configuration, rather than assuming a field name.
+        val flagTest = Fingerprint(filters = listOf(literal(2),
+            methodCall(opcode = Opcode.INVOKE_STATIC, parameters = listOf(model, "I"),
+                returnType = "Z", location = MatchAfterImmediately())
+        )).match(load).instructionMatches.last().getMethodCalled()
+        val flagsGetter = Fingerprint(filters = listOf(
+            methodCall(opcode = Opcode.INVOKE_INTERFACE, definingClass = model,
+                parameters = listOf(), returnType = "I"), opcode(Opcode.AND_INT_2ADDR)
+        )).match(flagTest).instructionMatches.first().methodReference
+        val copyCall = Fingerprint(filters = listOf(
+            methodCall(opcode = Opcode.INVOKE_DIRECT, name = "<init>",
+                parameters = listOf(model), returnType = "V")
+        )).match(load).instructionMatches.single()
+        val copyConstructor = copyCall.getMethodCalled()
+        val baseConstructor = Fingerprint(filters = listOf(
+            methodCall(opcode = Opcode.INVOKE_DIRECT, name = "<init>",
+                parameters = listOf(model), returnType = "V")
+        )).match(copyConstructor).instructionMatches.single().getMethodCalled()
+        val flagsCopy = Fingerprint(filters = listOf(
+            methodCall(smali = flagsGetter.smali),
+            opcode(Opcode.MOVE_RESULT, MatchAfterImmediately()),
+            fieldAccess(opcode = Opcode.IPUT, type = "I", location = MatchAfterImmediately())
+        )).match(baseConstructor)
+        val flagIndex = flagsCopy.instructionMatches.last().index
+        val field = (baseConstructor.implementation!!.instructions[flagIndex] as ReferenceInstruction)
+            .reference as FieldReference
+        val host = mutableClassDefBy(copyConstructor.definingClass)
+        require(host.superclass == baseConstructor.definingClass && field.definingClass == host.superclass) {
+            "Native initial-load flags no longer belong to the private configuration copy"
+        }
+        val helper = "afterglow_initialPlayback"
+        require(host.methods.none { it.name == helper })
+        host.addMethod(helper, "V", 2, """
+            iget v0, p0, ${field.smali}
+            invoke-static { v0 }, $AUTOPLAY_CLASS->startFlags(I)I
+            move-result v0
+            iput v0, p0, ${field.smali}
+            return-void
+        """)
+        val instance = load.implementation!!.instructions[copyCall.index].invokeRegisters.first()
+        // Only this new load's private copy changes. Later manual Play/Pause calls,
+        // the caller's configuration and other playback flags retain native behavior.
+        load.addInstructions(copyCall.index + 1,
+            "invoke-virtual/range { v$instance .. v$instance }, ${host.type}->$helper()V")
+        println("Afterglow autoplay initial load: ${load.smali}, flags=${field.smali}")
 
-        layout.addInstructionsWithLabels(
-            toggleIndex,
-            """
-                invoke-static { }, $AUTOPLAY_CLASS->hideAutoplaySwitch()Z
-                move-result v$register
-                if-nez v$register, :afterglow_hidden
-            """,
-            ExternalLabel("afterglow_hidden", layout.getInstruction(inflateIndex + 1)),
-        )
+        // Bind the inflated root through the native switch controller. Keeping the
+        // controller alive lets Off + hidden restore live without rebuilding a video.
+        val toggle = Fingerprint(accessFlags = listOf(AccessFlags.PROTECTED, AccessFlags.FINAL),
+            parameters = listOf(), returnType = "V", filters = listOf(
+                methodCall(parameters = listOf(), returnType = "Landroid/view/View;"),
+                opcode(Opcode.MOVE_RESULT_OBJECT, MatchAfterImmediately()),
+                resourceLiteral(ResourceType.ID, "autonav_toggle_button")
+            ))
+        val read = toggle.instructionMatches[1].index
+        val root = (toggle.method.implementation!!.instructions[read] as OneRegisterInstruction).registerA
+        toggle.method.addInstructions(read + 1,
+            "invoke-static/range { v$root .. v$root }, $EXTENSION_PACKAGE/playback/PlayerOverlay;->autoplay(Landroid/view/View;)V")
+        println("Afterglow autoplay switch: ${toggle.method.smali}")
     }
 }

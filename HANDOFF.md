@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-14, native chapter snapping
+> Updated: 2026-11-14, autoplay initial readiness
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, private)
-> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. There are 27 named tweaks. Key-level parity remains conservative at 99 done / 4 n/a / 96 todo, including partial native coverage; the full port is not complete.
+> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. There are 27 named tweaks. Key-level parity remains conservative at 100 done / 4 n/a / 95 todo, including partial native coverage; the full port is not complete.
 
 ## Goal
 
@@ -11,7 +11,29 @@ Port every YTAfterglow iOS tweak to Android YouTube **21.43.523**, exactly as it
 - An Afterglow settings page lives inside YouTube's settings and shows only rows for tweaks that are installed and implemented.
 - Plumbing such as GmsCore/microG sign-in comes from Morphe's own "GmsCore support" patch, ticked in the same run.
 
-## Current chapter-snapping checkpoint — 2026-11-14
+## Current Autoplay checkpoint — 2026-11-14
+
+Build 45 completes Autoplay's initial-paused behavior and binds the native switch
+for live visibility. It changes only the new load's private `playWhenReady` flag;
+manual Play and YouTube's saved next-video setting remain intact. The native overlay
+switch is absent in the baseline, so visibility is source-verified here.
+
+Strict standalone/GmsCore/streaming 27/28/29 and isolated Autoplay 1/1 pass, all
+exit 0; 242 settings checks and all 218 production hashes pass. The emulator
+verifies Off/Off + hidden, manual Play, fullscreen, live choices, actual reset and
+native Next Video opening paused. Default Shorts has advancing decoded frames.
+Logs contain no errors, crash buffers are empty, Playback defaults are restored,
+Advanced mode remains off and the app is stopped. See `docs/player-behavior.md`.
+
+Parity: **100 done / 4 n/a / 95 todo**, 27 named tweaks. Candidate:
+`build-45/YTAfterglow-0.1.0-local.mpp`; source/delivery provenance is in
+`delivery-45.json` under the evidence root. Off-mode Shorts, live/DVR, casting,
+ads and physical-device behavior remain untested. Continue Captions and the full
+port. The caption manager's native saved-choice branch has been mapped; replace
+the old auto-caption timing gate with the native server-hint boundary so an
+explicit viewer choice survives.
+
+## Previous chapter-snapping checkpoint — 2026-11-14
 
 Build 44 completes **Disable snap to chapter** in the independently selectable
 **Player gestures** patch. It chooses the original finger position at the native

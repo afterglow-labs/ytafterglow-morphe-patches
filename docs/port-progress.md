@@ -139,3 +139,11 @@
 - Native build-42 baseline on rfscVS0vtbw shows chapters at 0:00, 1:45, 6:40, 10:23 and 15:06. A portrait scrub from (16,733) to (100,733) over 200ms snaps to 10:23. The new setting remains partial until strict application and off/on/reset behavior are verified.
 
 - Build 44 strict standalone/GmsCore/streaming/isolated-gestures runs pass 27/28/29/1, all exit 0. Settings pass 216/216 and 218 source input hashes match. Android 16 verifies live off/on/off (1:45 chapter -> 12:51 unsnapped -> 15:06 chapter), both/two-finger-only/snap-only preferences, fullscreen 51:42 between chapters and actual page reset to native 1:03:10. The published chapter timestamps are captured from the native description. Portrait return and decoded playback pass, defaults restored, app stopped; no runtime errors or crashes. Parity 99 done / 4 n/a / 96 todo. Commit/push/deliver, then continue the remaining full port.
+
+
+## Autoplay continuation
+
+- Chapter snapping committed/pushed as e6be912d93ccd1a3a7f63db2c16169cf7218257f. Delivery provenance: delivery-44.json; all 218 production inputs verified against committed blobs.
+- Build 45 implements both Off modes at Laowv.l's private configuration-copy boundary, clearing only the native playWhenReady bit. Native Lnzt's inflated switch binds to the shared visibility policy with an independent Autoplay gate, allowing restoration without skipping its controller.
+- Strict standalone/GmsCore/streaming 27/28/29 and isolated Autoplay 1 pass, all exit 0. 242 settings checks and 218 production hashes pass. Android 16 verifies 12 basic cases, three native-next cases, manual portrait/fullscreen Play, actual reset and Default Shorts decoded motion. The Shorts Play label stayed stale; actual frame comparison replaces that failed label assertion. Baseline and candidate lack the overlay switch, so live visibility remains source-verified.
+- Runtime logs have no errors, crash buffers are empty, Playback defaults are restored, Advanced mode remains off and the app is stopped. Parity: 100 done / 4 n/a / 95 todo. Full port continues with the native Captions saved-choice/server-hint boundaries; the old 150ms auto-caption gate must not defeat an explicitly remembered choice.

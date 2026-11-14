@@ -78,7 +78,7 @@ val captionsTweakPatch = bytecodePatch(
 @Suppress("unused")
 val autoplayTweakPatch = bytecodePatch(
     name = "Autoplay",
-    description = "Lets you hide the player's Autoplay switch.",
+    description = "Lets you start newly opened videos paused and optionally hide the native Autoplay switch.",
     default = true,
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)

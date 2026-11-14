@@ -35,6 +35,7 @@ public final class PlayerOverlay {
     public static void shading(View view) { bind(view, "noDarkBg"); }
     public static void actions(View view) { bind(view, "noFullscreenActions"); }
     public static void watermark(ImageView view) { bind(view, "noWatermarks"); }
+    public static void autoplay(View view) { bind(view, "autoplayMode", "autoplay"); }
 
     private static void bindNamed(View root, String name, String key) {
         int id = root.getResources().getIdentifier(name, "id", root.getContext().getPackageName());
@@ -42,9 +43,13 @@ public final class PlayerOverlay {
     }
 
     private static void bind(View view, String key) {
-        if (view == null || !InstalledTweaks.has("player-overlay") || BOUND.containsKey(view)) return;
+        bind(view, key, "player-overlay");
+    }
+
+    private static void bind(View view, String key, String tweak) {
+        if (view == null || !InstalledTweaks.has(tweak) || BOUND.containsKey(view)) return;
         BOUND.put(view, true);
-        Binding binding = new Binding(view, key);
+        Binding binding = new Binding(view, key, tweak);
         view.addOnAttachStateChangeListener(binding);
         if (view.isAttachedToWindow()) binding.onViewAttachedToWindow(view);
     }
@@ -52,14 +57,14 @@ public final class PlayerOverlay {
     private static final class Binding implements View.OnAttachStateChangeListener,
             ViewTreeObserver.OnPreDrawListener {
         final View view;
-        final String key;
+        final String key, tweak;
         ViewTreeObserver observer;
         long revision = -1;
         boolean requested, hidden, focusable;
         int accessibility;
         float nativeTranslation, appliedTranslation;
 
-        Binding(View view, String key) { this.view = view; this.key = key; }
+        Binding(View view, String key, String tweak) { this.view = view; this.key = key; this.tweak = tweak; }
 
         @Override public void onViewAttachedToWindow(View v) {
             if (observer != null) return;
@@ -76,7 +81,8 @@ public final class PlayerOverlay {
             try {
                 long current = AfterglowPrefs.revision();
                 if (revision != current) {
-                    requested = InstalledTweaks.has("player-overlay") && LiteMode.effectiveBool(key);
+                    requested = "autoplay".equals(tweak) ? Autoplay.hideAutoplaySwitch()
+                            : InstalledTweaks.has(tweak) && LiteMode.effectiveBool(key);
                     revision = current;
                 }
                 if (requested) {

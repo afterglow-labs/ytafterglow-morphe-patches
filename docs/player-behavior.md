@@ -291,3 +291,34 @@ errors and `crash-chapter-44.log` is empty. Evidence includes
 `chapter-result-44.json`, `chapter-reference-times.json`,
 `chapter-expanded-description-44.xml` and `chapter-*-44.png`. Physical-device,
 Shorts and live/DVR behavior are not runtime verified.
+
+## Autoplay initial readiness
+
+Build 45 completes the initial-paused behavior of `autoplayMode`: 0 Default,
+1 Off, 2 Off + hidden. The iOS hook changes `YTPlaybackConfig.setStartPlayback`;
+turning off next-video autonav would implement a different behavior.
+
+The native `Laowv.l(Lapad;)` load method identifies bit 2 as `playWhenReady`.
+The patch follows its interface getter into the copied `Laozo` configuration and
+clears that bit in `Lapac.n` only for Off modes. The original request, other bits,
+manual Play/Pause, seek calls and YouTube's saved autonav value are preserved.
+`Lnzt.h()` binds the inflated native switch root to the shared attach/pre-draw
+visibility policy; it no longer skips controller construction. The binding is
+independently gated on Autoplay, so Player overlay need not be selected.
+
+Verification: 242 settings checks; strict standalone/GmsCore/streaming 27/28/29
+and isolated Autoplay 1/1, all exit 0. All 218 production inputs match build 45.
+The emulator passes 12 basic observations plus three native-next observations:
+both Off modes open at 0:00 and remain paused, manual Play works in portrait and
+fullscreen, live mode changes preserve the current position, returning to Default
+and actual Playback-page reset restore initial playback. Native Next Video opens
+a different video at 0:00, then manual Play works without a process restart.
+Default-mode Shorts has decoded, advancing video frames. Its accessibility Play
+label does not reliably represent its paused state; frame comparison is recorded
+separately instead of counting that label assertion as passing.
+
+The native overlay switch is absent in both the baseline and candidate, so its
+live hiding/restoration is source-verified, not runtime-proven here. Off-mode Shorts,
+live/DVR, casting, ads and physical-device behavior remain untested. Runtime logs
+contain no Afterglow errors and crash buffers are empty. Playback defaults are
+restored, Advanced mode remains off, and the app is stopped.

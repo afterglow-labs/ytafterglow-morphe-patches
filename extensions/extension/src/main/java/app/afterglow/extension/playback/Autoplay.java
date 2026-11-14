@@ -6,20 +6,27 @@ import app.afterglow.extension.settings.AfterglowPrefs;
 
 /**
  * iOS {@code autoplayMode} ("Autoplay": 0 Default, 1 Off, 2 Off + hidden; tweak "autoplay").
- * Option 2 hides the player's Autoplay switch, read when the player controls are built.
- * (iOS's "Off" makes an opened video start paused; that part has no Android hook yet.)
+ * Off modes clear only the initial play-when-ready flag, leaving manual Play intact.
+ * Option 2 also hides the native Autoplay switch without changing its saved value.
  */
 @SuppressWarnings("unused")
 public final class Autoplay {
     private Autoplay() {}
 
-    /** Injection point: true skips inflating the Autoplay switch. */
-    public static boolean hideAutoplaySwitch() {
+    private static int mode() {
         try {
-            return InstalledTweaks.has("autoplay") && Math.min(Math.max(AfterglowPrefs.getInt("autoplayMode"), 0), 2) == 2;
+            return InstalledTweaks.has("autoplay")
+                    ? Math.min(Math.max(AfterglowPrefs.getInt("autoplayMode"), 0), 2) : 0;
         } catch (Throwable error) {
-            Afterglow.error("Autoplay.hideAutoplaySwitch", error);
-            return false;
+            Afterglow.error("Autoplay.mode", error);
+            return 0;
         }
     }
+
+    /** Called only on the private configuration copy used by native loadVideo. */
+    public static int startFlags(int nativeFlags) {
+        return mode() >= 1 ? nativeFlags & ~2 : nativeFlags;
+    }
+
+    public static boolean hideAutoplaySwitch() { return mode() == 2; }
 }

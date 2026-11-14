@@ -13,6 +13,7 @@ import java.util.Set;
 
 import app.afterglow.extension.InstalledTweaks;
 import app.afterglow.extension.playback.PlayerBehavior;
+import app.afterglow.extension.playback.Autoplay;
 import app.afterglow.extension.settings.AfterglowPrefs;
 import app.afterglow.extension.settings.TweakCatalog;
 import app.afterglow.extension.sponsorblock.SponsorCategory;
@@ -110,6 +111,26 @@ public final class SettingsVisibilityTest {
         check("gradient switch reflects effective default", true, SettingsBehavior.switchValue(gradient));
         AfterglowPrefs.setBool("seekBarGradient", false);
         check("gradient switch reflects explicit false", false, SettingsBehavior.switchValue(gradient));
+
+        // Autoplay changes initial readiness only. Unrelated native flag bits survive.
+        install();
+        AfterglowPrefs.setInt("autoplayMode", 2);
+        check("uninstalled autoplay preserves initial flags", 7, Autoplay.startFlags(7));
+        check("uninstalled autoplay keeps native switch", false, Autoplay.hideAutoplaySwitch());
+        check("uninstalled autoplay hides its row", false, SettingsBehavior.keyVisible("autoplayMode"));
+        install("autoplay");
+        check("autoplay alone exposes its row", true, SettingsBehavior.keyVisible("autoplayMode"));
+        for (int mode : new int[]{-1, 0, 1, 2, 9}) {
+            AfterglowPrefs.setInt("autoplayMode", mode);
+            check("autoplay hide mode " + mode, mode >= 2, Autoplay.hideAutoplaySwitch());
+            check("autoplay initial readiness " + mode, mode > 0 ? 0 : 2, Autoplay.startFlags(2));
+            check("autoplay never enables native paused state " + mode, 5, Autoplay.startFlags(5));
+            check("autoplay preserves unrelated native bits " + mode,
+                    mode > 0 ? 0x80000005 : 0x80000007, Autoplay.startFlags(0x80000007));
+        }
+        AfterglowPrefs.remove("autoplayMode");
+        check("autoplay reset restores native flags", 7, Autoplay.startFlags(7));
+        check("autoplay reset restores native switch", false, Autoplay.hideAutoplaySwitch());
 
         // Imported preferences must not activate an uninstalled player patch.
         install();
