@@ -371,3 +371,49 @@ is stopped. Runtime logs have no Afterglow errors; crash buffers are empty. Evid
 and corresponding XML/PNG captures. Server-hint/muted-auto policy is source and
 unit verified; no forced server-hint runtime fixture is claimed. Physical-device,
 Shorts captions, live/DVR, ads and casting behavior are not runtime verified.
+
+## Remember loop mode
+
+**Remember loop mode** is independently selectable and exposes the original
+Playback switch, default off. The native watch menu supplies its own Loop video
+control. After a new video activates, restoration waits three seconds, matching
+iOS. Explicit changes made after that restoration are saved. Remembering off
+leaves native playback behavior and manual controls available.
+
+On YouTube 21.43.523, `Lobh` owns the watch loop menu. Its `Laskj` provider returns
+`Lasjv`; `Lasjs.k(int)` delegates through the native active-player guard to
+`Lasij.q(int)`. The bridge calls that original route, retaining native loop events
+and menu updates. Native watch ON is 2 and OFF is 0. Android playlist mode 1 is
+retained as a native mode; cross-platform interpretation of imported iOS internal
+loop enum values has not been runtime verified.
+
+Five explicit action sites are hooked: one in `Loaj.a`, two native commands in
+`Liyk.b`, and two button actions in `Lqlo.onClick`. The shared setter also receives
+automatic resets from `Lrbp` and `Laypg`; those resets are deliberately excluded
+from recording. The native lifecycle host is captured at `onStart` entry, before
+its receiver register is reused. The injected recording call preserves incoming
+branches to each original setter invocation.
+
+Weak references and a video/director generation guard cancel stale callbacks
+when players change or close. Startup changes cannot overwrite the saved mode,
+and a restored activation does not reschedule after a manual choice. Ads and
+Shorts are excluded. Delayed actions recheck the setting and active context.
+
+Build 53 passes 26 session-race tests and 323 settings checks. Strict standalone,
+GmsCore, streaming and loop-only selection pass 28/29/30/1, all exit 0. All 222
+production inputs match. The first APK signing attempt stalled on a host-side
+parallel-read ENOMEM; a preserved retry using ActiveProcessorCount=4 signs and
+verifies successfully, and emulator installation passes. The native emulator matrix verifies saved ON/OFF through cold starts, fullscreen,
+and disabled-recording preservation. The 19-second `jNQXAC9IVRw` fixture repeats
+from an estimated 18.444s to 1.875s, then advances through 9.025s with unchanged
+metadata and decoded frames. Opening `6IegDENuxU4` in the same process retains
+Loop On. With Autoplay Off, loop restoration leaves the video paused at 0:00.
+Manual Play advances to 0:07 and retains Loop On. Actual Playback-page reset
+restores native Loop Off and normal initial playback; resumed decoded playback
+passes. All 22 main observations and the repeat run complete without Afterglow
+errors or crash entries. Playback defaults are restored, Advanced mode remains
+off and the app is stopped. Evidence: `loop-result-53.json`,
+`loop-repeat-result-53.json`, `qa-loop-53.log`, `qa-loop-followup-53.log`,
+`qa-loop-repeat-53.log`, runtime/crash logs and corresponding XML/PNG captures.
+Physical-device, Shorts, live/DVR, ads, casting and playlist-mode behavior remain
+unverified.

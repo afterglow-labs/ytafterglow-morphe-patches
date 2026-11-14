@@ -207,6 +207,19 @@ public final class SettingsVisibilityTest {
         check("malformed saved choice preserves native language", "en", Captions.restoreLanguage("en"));
         AfterglowPrefs.remove("rememberCaptionState"); AfterglowPrefs.remove("android_caption_choice");
 
+        install();
+        AfterglowPrefs.setBool("rememberLoop", true);
+        check("uninstalled loop ignores imported setting", false, PlayerBehavior.rememberLoop());
+        check("uninstalled loop row hidden", false, SettingsBehavior.keyVisible("rememberLoop"));
+        install("loop");
+        check("loop patch alone exposes its row", true, SettingsBehavior.keyVisible("rememberLoop"));
+        check("loop patch follows enabled preference", true, PlayerBehavior.rememberLoop());
+        check("loop patch does not expose captions", false, SettingsBehavior.keyVisible("rememberCaptionState"));
+        AfterglowPrefs.setBool("rememberLoop", false);
+        check("disabled loop preserves native policy", false, PlayerBehavior.rememberLoop());
+        AfterglowPrefs.remove("rememberLoop");
+        check("loop reset defaults off", false, PlayerBehavior.rememberLoop());
+
         // Imported preferences must not activate an uninstalled player patch.
         install();
         AfterglowPrefs.setBool("tapToSeek", true);

@@ -269,7 +269,9 @@
     "note": "Build 52: native manual enabled/language writes recorded atomically; native initial selection and unavailable-language fallback preserved. Strict 27/28/29 plus Captions-only 1 pass. Android 16 verifies ON/OFF cold starts, Arabic persistence, English fallback without overwriting Arabic, fullscreen, native Next Video and page reset. Physical device, Shorts, live/DVR and casting untested."
   },
   "rememberLoop": {
-    "status": "todo"
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/playback/RememberLoop.java + patches/.../playback/RememberLoopPatch.kt",
+    "note": "Build 53: explicit native loop choices restore after the iOS three-second delay, with stale-session and startup-recording guards. Strict 28/29/30 plus loop-only 1 pass; 26 race and 323 settings checks. Android 16 verifies ON/OFF cold starts, fullscreen, disabled-recording preservation, warm navigation, actual 19-second repeat, Autoplay Off/manual Play and page reset. Physical-device, Shorts, live/DVR, ads, casting and playlist mode 1 untested."
   },
   "classicQuality": {
     "status": "todo"

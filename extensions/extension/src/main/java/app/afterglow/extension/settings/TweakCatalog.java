@@ -386,6 +386,7 @@ public final class TweakCatalog {
             "premiumYTLogo",
             "redProgressBar",
             "rememberCaptionState",
+            "rememberLoop",
             "removeDontRecommendMenu",
             "removeDownloadMenu",
             "removeIndicators",

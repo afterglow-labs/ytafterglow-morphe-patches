@@ -7,6 +7,10 @@ import app.afterglow.extension.settings.LiteMode;
 public final class PlayerBehavior {
     private PlayerBehavior() {}
 
+    public static boolean rememberLoop() {
+        return InstalledTweaks.has("loop") && LiteMode.effectiveBool("rememberLoop");
+    }
+
     public static boolean showEndTime() {
         return InstalledTweaks.has("video-end-time") && LiteMode.effectiveBool("videoEndTime");
     }

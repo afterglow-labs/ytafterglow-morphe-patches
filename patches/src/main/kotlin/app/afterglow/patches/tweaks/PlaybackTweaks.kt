@@ -5,6 +5,7 @@ import app.afterglow.patches.playback.backgroundPlaybackHookPatch
 import app.afterglow.patches.playback.captionsHookPatch
 import app.afterglow.patches.playback.contentWarningHookPatch
 import app.afterglow.patches.playback.playbackSpeedHookPatch
+import app.afterglow.patches.playback.rememberLoopHookPatch
 import app.afterglow.patches.playback.videoQualityHookPatch
 import app.afterglow.patches.settings.afterglowSettingsPatch
 import app.afterglow.patches.shared.Constants.COMPATIBILITY_YOUTUBE
@@ -84,4 +85,15 @@ val autoplayTweakPatch = bytecodePatch(
     compatibleWith(COMPATIBILITY_YOUTUBE)
     dependsOn(afterglowExtensionPatch, afterglowSettingsPatch, autoplayHookPatch)
     execute { markTweakInstalled("autoplay") }
+}
+
+@Suppress("unused")
+val rememberLoopTweakPatch = bytecodePatch(
+    name = "Remember loop mode",
+    description = "Remembers your native loop choice and restores it when a video opens.",
+    default = true,
+) {
+    compatibleWith(COMPATIBILITY_YOUTUBE)
+    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch, rememberLoopHookPatch)
+    execute { markTweakInstalled("loop") }
 }
