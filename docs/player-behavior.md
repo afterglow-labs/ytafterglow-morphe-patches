@@ -185,22 +185,40 @@ the crash buffer is empty. Evidence: `overlay-title-{hidden,restored}-28.png`,
 and `overlay-watermark-{visible,hidden-playing,restored-playing}-28.png`.
 
 Fullscreen Share and Save belong to **Player buttons and menus**, independently
-of **Player overlay**. They use the native `quick_actions` accessibility ids.
-The whole action model contains every sibling's icon, so both surfaces use
-native accessibility IDs and exclude overflow descendants. Clip retains its
-dedicated component match. A native refresh bridge uses `Lokv.ly` to release
-the presenter's cached tree, restores the presenter's current model through
-`Lokv.H`, and re-emits its last measured dimensions through `Lokv.f`. An attached
-view observes preference changes and posts this refresh after drawing; it does
-not retain a previous video's model. Build 30 contains this correction and passes
-46 action-filter regression checks. The Android 16 emulator verifies Share-only,
-Save-only, both hidden and both restored in one paused fullscreen video, retaining
-Like/Dislike/Comments/overflow. Both feature groups pass standalone strict
-isolation in build 30. Build 31 passes all 26/27/28 standalone/GmsCore/streaming
-selections with exit 0.
+of **Player overlay**. Both surfaces use native accessibility IDs and exclude
+overflow descendants; their shared icon models cannot identify individual buttons.
+Clip retains its dedicated component match.
 
-The fresh-playback under-video tests also preserve neighboring buttons with either
-Share or Save hidden. That bar still caches its old layout after a settings round
-trip: reopening the video applies the new setting. The two keys remain partial
-until live refresh of that surface is implemented. Evidence includes
-`actions-*-30.xml`, `under-actions-*-31.xml` and `under-actions-live-31.json`.
+The two action bars retain reactive Litho component state even when their host
+views change. `WatchActionsPatch` discovers the `Lmuj` element conversion,
+`Lvnb` component state and `Lvna` native update callback. It remembers the current
+input and scoped context only for `video_action_bar.e` and `quick_actions.e`
+components. Preference changes replay that conversion and notify its original
+subscriber. The native state monitor and disposal checks guard the replay;
+context transfers update the retained scope, disposal clears the inputs, and the
+extension registry holds weak controller keys. The video stays open at its current
+position. This replaces the previous fullscreen presenter reset/dimension bridge.
+
+Build 40 verifies Share-only, Save-only, both hidden and live restoration under
+the video and in landscape fullscreen, preserving Like/Dislike, Comments and
+overflow where present. Scrolling the watch row away and back preserves the same
+behavior. The final playback resumes. Runtime logs contain no Afterglow errors
+and the crash buffer is empty. The exact diagnostic-free build 41 passes strict
+26/27/28 standalone/GmsCore/streaming application, all exit 0. Its 214 production
+inputs and bundle ZIP integrity are verified. Build 41 repeats all 11 live cases
+and resumed decoded playback with no errors and an empty crash buffer. Isolated
+Player buttons and menus validation also passes 1/1 with exit 0. Defaults are
+restored, diagnostic logging is INFO and the app is stopped.
+
+A cold-launch baseline establishes that portrait fullscreen does not offer Share
+at the tested width even with both hide switches off. Requiring that unavailable
+button to reappear was a test error, not a demonstrated cache bug. The available
+Save button hides and restores live there, retaining Like/Dislike/Comments.
+The automated under-video checks now require an actual `watch_list` host so a
+native fullscreen gesture cannot silently change which surface is being tested.
+
+Evidence under the directory above: `watch-actions-result-40.json`,
+`watch-actions-*-40.*`, `runtime-watch-actions-40.log`,
+`portrait-baseline-{before-settings,save-hidden,save-restored}-40.*` and
+`runtime-portrait-baseline-40.log`. The 46 action-filter and 196 settings checks
+also pass. Physical-device, tablet/foldable and casting behavior remain untested.

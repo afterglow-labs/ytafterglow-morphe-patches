@@ -48,7 +48,7 @@ val playerButtonsMenusTweakPatch = bytecodePatch(
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
     dependsOn(afterglowExtensionPatch, afterglowSettingsPatch, afterglowLithoFilterPatch, menuRowsHookPatch,
-        app.afterglow.patches.playback.quickActionsHookPatch)
+        app.afterglow.patches.playback.watchActionsHookPatch)
     execute { markTweakInstalled("player-buttons-menus") }
 }
 

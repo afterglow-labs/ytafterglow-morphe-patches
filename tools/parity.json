@@ -350,14 +350,14 @@
     "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "noPlayerShareButton": {
-    "status": "todo",
-    "note": "Partial: native fullscreen Share/Save hide independently and together, and restore live without restarting; Like/Dislike/Comments/overflow survive. Under-video native-ID filtering is verified on fresh playback and preserves neighboring buttons. The cached under-video bar still requires reopening the video after a setting change; live refresh remains pending.",
-    "where": "litho/filters/PlayerActionButtonsFilter.java + playback/QuickActions.java + playback/QuickActionsPatch.kt"
+    "status": "done",
+    "where": "litho/filters/PlayerActionButtonsFilter.java + playback/WatchActions.java + playback/WatchActionsPatch.kt",
+    "note": "Native accessibility IDs preserve neighboring and overflow actions. Reactive component refresh verifies independent Share/Save hides, both hidden and live restoration in the same under-video and landscape fullscreen playback, including row scrolling and return. Portrait fullscreen does not offer Share in the default layout at the tested width; its available Save button hides and restores. Native disposal clears retained inputs. Android 16 emulator only; no physical-device claim."
   },
   "noPlayerSaveButton": {
-    "status": "todo",
-    "note": "Partial: native fullscreen Share/Save hide independently and together, and restore live without restarting; Like/Dislike/Comments/overflow survive. Under-video native-ID filtering is verified on fresh playback and preserves neighboring buttons. The cached under-video bar still requires reopening the video after a setting change; live refresh remains pending.",
-    "where": "litho/filters/PlayerActionButtonsFilter.java + playback/QuickActions.java + playback/QuickActionsPatch.kt"
+    "status": "done",
+    "where": "litho/filters/PlayerActionButtonsFilter.java + playback/WatchActions.java + playback/WatchActionsPatch.kt",
+    "note": "Native accessibility IDs preserve neighboring and overflow actions. Reactive component refresh verifies independent Share/Save hides, both hidden and live restoration in the same under-video and landscape fullscreen playback, including row scrolling and return. Portrait fullscreen does not offer Share in the default layout at the tested width; its available Save button hides and restores. Native disposal clears retained inputs. Android 16 emulator only; no physical-device claim."
   },
   "noPlayerRemixButton": {
     "status": "done",

@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-14, native overlay visibility and fullscreen action refresh
+> Updated: 2026-11-14, live native action-row refresh
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, private)
-> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. There are 26 named tweaks. Key-level parity remains conservative at 94 done / 4 n/a / 101 todo, including partial native coverage; the full port is not complete.
+> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. There are 26 named tweaks. Key-level parity remains conservative at 96 done / 4 n/a / 99 todo, including partial native coverage; the full port is not complete.
 
 ## Goal
 
@@ -11,7 +11,32 @@ Port every YTAfterglow iOS tweak to Android YouTube **21.43.523**, exactly as it
 - An Afterglow settings page lives inside YouTube's settings and shows only rows for tweaks that are installed and implemented.
 - Plumbing such as GmsCore/microG sign-in comes from Morphe's own "GmsCore support" patch, ticked in the same run.
 
-## Current native overlay checkpoint — 2026-11-14
+## Current native action refresh checkpoint — 2026-11-14
+
+Share and Save now refresh live under the video and in landscape fullscreen,
+independently and together. The shared native reactive component bridge retains
+the latest input/context, replays its original conversion, and calls the native
+state update. Disposal clears retained inputs; a weak registry avoids retaining
+closed players. The previous fullscreen view/presenter reset hook is removed.
+
+Build 40 passes the complete live matrix, row scrolling, fullscreen return and
+resumed playback, with no Afterglow errors and an empty crash buffer. A fresh
+portrait fullscreen baseline does not offer Share at the tested width; its
+available Save button hides and restores correctly. Earlier assertions requiring
+Share there were test errors. See [`docs/player-behavior.md`](docs/player-behavior.md).
+
+Build 41 removes diagnostic logging. Strict standalone/GmsCore/streaming runs
+pass 26/27/28, all exit 0; its 214 production inputs match and ZIP integrity passes.
+The bundle is `build-41/YTAfterglow-0.1.0-local.mpp` in the evidence root below.
+Final build-41 emulator verification passes all 11 live cases and resumed
+playback; standalone Player buttons and menus isolation passes 1/1, exit 0.
+The final runtime log has no errors and the crash buffer is empty. Hide switches
+are restored off, diagnostic properties are INFO and the app is stopped.
+46 action-filter and 196 settings checks pass. Parity is
+**96 done / 4 n/a / 99 todo**, with 26 named tweaks. Commit/push and deliver this checkpoint, then continue playback end time and
+the remaining full port.
+
+## Previous native overlay checkpoint — 2026-11-14
 
 Build 31 adds title, background shading, fullscreen actions and channel watermark
 switches to **Player overlay**. All nine overlay switches default off and reset
