@@ -176,7 +176,7 @@ internal val videoQualityHookPatch = bytecodePatch(
         """)
 
         // Read the current mounted click action, including native reactive rebinds.
-        // 21.43.523: ComponentHost -> hfq.a -> hhl.d (event arguments).
+        // 21.43.523: ComponentHost -> hfq.a -> hhl.b (dispatch target).
         val clickFingerprint = Fingerprint(name = "onClick", parameters = listOf("Landroid/view/View;"),
             strings = listOf("onClick_<cls>"))
         val click = clickFingerprint.classDef

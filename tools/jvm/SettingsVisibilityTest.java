@@ -353,10 +353,27 @@ public final class SettingsVisibilityTest {
         check("clock format defaults to twelve hour", false, AfterglowPrefs.getBool("24hrFormat"));
         check("end time does not expose native overlay hides", false, SettingsBehavior.keyVisible("hideSubs"));
 
+        install();
+        AfterglowPrefs.setBool("noHUDMsgs", true);
+        check("uninstalled HUD suppression preserves messages", false, PlayerBehavior.hideHudMessages(false));
+        check("uninstalled HUD suppression preserves native skips", true, PlayerBehavior.hideHudMessages(true));
+        check("uninstalled HUD suppression hides its row", false, SettingsBehavior.keyVisible("noHUDMsgs"));
         install("player-overlay");
+        check("HUD suppression honors imported setting", true, PlayerBehavior.hideHudMessages(false));
+        check("HUD suppression preserves native skips", true, PlayerBehavior.hideHudMessages(true));
+        AfterglowPrefs.remove("noHUDMsgs");
+        check("HUD reset restores native messages", false, PlayerBehavior.hideHudMessages(false));
+        check("HUD reset preserves native skips", true, PlayerBehavior.hideHudMessages(true));
+        AfterglowPrefs.setBool("liteModeEnabled", true);
+        check("Lite Mode suppresses HUD messages", true, PlayerBehavior.hideHudMessages(false));
+        install();
+        check("Lite Mode requires the HUD owner", false, PlayerBehavior.hideHudMessages(false));
+        install("player-overlay");
+        AfterglowPrefs.setBool("liteModeEnabled", false);
+        check("leaving Lite Mode restores native HUD messages", false, PlayerBehavior.hideHudMessages(false));
         for (String key : new String[] {"hideSubs", "hidePrevNext", "hidePlayerFullscreenButton",
                 "hidePlayerCollapseButton", "hidePlayerOverflowButton", "hideOverlayTitle",
-                "noDarkBg", "noFullscreenActions", "noWatermarks", "hidePlayerYouTubeMusicButton"}) {
+                "noDarkBg", "noFullscreenActions", "noWatermarks", "hidePlayerYouTubeMusicButton", "noHUDMsgs"}) {
             check("overlay patch exposes " + key, true, SettingsBehavior.keyVisible(key));
         }
         check("overlay patch does not enable gestures", false, SettingsBehavior.keyVisible("tapToSeek"));

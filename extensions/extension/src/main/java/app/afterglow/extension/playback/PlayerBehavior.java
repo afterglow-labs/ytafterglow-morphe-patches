@@ -7,6 +7,12 @@ import app.afterglow.extension.settings.LiteMode;
 public final class PlayerBehavior {
     private PlayerBehavior() {}
 
+    /** Use the native skip-display branch so the message queue still receives its callbacks. */
+    public static boolean hideHudMessages(boolean nativeSkip) {
+        return nativeSkip || (InstalledTweaks.has("player-overlay")
+                && LiteMode.effectiveBool("noHUDMsgs"));
+    }
+
     /** Keep native Advanced requests; Classic mode promotes only the quick-menu choice. */
     public static boolean useClassicQualityMenu(boolean nativeAdvanced) {
         return nativeAdvanced || (InstalledTweaks.has("video-quality")

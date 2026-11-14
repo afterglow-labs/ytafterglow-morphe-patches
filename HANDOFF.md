@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-14, Classic video quality checkpoint
+> Updated: 2026-11-14, Hide HUD messages checkpoint
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, private)
-> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. There are 28 named tweaks. Key-level parity remains conservative at 105 done / 4 n/a / 90 todo, including partial native coverage; the full port is not complete.
+> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. There are 28 named tweaks. Key-level parity remains conservative at 106 done / 4 n/a / 89 todo, including partial native coverage; the full port is not complete.
 
 ## Goal
 
@@ -13,7 +13,7 @@ Port every YTAfterglow iOS tweak to Android YouTube **21.43.523**, exactly as it
 
 ## Verified Classic video quality checkpoint
 
-Build 64 is the current production candidate. The mounted Advanced action now
+Build 64 completes the Classic quality checkpoint. The mounted Advanced action
 exposes its own native command, and a bounded parser waits for real resolution
 entries in that command before clicking. This fixes the proven race boundary:
 the first action has an empty model, and a reactive rebind supplies the formats.
@@ -38,10 +38,8 @@ now scopes the player gear by resource ID to avoid the ad's identically named
 button. Full candidate 64 is restored by the runner; Classic ends OFF. Delivery
 provenance is recorded in delivery-64.json after commit/push.
 
-Continue the full port with Hide HUD messages. Native skip-display callbacks,
-all message-view constructors and root_pill_container are mapped. The draft and
-baseline helper are in the evidence root, outside production. The pane footer is
-a separate view and must remain untouched.
+Hide HUD messages is completed in build 65 below. The pane footer is a separate
+view and remains untouched.
 
 Native identity: Latqo root path 1/168777401/3/172035250/1. Mounted command route:
 ComponentHost -> hfq -> hhl.b -> vmu.E -> vrs.e -> xso.y -> MessageLite bytes.
@@ -49,6 +47,36 @@ Builds 55/58/59 failed runtime; 56/57/60/61/63 were diagnostics; 62 failed stric
 validation before installation. Evidence: classic-quality-result-64.json,
 classic-quality-shorts-result-64.json, quality-command-{0,1}-63.bin and source
 maps. Validation outputs use the Linux cache with evidence-directory symlinks.
+
+## Verified Hide HUD messages checkpoint
+
+Build 65 adds Hide HUD messages to Player overlay, default off. Native Lkgx.g
+uses its original skip-display callbacks. All constructors of the five native
+message-view classes and the dedicated root_pill_container bind through the
+existing live visibility controller. The adjacent watch footer is not hooked.
+347 settings checks and strict 28/29/30 plus overlay-only 1 pass, all strict
+wrappers exit 0; 226 production inputs match and ZIP integrity passes.
+
+Seven final emulator cases verify live ON/OFF, cold start, fullscreen ON/OFF,
+actual Overlay reset and decoded playback. Copy link provides the visible native
+confirmation baseline; hiding removes it and restoring brings it back. Android's
+clipboard preview remains available. Runtime logs have no Afterglow errors and
+crash buffers are empty. Overlay defaults restored, Advanced off, app stopped.
+Lite Mode's forced override is policy tested only; the full Lite Mode feature
+remains unfinished. Not every native message class was separately triggered.
+Physical-device, live/DVR and casting runtime remain unverified.
+
+The build helper prints completion after its successful compiler/bundler child;
+the outer tool wrapper reports 143. Strict validation, signing, installation and
+final runtime wrappers all exit 0. Evidence: hud-result-65.json,
+runtime-hud-65.log, crash-hud-65.log; delivery-65.json records committed-source
+provenance after commit/push. Classic quality's delivery is delivery-64.json at
+ea7f0605b2a1dc65c5a657af3ff7e31287aad069.
+
+Continue the full port with Hide Subbar. Existing Litho filters cover component
+rows; native feed/search RecyclerViews and related-chip mirrors are mapped in
+next-subbar-map.json/txt. Preserve comment sort chips and live OFF restoration.
+Constructor-cached heights must not remain zero after the switch turns off.
 
 ## Verified native controls checkpoint — 2026-11-14
 

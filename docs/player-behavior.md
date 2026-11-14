@@ -495,3 +495,28 @@ quality and Classic. The full configuration is restored afterwards. The earlier
 long-video attempt stalled in a native preroll; another attempt clicked the ad's
 More options button. Those failures are retained, and the helper now selects the
 player gear by its resource ID. See classic-quality-isolated-result-64.json.
+
+## Hide HUD messages
+
+`Player > Overlay > Hide HUD messages` belongs to the independently selectable
+**Player overlay** tweak and defaults off. The primary native message dispatcher
+`Lkgx.g` takes its existing skip-display branch, preserving native completion and
+dismissal callbacks. The five snackbar/mealbar constructor families and the
+ID-scoped `root_pill_container` also bind to the reversible visibility controller.
+The neighboring watch footer is untouched. Lite Mode's existing policy forces
+this key without overwriting the stored choice; that override is unit verified,
+while full Lite Mode runtime remains unfinished.
+
+Build 65 passes strict 28/29/30 standalone/GmsCore/streaming and isolated overlay
+1, all exit 0; 347 settings checks and 226 production inputs pass. Android 16
+provides a visible baseline through Share > Copy link: the native confirmation
+hides with the switch on and returns off. The Android clipboard preview remains
+available. Live portrait/fullscreen restoration, cold start, actual Overlay reset
+and decoded playback pass. No Afterglow errors or crash entries are present;
+defaults and Advanced off are restored, and the app is stopped.
+
+Evidence: `hud-result-65.json`, `hud-copy-{on,restored}-1-65.png`,
+`hud-copy-fullscreen-{on,restored}-1-65.png`, `hud-copy-page-reset-1-65.png`,
+`runtime-hud-65.log`, `crash-hud-65.log`. All native constructor paths pass source
+and strict validation, but not every message class was individually triggered.
+Physical-device, live/DVR and casting behavior remain unverified.

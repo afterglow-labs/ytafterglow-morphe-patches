@@ -434,7 +434,9 @@
     "note": "Strict 21.43.523 standalone/GmsCore validation passes. Android 16 portrait/fullscreen: actual switches hide and restore existing controls without restart; fades and native enabled states survive reset. Inline-feed and physical-device runtime remain unverified."
   },
   "noHUDMsgs": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/HudMessagesPatch.kt + playback/PlayerBehavior.java + playback/PlayerOverlay.java",
+    "note": "Strict 21.43.523 standalone/GmsCore/streaming/overlay-only validation passes. Android 16 Copy link confirmation hides/restores live in portrait/fullscreen, survives cold start and restores after actual Overlay reset. Android clipboard preview remains visible. All native constructor paths are source/strict verified; Lite Mode override is policy tested only. Physical-device runtime remains unverified."
   },
   "hidePrevNext": {
     "status": "done",

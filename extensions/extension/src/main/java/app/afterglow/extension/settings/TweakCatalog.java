@@ -367,6 +367,7 @@ public final class TweakCatalog {
             "noDoubleTapToSeek",
             "noFreeZoom",
             "noFullscreenActions",
+            "noHUDMsgs",
             "noLinkTracking",
             "noNotifsButton",
             "noPlayerClipButton",
