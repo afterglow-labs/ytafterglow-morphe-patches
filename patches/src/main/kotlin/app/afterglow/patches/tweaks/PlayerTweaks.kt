@@ -3,6 +3,8 @@ package app.afterglow.patches.tweaks
 import app.afterglow.patches.playback.ambientModeHookPatch
 import app.afterglow.patches.playback.tapToSeekHookPatch
 import app.afterglow.patches.playback.playerOverlayHookPatch
+import app.afterglow.patches.playback.doubleTapGestureHookPatch
+import app.afterglow.patches.playback.freeZoomHookPatch
 import app.afterglow.patches.settings.afterglowSettingsPatch
 import app.afterglow.patches.shared.Constants.COMPATIBILITY_YOUTUBE
 import app.afterglow.patches.shared.markTweakInstalled
@@ -22,11 +24,11 @@ val ambientModeTweakPatch = bytecodePatch(
 @Suppress("unused")
 val playerGesturesTweakPatch = bytecodePatch(
     name = "Player gestures",
-    description = "Lets you seek by tapping the progress bar using YouTube's native seek handlers.",
+    description = "Controls tap-to-seek, independent double-tap gestures, and free zoom while keeping pinch-to-fill.",
     default = true,
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
-    dependsOn(afterglowSettingsPatch, tapToSeekHookPatch)
+    dependsOn(afterglowSettingsPatch, tapToSeekHookPatch, doubleTapGestureHookPatch, freeZoomHookPatch)
     execute { markTweakInstalled("player-gestures") }
 }
 

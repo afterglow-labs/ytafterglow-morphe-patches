@@ -24,6 +24,8 @@ it does not select Theme Studio, Glow, Seek bar, or the official SponsorBlock pa
   interface. Overlapping markers use alternating lanes. Bounds are clipped to video
   duration, colors match the iOS category constants, and contrasting outlines remain
   visible. Markers draw after track glow and before the native/custom scrubber.
+  Animated track bounds and paint alpha follow the native controls' fade; markers
+  do not require a visible thumb, so the thin Shorts timeline remains supported.
 - The notice uses active semantic theme colors, with the iOS notice constants as
   fallbacks. Its normal host is the native player overlay; Shorts uses the activity
   content with space for navigation controls. It is nonmodal and follows player
@@ -61,3 +63,14 @@ selection for an isolation check. Both options retain strict validation and save
 commands/results.
 
 Physical-device, casting, live/DVR and exact iOS rasterization parity are not claimed.
+
+## Marker fade correction — build 24
+
+Gesture testing exposed markers remaining over the video after the native timeline
+had faded out. The bridge now reads the animated `Ljsb.aa` rectangle and
+`Ljsb.c.j` paint alpha, instead of the static track rectangle alone. Strict runs
+pass 25/25, 26/26 and 27/27. The emulator confirms the fullscreen marker disappears
+with the controls and returns when paused; the blue Intro marker remains visible
+on the thin Shorts timeline with skipping disabled. Evidence:
+`marker-fullscreen-{visible,faded,returned}-24.png` and
+`marker-shorts-paused-24.png` in the directory above.

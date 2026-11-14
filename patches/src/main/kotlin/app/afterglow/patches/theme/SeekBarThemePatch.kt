@@ -39,8 +39,26 @@ internal val seekBarThemePatch = bytecodePatch {
             ?: throw PatchException("Native seek-bar bounds changed")
         val position = host.fields.singleOrNull { it.name == "w" && it.type == "I" }
             ?: throw PatchException("Native seek-bar played position changed")
+        // onDraw computes aa from the current track-height animation and sets c.j
+        // alpha from that same animation. V alone remains nonempty when controls hide.
+        val visibleBounds = host.fields.singleOrNull { it.name == "aa" && it.type == "Landroid/graphics/Rect;" }
+            ?: throw PatchException("Native animated seek-bar bounds changed")
+        val style = host.fields.singleOrNull { it.name == "c" && it.type == "Ljsc;" }
+            ?: throw PatchException("Native seek-bar style changed")
+        val animatedPaint = draw.implementation!!.instructions.mapNotNull {
+            (it as? ReferenceInstruction)?.reference as? com.android.tools.smali.dexlib2.iface.reference.FieldReference
+        }.distinct().singleOrNull { it.definingClass == style.type && it.name == "j" && it.type == "Landroid/graphics/Paint;" }
+            ?: throw PatchException("Native animated seek-bar paint changed")
         host.interfaces.add("$EXTENSION_PACKAGE/theme/SeekBarHost;")
         host.addFieldGetter("afterglow_trackBounds", "Landroid/graphics/Rect;", bounds)
+        host.addFieldGetter("afterglow_visibleTrackBounds", "Landroid/graphics/Rect;", visibleBounds)
+        host.addMethod("afterglow_trackAlpha", "I", 2, """
+            iget-object v0, p0, ${style.smali}
+            iget-object v0, v0, ${animatedPaint.smali}
+            invoke-virtual { v0 }, Landroid/graphics/Paint;->getAlpha()I
+            move-result v0
+            return v0
+        """)
         host.addMethod("afterglow_playedPosition", "I", 2, "iget v0, p0, ${position.smali}\nreturn v0")
         val restore = draw.implementation!!.instructions.indexOfLast { instruction ->
             val ref = (instruction as? ReferenceInstruction)?.reference as? MethodReference

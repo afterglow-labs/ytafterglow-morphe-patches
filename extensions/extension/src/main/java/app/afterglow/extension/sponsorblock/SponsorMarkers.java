@@ -42,8 +42,10 @@ public final class SponsorMarkers {
                 cache.revision = revision; cache.preferences = settings.revision; cache.duration = duration;
             }
             if (cache.markers.isEmpty()) return;
-            Rect bounds = ((SeekBarHost) view).afterglow_trackBounds();
-            if (bounds == null || bounds.isEmpty()) return;
+            SeekBarHost host = (SeekBarHost) view;
+            Rect bounds = host.afterglow_visibleTrackBounds();
+            int alpha = host.afterglow_trackAlpha();
+            if (bounds == null || bounds.isEmpty() || alpha == 0) return;
             float density = view.getResources().getDisplayMetrics().density;
             float half = 1.5f * density, cap = 2 * density;
             for (SponsorMarkerLayout.Marker marker : cache.markers) {
@@ -52,13 +54,16 @@ public final class SponsorMarkers {
                 float y = bounds.exactCenterY() + SponsorMarkerLayout.laneOffset(marker.lane) * density;
                 if (y + half + cap < 0 || y - half - cap > view.getHeight()) continue;
                 PAINT.setStyle(Paint.Style.FILL); PAINT.setColor(marker.category.color);
+                PAINT.setAlpha(alpha);
                 canvas.drawRoundRect(left, y - half, right, y + half, 1, 1, PAINT);
                 PAINT.setStyle(Paint.Style.STROKE); PAINT.setStrokeWidth(Math.max(2, density));
                 PAINT.setColor(SponsorMarkerLayout.outlineColor(marker.category.color));
+                PAINT.setAlpha(alpha);
                 canvas.drawRoundRect(left, y - half, right, y + half, 1, 1, PAINT);
                 canvas.drawLine(left, y - half - cap, left, y + half + cap, PAINT);
                 canvas.drawLine(right, y - half - cap, right, y + half + cap, PAINT);
                 PAINT.setStrokeWidth(1); PAINT.setColor(marker.category.color);
+                PAINT.setAlpha(alpha);
                 canvas.drawLine(left, y - half - cap, left, y + half + cap, PAINT);
                 canvas.drawLine(right, y - half - cap, right, y + half + cap, PAINT);
             }

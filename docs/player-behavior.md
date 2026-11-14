@@ -10,8 +10,40 @@ YouTube behavior. Importing a preference cannot activate an uninstalled patch.
 calls the same update/seek methods as YouTube. On 21.43.523, the fingerprint resolves
 `Ljsb.onTouchEvent`, with `Larua.S(I)` and `Larua.T(I)` reached through the intermediate
 `Ljrq` superclass. The hook runs after the native touch setup; a separate helper
-keeps the original method's register allocation unchanged. Other player gestures
-remain hidden until implemented.
+keeps the original method's register allocation unchanged.
+
+## Double-tap gestures and free zoom
+
+The same **Player gestures** patch also exposes the independent one-finger and
+two-finger double-tap switches and **Disable free zoom gesture**. All default off.
+The double-tap gate runs before native seek and feedback dispatch in `Larxl.a`;
+its boolean argument identifies the native chapter gesture. Native chapter
+availability remains controlled by YouTube.
+
+Disabling free zoom preserves pinch-to-fill. Five reads of `Losm.aU` select the
+player's existing fill/original path instead of continuous zoom; the underlying
+native capability is retained so switching off restores it immediately. The
+`Losu` player detector also saves and disables its one-finger quick-scale flag,
+then restores the saved value on the next gesture after switching off.
+
+Build 24 passes strict validation with all 25 Afterglow patches, 26 with GmsCore,
+and 27 with GmsCore plus official Spoof video streams. Settings checks pass
+175/175. The Android 16 emulator verifies:
+
+- With only two-finger seeking disabled, two fingers leave 0:00 unchanged while
+  one finger seeks to 0:10. With only ordinary seeking disabled, one finger leaves
+  0:10 unchanged while two fingers seek to 0:22.
+- Both switches block both gestures. Reset restores both. These are native
+  gesture-classification tests; they do not establish a next-chapter destination.
+- With free zoom disabled, pinch-out shows **Zoomed to fill**, and pinch-in shows
+  **Original**. Switching the preference off restores continuous zoom to **1.8x**.
+- One-finger zoom was unavailable in the native baseline. Its saved-flag
+  restoration is verified in source, without claiming runtime activation.
+
+Evidence in the directory below includes `gesture-*-21-{before,after}.xml`,
+`freezoom-verified-fill-23-live.png`, `freezoom-verified-original-23-live.png` and
+`freezoom-restored-decoded-continuous-23-live.png`. Build 24 has the same gesture
+code as build 23 and additionally fixes SponsorBlock marker fading.
 
 ## Disable ambient mode
 

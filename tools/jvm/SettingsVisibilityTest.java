@@ -137,6 +137,41 @@ public final class SettingsVisibilityTest {
         AfterglowPrefs.setBool("liteModeEnabled", false);
         check("leaving Lite Mode restores ambient choice", false, PlayerBehavior.disableAmbientMode());
 
+        install();
+        AfterglowPrefs.setBool("noDoubleTapToSeek", true);
+        AfterglowPrefs.setBool("noTwoFingerSnapToChapter", true);
+        check("uninstalled single-finger gate preserves native", false, PlayerBehavior.blockDoubleTap(false));
+        check("uninstalled two-finger gate preserves native", false, PlayerBehavior.blockDoubleTap(true));
+        install("player-gestures");
+        for (boolean single : new boolean[]{false, true}) {
+            for (boolean chapter : new boolean[]{false, true}) {
+                AfterglowPrefs.setBool("noDoubleTapToSeek", single);
+                AfterglowPrefs.setBool("noTwoFingerSnapToChapter", chapter);
+                check("single-finger independent " + single + "/" + chapter, single, PlayerBehavior.blockDoubleTap(false));
+                check("two-finger independent " + single + "/" + chapter, chapter, PlayerBehavior.blockDoubleTap(true));
+            }
+        }
+        AfterglowPrefs.remove("noDoubleTapToSeek"); AfterglowPrefs.remove("noTwoFingerSnapToChapter");
+        check("single-finger reset preserves native", false, PlayerBehavior.blockDoubleTap(false));
+        check("two-finger reset preserves native", false, PlayerBehavior.blockDoubleTap(true));
+        check("single-finger control visible", true, SettingsBehavior.keyVisible("noDoubleTapToSeek"));
+        check("two-finger control visible", true, SettingsBehavior.keyVisible("noTwoFingerSnapToChapter"));
+
+        install();
+        AfterglowPrefs.setBool("noFreeZoom", true);
+        check("uninstalled zoom override preserves native on", true, PlayerBehavior.allowFreeZoom(true));
+        check("uninstalled zoom override preserves native off", false, PlayerBehavior.allowFreeZoom(false));
+        check("uninstalled one-finger zoom stays native", false, PlayerBehavior.disableFreeZoom());
+        install("player-gestures");
+        check("free zoom override selects native fill-only branch", false, PlayerBehavior.allowFreeZoom(true));
+        check("free zoom override never enables a native-disabled capability", false, PlayerBehavior.allowFreeZoom(false));
+        check("free zoom also suppresses one-finger quick-scale", true, PlayerBehavior.disableFreeZoom());
+        AfterglowPrefs.remove("noFreeZoom");
+        check("zoom reset restores native on", true, PlayerBehavior.allowFreeZoom(true));
+        check("zoom reset preserves native off", false, PlayerBehavior.allowFreeZoom(false));
+        check("zoom reset restores one-finger gesture", false, PlayerBehavior.disableFreeZoom());
+        check("zoom control visible for installed patch", true, SettingsBehavior.keyVisible("noFreeZoom"));
+
         install("player-overlay");
         for (String key : new String[] {"hideSubs", "hidePrevNext", "hidePlayerFullscreenButton",
                 "hidePlayerCollapseButton", "hidePlayerOverflowButton"}) {

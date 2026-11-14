@@ -321,16 +321,22 @@
     "note": "Strict 21.43.523 application passes standalone and with GmsCore. Android 16: the same 75 percent tap leaves 0:01 unchanged when off and seeks to about 0:15 when on; delegates to native S/T handlers. Physical-device and live/DVR testing remain unverified."
   },
   "noDoubleTapToSeek": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/DoubleTapGesturePatch.kt + playback/PlayerBehavior.java",
+    "note": "Strict standalone/GmsCore/streaming validation and Android 16 paused-video tests pass: each gesture is independently allowed/blocked, both-on blocks both, reset restores both. Native server chapter availability is preserved; no forced chapter enablement. No physical-device test."
   },
   "noTwoFingerSnapToChapter": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/DoubleTapGesturePatch.kt + playback/PlayerBehavior.java",
+    "note": "Strict standalone/GmsCore/streaming validation and Android 16 paused-video tests pass: each gesture is independently allowed/blocked, both-on blocks both, reset restores both. Native server chapter availability is preserved; no forced chapter enablement. No physical-device test."
   },
   "dontSnapToChapter": {
     "status": "todo"
   },
   "noFreeZoom": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/FreeZoomPatch.kt + playback/FreeZoom.java + playback/PlayerBehavior.java",
+    "note": "Strict 21.43.523 standalone/GmsCore/streaming validation passes. Android 16: enabled preserves native Zoomed to fill and Original pinch states; disabling restores continuous 1.8x zoom. The native quick-scale flag is saved/restored; one-finger zoom was unavailable in the native baseline, so that restoration is source-verified only. No physical-device test."
   },
   "noPlayerDownloadButton": {
     "status": "done",

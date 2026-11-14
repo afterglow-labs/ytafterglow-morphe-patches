@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-14, SponsorBlock skip/undo and markers in watch playback and Shorts
+> Updated: 2026-11-14, independent double-tap controls, pinch-to-fill-preserving free zoom and marker fading
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, private)
-> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and five player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. There are 25 named tweaks. Key-level parity remains conservative at 84 done / 4 n/a / 111 todo, including partial native coverage; the full port is not complete.
+> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and five player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. There are 25 named tweaks. Key-level parity remains conservative at 87 done / 4 n/a / 108 todo, including partial native coverage; the full port is not complete.
 
 ## Goal
 
@@ -11,7 +11,24 @@ Port every YTAfterglow iOS tweak to Android YouTube **21.43.523**, exactly as it
 - An Afterglow settings page lives inside YouTube's settings and shows only rows for tweaks that are installed and implemented.
 - Plumbing such as GmsCore/microG sign-in comes from Morphe's own "GmsCore support" patch, ticked in the same run.
 
-## Current SponsorBlock checkpoint — 2026-11-14
+## Current gesture checkpoint — 2026-11-14
+
+Build 24 adds independent ordinary/two-finger double-tap switches and disables
+continuous free zoom while preserving native pinch-to-fill. The switches reset
+and restore native behavior; Android 16 verifies both gesture classifications,
+**Zoomed to fill / Original**, and restored **1.8x** continuous zoom. One-finger
+quick-scale was unavailable in the native baseline; its saved-flag restoration
+is source-verified. SponsorBlock markers now follow native track fading and
+still render in Shorts. See [`docs/player-behavior.md`](docs/player-behavior.md)
+and [`docs/sponsorblock.md`](docs/sponsorblock.md).
+
+Strict validation passes 25/25 standalone, 26/26 with GmsCore and 27/27 with
+GmsCore plus Spoof video streams. Settings checks pass 175/175. Candidate:
+`build-24/YTAfterglow-0.1.0-local.mpp` under the evidence root below. The emulator
+has signed `gesture-test-24.apk`; no physical device was used. Fullscreen behavior
+and the remaining parity list are the next work; the full port remains active.
+
+## Previous SponsorBlock checkpoint — 2026-11-14
 
 Build 20 adds the independently selectable **SponsorBlock** patch: all 21 iOS
 preferences, nine independent skip/marker categories, a hash-prefix client,
@@ -25,10 +42,10 @@ Shorts initially stalled because native Onesie media requests received HTTP 413.
 Official **Spoof video streams** fixes playback in this emulator; select it alongside
 GmsCore for subsequent runtime checks. `tools/verify_bundle.py --official-patch
 "Spoof video streams"` selects it from `--gms-bundle`. The Afterglow bundle does not
-include or automatically enable the official client. The emulator now has the
+include or automatically enable the official client. Build 20 used the
 signed `sponsor-streaming-test-20.apk`, with Afterglow settings restored to defaults.
 
-## Current player checkpoint — 2026-11-14
+## Previous player checkpoint — 2026-11-14
 
 The current candidate is `build-18/YTAfterglow-0.1.0-local.mpp` under the evidence
 root below. **Player gestures** adds native tap-to-seek; **Disable ambient mode**
