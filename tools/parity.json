@@ -684,31 +684,49 @@
     "status": "todo"
   },
   "advancedMode": {
-    "status": "todo"
+    "status": "done",
+    "where": "ui/AfterglowActivity.java + ui/AppRestart.java + settings/AfterglowPrefs.java",
+    "note": "Default-OFF switch reveals advanced pages live; explicit Android16 OFF/ON and reset checks pass on delivered build89. Existing 427 settings checks cover visibility/search ownership."
   },
   "debugLogEnabled": {
-    "status": "todo"
+    "status": "done",
+    "note": "Opt-in 200-entry ring and one-MiB rotating file, pre-queue redaction and real native player/preference events. Serial persistence and share fallback are policy/storage tested. Build92 passes 91 log checks, 427 settings checks, strict 28/29/30/1/3 and 251 source hashes. 26 full and 15 independent observations are reviewed, with read-only file receipts, clearing and reset; build91 additionally verifies category filtering, Firehose bypass and cold playback. Unported feature event coverage remains tracked under its category keys.",
+    "where": "extension/diagnostics + AfterglowActivity + AfterglowSettingsPatch"
   },
   "debugLogFirehose": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: bypasses all category filters and enables player-response/clock events. Native network firehose and unported feature diagnostics remain pending.",
+    "where": "extension/diagnostics + AfterglowActivity + AfterglowSettingsPatch"
   },
   "debugLogDownloads": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: iOS download category prefixes are implemented and policy-tested. Android download/extraction feature event coverage remains pending.",
+    "where": "extension/diagnostics + AfterglowActivity + AfterglowSettingsPatch"
   },
   "debugLogPlayerUI": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: native player creation/status/playback/type and Shorts open/close events are connected. Reviewed build91 playback confirms category OFF suppresses entries and Firehose overrides it. Unported overlay controls still lack their feature-specific events.",
+    "where": "extension/diagnostics + AfterglowActivity + AfterglowSettingsPatch"
   },
   "debugLogPremiumControls": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: iOS Premium controls category filter is implemented and policy-tested. Premium controls feature event coverage remains pending.",
+    "where": "extension/diagnostics + AfterglowActivity + AfterglowSettingsPatch"
   },
   "debugLogPiP": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: PiP category filter and native PiP player-type event are connected; runtime PiP activation coverage remains pending.",
+    "where": "extension/diagnostics + AfterglowActivity + AfterglowSettingsPatch"
   },
   "debugLogProbes": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: startup diagnostic and iOS offline/ctor prefix filters are implemented. Detailed unported offline/compatibility event coverage remains pending.",
+    "where": "extension/diagnostics + AfterglowActivity + AfterglowSettingsPatch"
   },
   "debugHUDEnabled": {
-    "status": "todo"
+    "status": "done",
+    "note": "App-local translucent HUD shows the latest 25 entries, attaches to the foreground activity, restores after cold start, follows exact raw drag deltas and clamps on rotation. Double tap clears; a stationary 600-ms hold hides and disables it. Master OFF removes it; HUD ON enables logging. Final build92 corrects the development half-distance drag finding and verifies gestures, native playback, rotation and independent base lifecycle.",
+    "where": "extension/diagnostics + AfterglowActivity + AfterglowSettingsPatch"
   },
   "redProgressBar": {
     "status": "todo",
@@ -828,13 +846,19 @@
     "status": "todo"
   },
   "action.resetSettings": {
-    "status": "todo"
+    "status": "done",
+    "where": "ui/AfterglowActivity.java + ui/AppRestart.java + settings/AfterglowPrefs.java",
+    "note": "Actual warning No preserves settings and PID; Yes clears the Afterglow domain, flushes it, and relaunches YouTube in a new process. Advanced and changed Shorts layer return to defaults. Normal settings action verifies values after native restart; failed explicit test navigation retained. Delivered build89, Android16."
   },
   "action.clearCache": {
-    "status": "todo"
+    "status": "done",
+    "where": "ui/AfterglowActivity.java + ui/AppRestart.java + settings/AfterglowPrefs.java",
+    "note": "Actual About action reduces app cache from 155.4 MB to zero asynchronously, preserving Advanced and the changed Shorts preference. Done behavior matches iOS. Reviewed on delivered build89."
   },
   "action.clearDebugLog": {
-    "status": "todo"
+    "status": "done",
+    "note": "Serial clear removes the ring, current file and backup. The About action and HUD double tap clear immediately visible text; the next ordered share follows the translated empty-log path. Real-file tests and reviewed full/independent emulator observations pass.",
+    "where": "extension/diagnostics + AfterglowActivity + AfterglowSettingsPatch"
   },
   "destination.controlCenter": {
     "status": "todo"

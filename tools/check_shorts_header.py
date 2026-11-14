@@ -13,7 +13,7 @@ sources = [EXT / "Afterglow.java", EXT / "InstalledTweaks.java", ROOT / "tools/j
 sources += sorted((EXT / "settings").glob("*.java")) + sorted((EXT / "i18n").glob("*.java"))
 sources += sorted((EXT / "litho").rglob("*.java"))
 with tempfile.TemporaryDirectory() as out:
-    subprocess.run([str(JDK / "bin/javac"), "-encoding", "UTF-8", "-nowarn", "-classpath", str(ANDROID), "-d", out]
+    subprocess.run([str(JDK / "bin/javac"), "-encoding", "UTF-8", "-nowarn", "-classpath", str(ANDROID), "-sourcepath", str(EXT.parents[2]), "-d", out]
                    + list(map(str, sources)), check=True)
     subprocess.run([str(JDK / "bin/java"), "-cp", out + os.pathsep + str(ANDROID),
                     "app.afterglow.extension.litho.ShortsHeaderPolicyTest"], check=True)

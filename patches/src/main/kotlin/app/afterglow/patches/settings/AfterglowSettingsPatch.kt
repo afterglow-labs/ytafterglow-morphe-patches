@@ -111,6 +111,19 @@ internal val afterglowSettingsPatch = resourcePatch(
         document("AndroidManifest.xml").use { document ->
             val application = document.getElementsByTagName("application").item(0) as Element
 
+            val providerName = "app.afterglow.extension.diagnostics.DebugLogProvider"
+            val providers = document.getElementsByTagName("provider")
+            if ((0 until providers.length).none {
+                    (providers.item(it) as Element).getAttribute("android:name") == providerName
+                }) {
+                application.appendChild(document.createElement("provider").apply {
+                    setAttribute("android:name", providerName)
+                    setAttribute("android:authorities", document.documentElement.getAttribute("package") + ".afterglow.debuglog")
+                    setAttribute("android:exported", "false")
+                    setAttribute("android:grantUriPermissions", "true")
+                })
+            }
+
             val activities = document.getElementsByTagName("activity")
             val restartName = "app.afterglow.extension.ui.RestartActivity"
             if ((0 until activities.length).none {

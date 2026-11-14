@@ -42,6 +42,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import app.afterglow.extension.Afterglow;
+import app.afterglow.extension.diagnostics.DebugLog;
+import app.afterglow.extension.diagnostics.DebugLogShare;
 import app.afterglow.extension.i18n.L10n;
 import app.afterglow.extension.settings.AfterglowPrefs;
 import app.afterglow.extension.settings.Descriptor;
@@ -95,6 +97,7 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DebugLog.initialize(this);
         try {
             // The patch declares the activity with Theme.DeviceDefault.DayNight, whose action bar
             // would show the app label ("YouTube") above Afterglow's own navigation bar.
@@ -679,10 +682,10 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
                         }, null);
                 break;
             case SHARE_DEBUG_LOG:
-                // Android has no Afterglow log store yet, which is iOS's empty-log path.
-                toast(L10n.get("NoDebugLog", "No log yet — enable Debug Logging first."));
+                DebugLogShare.show(this);
                 break;
             case CLEAR_DEBUG_LOG:
+                DebugLog.clear();
                 toast(L10n.get("Done", "Done"));
                 break;
             case USE_DEFAULT_COLOR:

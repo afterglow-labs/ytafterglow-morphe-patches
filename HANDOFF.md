@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-14, Shorts player-layer checkpoint
+> Updated: 2026-11-14, About and diagnostics checkpoint
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, private)
-> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. Shorts fullscreen combines native pinches, expanded content, idle overlays and continuity between reels. Shorts-only mode adds native live/cold routing, independent hidden tabs and its two-finger exit. The independent Shorts layout tweak can now hide the native player layer while retaining video and gestures. There are 28 named tweaks. Key-level parity remains conservative at 117 done / 4 n/a / 78 todo, including partial native coverage; the full port is not complete.
+> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. Shorts fullscreen combines native pinches, expanded content, idle overlays and continuity between reels. Shorts-only mode adds native live/cold routing, independent hidden tabs and its two-finger exit. The independent Shorts layout tweak can now hide the native player layer while retaining video and gestures. There are 28 named tweaks. Key-level parity remains conservative at 123 done / 4 n/a / 72 todo, including partial native coverage; the full port is not complete.
 
 ## Goal
 
@@ -10,6 +10,45 @@ Port every YTAfterglow iOS tweak to Android YouTube **21.43.523**, exactly as it
 - Each Afterglow feature group is a separately named tweak in Morphe's list (names from `tools/tweaks.json`).
 - An Afterglow settings page lives inside YouTube's settings and shows only rows for tweaks that are installed and implemented.
 - Plumbing such as GmsCore/microG sign-in comes from Morphe's own "GmsCore support" patch, ticked in the same run.
+
+## Verified About actions and diagnostics checkpoint
+
+Build92 completes the base debug log store, read-only file sharing and app-local
+HUD. It keeps a 200-entry ring, rotates its private file at one MiB, redacts
+messages before queuing, and records real native player and preference events.
+The HUD supports exact dragging, screen-edge/rotation clamping, double-tap clear
+and a stationary 600-ms hold to hide. Master OFF also turns Firehose and HUD OFF;
+HUD ON enables logging. File sharing grants only the chosen snapshot for reading.
+
+91 log storage/policy checks, 427 settings checks and strict 28/29/30/1/3 patch
+selections pass. All 251 production inputs and bundle integrity match. Twenty-six
+full-install and fifteen independent-install observations are visually reviewed.
+They verify actual decoded playback/pause/resume, exact dragging and rotation,
+read-only share receipts, independent cold persistence, clear and actual reset.
+Defaults are restored; the final full APK is hash-verified and stopped. Final
+full and independent logs have no app/extension errors or crashes.
+
+Build91 has 34 reviewed development observations, including four limited or
+incorrect-test observations kept with their scopes. Its valid continuations
+verify category filtering, Firehose override, cold playback and persistent file
+sharing. A real half-distance drag defect was corrected in build92. The build90
+Intent.setClipData chaining compile error, failed QA navigation/taps, a receiver
+read race and one explicit WSL adb launch failure are preserved. Final wrapper
+interruptions also remain recorded; bounded continuation verified the already
+performed reset and resumed the independent run without repeating actions.
+
+The exact delivered player-layer89 APK also verifies Advanced visibility, cache
+reduction from 155.4 MB to zero while retaining settings, reset cancellation and
+confirmed reset into a new process. Fourteen valid observations are reviewed;
+one incorrect native-screen navigation observation remains excluded.
+
+Network Firehose and events for unported download, Premium controls and offline
+features remain pending. PiP routing is connected but activation is unverified.
+Physical devices remain untested. Evidence and delivery provenance are in
+execution-92.json, diagnostics-audit-92.json and delivery-92.json under
+port-completion-20261113. See docs/diagnostics.md. The full Android port remains
+active; continue preferences transfer, including archived iOS colors and nested
+saved-theme/semantic records, then the remaining native feature mappings.
 
 ## Verified native Shorts player-layer checkpoint
 

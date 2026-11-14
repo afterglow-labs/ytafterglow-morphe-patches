@@ -22,7 +22,7 @@ def main():
     sources += sorted((EXT / "i18n").glob("*.java"))
     sources += [ROOT / "tools/jvm/ThemeEngineTest.java"]
     with tempfile.TemporaryDirectory(prefix="afterglow-theme-test-") as directory:
-        subprocess.run([str(jdk / "bin/javac"), "-encoding", "UTF-8", "-classpath", str(android), "-d", directory]
+        subprocess.run([str(jdk / "bin/javac"), "-encoding", "UTF-8", "-classpath", str(android), "-sourcepath", str(EXT.parents[2]), "-d", directory]
                        + [str(p) for p in sources], check=True)
         subprocess.run([str(jdk / "bin/java"), "-cp", directory + os.pathsep + str(android),
                         "app.afterglow.extension.settings.ThemeEngineTest"], check=True, timeout=60)

@@ -9,6 +9,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import java.lang.ref.WeakReference;
+import app.afterglow.extension.diagnostics.DebugLog;
 
 /**
  * Process-wide entry point for the Afterglow extension. Patches call
@@ -39,6 +40,7 @@ public final class Afterglow {
     public static void onMainActivityCreate(Activity activity) {
         setContext(activity);
         mainActivity = new WeakReference<>(activity);
+        DebugLog.initialize(activity);
     }
 
     public static Activity mainActivity() {
@@ -82,5 +84,6 @@ public final class Afterglow {
     /** Logs an exception without ever throwing back into YouTube's code. */
     public static void error(String where, Throwable error) {
         Log.e(TAG, where, error);
+        DebugLog.error(where, error);
     }
 }

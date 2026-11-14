@@ -255,7 +255,7 @@ def run_visibility_test() -> None:
                EXT / "sponsorblock/SponsorSettings.java", test]
     sources += sorted((EXT / "settings").glob("*.java")) + sorted((EXT / "i18n").glob("*.java"))
     with tempfile.TemporaryDirectory() as out:
-        compiled = subprocess.run([str(javac), "-encoding", "UTF-8", "-nowarn", "-classpath", str(android_jar), "-d", out]
+        compiled = subprocess.run([str(javac), "-encoding", "UTF-8", "-nowarn", "-classpath", str(android_jar), "-sourcepath", str(EXT.parents[2]), "-d", out]
                                   + [str(source) for source in sources], capture_output=True, text=True)
         if compiled.returncode:
             fail("SettingsVisibilityTest does not compile:\n" + compiled.stderr[-3000:])
