@@ -386,6 +386,7 @@ public final class TweakCatalog {
             "noVoiceSearchButton",
             "noWatermarks",
             "noYTLogo",
+            "persistentProgressBar",
             "portraitFullscreen",
             "premiumYTLogo",
             "redProgressBar",

@@ -238,3 +238,11 @@
 - Eight full-install and four independent-install observations pass, with visually reviewed native graph restoration, continued seeking, actual reset and decoded playback. No Afterglow errors or target-app crashes. Crash buffers are empty.
 - Earlier QA overruns/wrong-fixture attempts are preserved separately. Final runtime wrappers exit 0. Full candidate/defaults restored, Advanced off, app stopped. Physical devices, live/DVR, Shorts and casting untested; isolated Glow settings are package verified only.
 - Parity: 108 done / 4 n/a / 87 todo; 28 named tweaks. Delivery provenance: delivery-71.json. Continue persistent progress and the full port.
+
+## 2026-11-14 — Persistent native progress
+
+- Build 72 adds Seek Bar's Persistent progress bar, default OFF. Only three native render fractions are wrapped; duration guards, animators, controls and input state remain native.
+- Fullscreen ON keeps the native red segmented track visible with controls hidden; OFF restores native hiding. Portrait retains its already-visible collapsed indicator, including pause, cold start and reset.
+- 382 settings checks; strict standalone/GmsCore/streaming and isolated Seek bar/Glow/Seek bar streaming 28/29/30/1/1/3 all pass. Nine full and five isolated runtime observations are visually verified, with decoded playback and actual settings restoration. Logs have no Afterglow errors or crashes.
+- Initial portrait expectations incorrectly required recoloring/expansion. The ineffective alpha hook from 73 and diagnostic code from 74 are removed; all 232 source hashes match the tested 72 bundle. Original assessments remain in evidence. Full QA wrapper 143 was completed by a successful bounded finisher; isolated runtime exits 0.
+- Parity: 109 done / 4 n/a / 86 todo. Provenance: delivery-72.json. Physical-device/live/DVR/Shorts/casting coverage remains untested. Continue native Shorts controls and the full port.

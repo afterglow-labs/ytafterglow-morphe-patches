@@ -535,3 +535,20 @@ seeking. Six strict selections pass (28/29/30/1/1/3), with 365 settings checks.
 The shared SeekBarTheme dependency now includes Afterglow settings for isolated
 Seek bar and Glow; this does not add app-wide resource color replacements.
 Physical-device, live/DVR, Shorts and casting behavior remain untested.
+
+## Persistent native progress
+
+`Persistent progress bar` is independently owned by Seek bar and defaults OFF.
+The `timed_markers_width` constructor identifies the native track. Its final
+`onDraw` fraction read, center-position read and marker-layout read are overridden
+only while enabled. Signature, field type, receiver and expected read counts are
+checked before patching. The first duration guard and the native input/animation
+controller are unchanged.
+
+Build 72 verifies the fullscreen segmented track stays visible while controls
+hide and disappears normally again when OFF. Portrait already shows a collapsed
+indicator; no recoloring or expansion is required. Pause, cold startup, reset,
+independent Seek bar install and decoded playback pass (nine full and five isolated
+observations). Six strict selections and 382 settings checks pass. Experimental
+whole-view alpha overriding and all diagnostics are removed. Physical devices,
+live/DVR, Shorts and casting remain untested.

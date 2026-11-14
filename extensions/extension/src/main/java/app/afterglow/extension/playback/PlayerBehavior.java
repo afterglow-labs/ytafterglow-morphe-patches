@@ -7,6 +7,12 @@ import app.afterglow.extension.settings.LiteMode;
 public final class PlayerBehavior {
     private PlayerBehavior() {}
 
+    /** Keep the native track visible without changing its animator or control state. */
+    public static float progressVisibility(float nativeFraction) {
+        return InstalledTweaks.has("seek-bar") && LiteMode.effectiveBool("persistentProgressBar")
+                ? 1f : nativeFraction;
+    }
+
     /** Hide only the most-replayed graph; native seeking and previews stay available. */
     public static boolean hideHeatwaves() {
         return InstalledTweaks.has("seek-bar") && LiteMode.effectiveBool("hideHeatwaves");

@@ -116,6 +116,29 @@ public final class SettingsVisibilityTest {
         check("gradient switch reflects explicit false", false, SettingsBehavior.switchValue(gradient));
 
         install();
+        AfterglowPrefs.setBool("persistentProgressBar", true);
+        check("uninstalled seek owner preserves hidden progress", 0, Float.floatToIntBits(PlayerBehavior.progressVisibility(0f)));
+        check("uninstalled seek owner hides persistent control", false, SettingsBehavior.keyVisible("persistentProgressBar"));
+        install("glow");
+        check("glow does not force progress visibility", Float.floatToIntBits(.4f), Float.floatToIntBits(PlayerBehavior.progressVisibility(.4f)));
+        install("seek-bar");
+        check("seek owner exposes persistent control", true, SettingsBehavior.keyVisible("persistentProgressBar"));
+        for (float nativeFraction : new float[]{0f, .25f, .5f, 1f}) {
+            check("persistent native track is visible", Float.floatToIntBits(1f), Float.floatToIntBits(PlayerBehavior.progressVisibility(nativeFraction)));
+        }
+        AfterglowPrefs.remove("persistentProgressBar");
+        for (float nativeFraction : new float[]{0f, -0f, .25f, .5f, 1f, Float.NaN}) {
+            check("default progress preserves native fraction bits", Float.floatToIntBits(nativeFraction), Float.floatToIntBits(PlayerBehavior.progressVisibility(nativeFraction)));
+        }
+        AfterglowPrefs.setBool("liteModeEnabled", true);
+        check("Lite Mode does not force persistent track", 0, Float.floatToIntBits(PlayerBehavior.progressVisibility(0f)));
+        AfterglowPrefs.setBool("persistentProgressBar", true);
+        check("Lite Mode honors explicit persistent track", Float.floatToIntBits(1f), Float.floatToIntBits(PlayerBehavior.progressVisibility(0f)));
+        AfterglowPrefs.setBool("liteModeEnabled", false);
+        AfterglowPrefs.remove("persistentProgressBar");
+        check("persistent reset restores native hidden track", 0, Float.floatToIntBits(PlayerBehavior.progressVisibility(0f)));
+
+        install();
         AfterglowPrefs.setBool("hideHeatwaves", true);
         check("uninstalled seek bar preserves heatwaves", false, PlayerBehavior.hideHeatwaves());
         check("uninstalled seek bar hides heatwave setting", false, SettingsBehavior.keyVisible("hideHeatwaves"));

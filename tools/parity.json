@@ -112,7 +112,9 @@
     "status": "todo"
   },
   "persistentProgressBar": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/PersistentProgressPatch.kt + playback/PlayerBehavior.java",
+    "note": "Build 72: Independent Seek bar setting, default OFF, preserves three native track render fractions without changing animator, duration guards or input state. Android 16 confirms fullscreen ON keeps the red segmented track and OFF restores hiding; portrait already has a native collapsed indicator in both states. Pause, cold start, actual page reset and decoded playback pass. Nine full-install and five isolated-install observations; strict 28/29/30/1/1/3 and 382 settings checks pass. All 232 production inputs match. Extra alpha hook and diagnostic source removed. No Afterglow errors or crashes. Physical devices, live/DVR, Shorts and casting untested."
   },
   "hideHeatwaves": {
     "status": "done",

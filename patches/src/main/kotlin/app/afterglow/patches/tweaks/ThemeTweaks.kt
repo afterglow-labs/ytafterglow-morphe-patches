@@ -45,10 +45,11 @@ val glowTweakPatch = bytecodePatch(
 @Suppress("unused")
 val seekBarTweakPatch = bytecodePatch(
     name = "Seek bar",
-    description = "Customizes native player tracks and scrubbers, and controls the most-replayed graph.",
+    description = "Customizes native player tracks and scrubbers, and controls persistent progress and the most-replayed graph.",
     default = true,
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
-    dependsOn(seekBarThemePatch, app.afterglow.patches.playback.heatwavesHookPatch)
+    dependsOn(seekBarThemePatch, app.afterglow.patches.playback.heatwavesHookPatch,
+        app.afterglow.patches.playback.persistentProgressHookPatch)
     execute { markTweakInstalled("seek-bar") }
 }

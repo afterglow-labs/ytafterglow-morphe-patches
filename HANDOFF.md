@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-14, native replay-graph checkpoint
+> Updated: 2026-11-14, persistent native progress checkpoint
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, private)
-> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. There are 28 named tweaks. Key-level parity remains conservative at 108 done / 4 n/a / 87 todo, including partial native coverage; the full port is not complete.
+> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. There are 28 named tweaks. Key-level parity remains conservative at 109 done / 4 n/a / 86 todo, including partial native coverage; the full port is not complete.
 
 ## Goal
 
@@ -10,6 +10,41 @@ Port every YTAfterglow iOS tweak to Android YouTube **21.43.523**, exactly as it
 - Each Afterglow feature group is a separately named tweak in Morphe's list (names from `tools/tweaks.json`).
 - An Afterglow settings page lives inside YouTube's settings and shows only rows for tweaks that are installed and implemented.
 - Plumbing such as GmsCore/microG sign-in comes from Morphe's own "GmsCore support" patch, ticked in the same run.
+
+## Verified Persistent progress bar checkpoint
+
+Build 72 adds the independent Seek bar preference, default OFF. Three narrowly
+matched native render-fraction reads keep the track drawn; native duration guards,
+animators, control visibility, seeking and accessibility state remain intact.
+In fullscreen, ON keeps the red segmented track visible after controls hide;
+OFF restores YouTube's normal hiding. Portrait already has a thin collapsed
+indicator, which remains visible in both states. The iOS setting requires visible
+progress, not a different portrait color or thickness.
+
+382 settings checks and six strict selections (28/29/30/1/1/3) pass. Nine full
+and five isolated-install observations pass, including pause, cold ON, actual
+Seek Bar reset, independent settings routing and advancing decoded frames.
+No Afterglow errors or app crashes; crash buffers are empty. Defaults and Advanced
+off restored, full candidate restored, app stopped. All 232 production inputs
+match build 72 exactly; ZIP/signature/install pass.
+
+The initial QA assessment incorrectly required an expanded red portrait bar.
+Candidate 73's extra whole-view alpha hook had no effect; diagnostic 74 confirmed
+the portrait view and its parents already have alpha 1. Both experimental changes
+were removed, restoring the exact source tested in 72. Original assessments and
+raw diagnostic evidence are preserved. The full runtime wrapper exited 143 during
+page reset; its finisher exited 0 and completed the ninth case. Isolated runtime
+exits 0. Build and all strict wrappers exit 0.
+
+Evidence: progress-result-72.json, progress-isolated-result-72.json,
+progress-visual-review-72.json, progress-log-audit-72.json and execution-72.json
+under port-completion-20261113. Delivery provenance is in delivery-72.json.
+Physical devices, live/DVR, Shorts and casting remain untested.
+Key parity: 109 done / 4 n/a / 86 todo; the full port remains active.
+
+Next: native Shorts Search/Camera/More/Lens controls. Their native header icon
+and paused-Lens boundaries are mapped in next-shorts-implementation-notes.txt;
+confirm live hide/restore and independent owner behavior before claiming runtime.
 
 ## Verified Classic video quality checkpoint
 
@@ -115,10 +150,7 @@ Physical devices, live/DVR, Shorts and casting remain untested. Glow's isolated
 settings resources are package verified; isolated Glow runtime was not exercised.
 Key parity: 108 done / 4 n/a / 87 todo; 28 named tweaks. Full port incomplete.
 
-Continue persistent progress bar: the mapped native render fraction controls
-track height and paint alpha. Its control/input and animation state must stay
-native. Draft and bounded evidence are in PersistentProgressPatch.draft.kt and
-next-persistent-implementation-notes.txt; no production implementation yet.
+Persistent progress is completed in the verified checkpoint above.
 
 ## Verified native Hide Subbar checkpoint
 
