@@ -1,0 +1,52 @@
+# Android port execution ledger
+
+## Session Ledger Checkpoint — 2026-11-13
+
+- Current user intent: finish the Android port, continuing autonomously through the remaining implementation and validation. Do not stop at another batch summary or ask the user to restart the work.
+- Target: YouTube 21.43.523; standalone Afterglow patch bundle alongside official GmsCore support. iOS source is the behavior specification.
+- Verified starting state: clean `main`, origin `afterglow-labs/ytafterglow-morphe-patches`, commit `9e10493a90caa0235b7ad93a2a4eb5119df59da1` pushed.
+- Existing proof: native solid themes, 30 presets, light/dark foundation, restart and reset; 359 JVM checks; strict standalone and GmsCore application; Android 16 emulator.
+- Outstanding scope: tracked by `tools/parity.json` (139 todo at start), including Theme Studio editor/library/transfer, native gradients, typography/glow, player/seek-bar controls, tabs, SponsorBlock, Control Center, downloads and other destinations.
+- Next action: complete the semantic theme document, durable custom library and editor using the iOS file format; then connect native rendering and continue the parity list.
+- Constraints: preserve defaults, gate each feature on its installed named tweak, fail open; use strict `--validate` patch testing. Put build/runtime evidence on C:. Commit and push directly to main. No physical device is required for emulator validation.
+
+## Implementation checkpoint
+
+- Added `ThemeDocument`, bounded JSON codec, semantic-record reconciliation and atomic saved-library operations. Theme engine: 400 checks pass. Existing settings visibility: 67 checks pass.
+- Theme Studio now opens a draft editor with all 20 roles, contrast values, foundation, gradient, glow and typography; duplicate, rename, delete, import/export flows are wired. File import supports JSON and XML plist. Cancellation does not change active settings.
+- Added native view attachment, gradient transparency/host background, semantic text-span colors and typography hooks. Copied the 43 existing bundled iOS font files into patch resources (16.7 MB). Android system counterparts are used for Apple system-only families; this is not exact Apple font fidelity.
+- Build 02 compiled and passed all 20 selected patches with GmsCore (`combined-02`). Verified 37 text span constructors and 14 StaticLayout builder calls. Signed APK installed successfully on emulator-5600.
+- Emulator UI proof so far: preset Duplicate & Edit; rename draft to QA Theme; background color changes to #172336 with preview/contrast updates. Save/restart/library and native gradient verification are in progress.
+- Build 03 failed strict validation: Shorts resolves its color across two branches outside the initial search window. Fixed register-lifetime tracing; build 04 and build 05 each pass all 22 selected patches with GmsCore.
+- Custom theme save/restart/persistence verified: QA Theme, #172336 background, custom identity retained in My Themes. JSON exported through SAF and parsed on the host with gradient, typography and glow fields intact.
+- Gradient test exposed a launch crash in MediaRouteButton: Android contrast calculation rejects translucent theme backgrounds. Resource backgrounds now stay opaque (with compositing for translucent user colors); transparency is restricted to page views and Litho drawables. Build 05 launches with an empty crash log. Remaining opaque containers were identified from the actual UI tree and handled in build 07; native gradient visibility is still being checked.
+- Build 06 adds verified native seek-bar geometry access, track glow, custom PNG scrubber, and 200ms transitions. Typed color/image pickers replace the placeholders. Build 07 adds page-container clearing and settings typography. Combined strict runs are in progress. Current installed emulator build is 05.
+- 433 JVM theme/motion/glow checks and 67 visibility checks pass. Added a regression check for the opaque resource/transparent drawing boundary. New controls are tracked as partial while runtime coverage is checked; internal color/image keys now have an explicit implementation map validated by check_tweaks.
+- Evidence root: `/mnt/c/Users/Corey/ytag-scratch/android/port-completion-20261113/`. AVD YTAG_Glow_Check is running on port 5600. The connected physical device has not been touched.
+- All changes after 9e10493 are uncommitted. Continue runtime gradient/font/glow/player and file import checks, finish native role coverage, then update documentation, commit/push verified work and continue the remaining parity list. Do not report the full port finished.
+
+## Session Ledger Checkpoint — 2026-11-14
+
+- Latest user steering was conversational ("it made me laugh"); Android work continues under existing authorization. No permission or batch-selection question is pending.
+- Build 09 passed all 22 selected patches with GmsCore. Installed and verified native feed gradient, imported Share Tech Mono on tabs/settings, native tab glow, theme import/restart, and video playback. Feed titles still used YouTube's own font registry; added a verified Laszn font-return adapter for styled text.
+- Replaced banded concentric seek glow with cached radial/linear falloff and preserved native paint alpha. Native icon overlays now follow visibility, ancestor alpha, selection, and animated drawable changes.
+- Build 11 passes strict --validate both standalone (21 patches) and with GmsCore (22). Both verifier processes exited 0. Its signed APK installed on emulator-5600; final runtime checks are active.
+- 438 theme checks and 67 settings checks pass. Custom image picker saved a 64x32 PNG; the size picker is set to 100 percent for runtime inspection. Draft typography preview is the only source change after build 11.
+- Font provenance verified against the current iOS spec checkout: 43 byte-identical files, 16,650,840 bytes; docs/font-assets.json records hashes and source commit.
+- Next: verify registry fonts and smooth player glow, build the final preview fix, confirm cancel/rename/delete and reset, update current docs/parity evidence, commit/push and deliver the uniquely named .mpp. Full port still includes the remaining parity list; no claim of full completion.
+
+## Final theme validation checkpoint
+
+- Build 12 passes strict application: 21/21 standalone and 22/22 with GmsCore. 438 theme checks and 83 visibility checks pass.
+- Runtime proof includes native fonts in feed/watch/comments/settings, full custom scrubber above track bloom, seeking and portrait/fullscreen controls. JSON and XML theme imports, export, draft discard, rename, delete, typography/seek reset and system color reset all passed. The normal YouTube settings entry works; the three saved QA themes survive reset.
+- The crash buffer is empty, but the detailed YTAfterglow log exposed repeated nonfatal software-canvas errors from a fullscreen video thumbnail (YouTube's bitmap-backed Lvpn drawable). Do not publish build 12 as error-free. Glow/tint selection is now restricted to verified player icon resource IDs; bitmap artwork is skipped. Unsupported drawables are remembered weakly so a failed mask is not retried every frame, and failed allocations are recycled.
+- Build 14 contains that correction (build 13 was intermediate). Next: strict validate build 14, install, repeat the fullscreen trigger and inspect the correct YTAfterglow log tag, then commit/push and deliver.
+- After delivery, continue the unfinished player features and remaining parity list under the existing authorization. The complete Android port is still unfinished.
+
+- Build 14 passed both strict runs (21 standalone, 22 with GmsCore), verified its signature and installed successfully. The fullscreen thumbnail trigger was repeated with QA Glow Mono active; glow still renders, the video thumbnail keeps its native pixels, runtime-fullscreen-14.log has no errors and crash-fullscreen-14.log is empty.
+- Final theme candidate: build-14/YTAfterglow-0.1.0-local.mpp, 8,480,998 bytes, SHA-256 6a3d114e3281790836fafd3a4b819e708b89a39626d49a3f2257393364ab756a. Build input hashes are recorded in source-build-14.json under the evidence root.
+- Ready to commit/push this validated theme checkpoint and create its delivery copy; the next active work is the remaining player/seek/ambient functionality.
+
+- Build 14 eliminated the hardware-bitmap errors, but its screenshot exposed an overbroad bitmap exclusion that also removed glow from the verified fullscreen button. Build 15 keeps verified player icon IDs eligible, while excluding anonymous artwork. Both strict build-15 runs now pass (21/21 and 22/22); final signing/install/fullscreen checks are in progress.
+
+- Build 15 is the validated theme delivery candidate: 8,481,002 bytes, SHA-256 4dea9bc06062fdb2985cbcc691d12db21c549444b1ca3836a7bad234a52fc3c8. Both strict runs exited 0, signature verification and installation passed, and all 187 recorded build inputs still match source. The fullscreen retest restores the verified bitmap icon's glow, leaves the thumbnail unchanged, and has no YTAfterglow errors or crashes. Screenshots/logs are fullscreen-controls-15.png, runtime-fullscreen-15.log and crash-fullscreen-15.log.

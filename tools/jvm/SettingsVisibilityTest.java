@@ -55,7 +55,7 @@ public final class SettingsVisibilityTest {
             // Destinations whose features are not ported yet stay hidden.
             expectHidden(c, "root.liteMode", "root.aiHome", "root.abLab", "root.vault", "root.tools");
             check(c + "theme presets available", true, SettingsBehavior.shown(SettingsBehavior.row("themes.themeStudio")));
-            expectSearch(c, advanced, list("Advanced", "Theme Presets"), list("LiteMode", "GradientStart", "PrimaryText"));
+            expectSearch(c, advanced, list("Advanced", "Theme Presets", "GradientStart", "PrimaryText"), list("LiteMode"));
         }
 
         // ---- case 2: only "Shorts layout and buttons"
@@ -82,6 +82,31 @@ public final class SettingsVisibilityTest {
             List<String> hiddenSearch = advanced ? list("RemoveAds", "HideShortsLogo", "CommentsHeader") : list("HideShortsLike", "RemoveAds");
             expectSearch(c, advanced, shownSearch, hiddenSearch);
         }
+
+        // Theme effects remain independently selectable, including internal color/image keys.
+        install("theme-studio");
+        check("studio alone opens editor", true, SettingsBehavior.keyVisible("destination.themeStudio"));
+        check("studio alone hides Glow Lab", false, SettingsBehavior.keyVisible("destination.glowLab"));
+        check("studio alone hides typography", false, SettingsBehavior.keyVisible("theme_fontMode"));
+        check("studio alone hides native scrubber image", false, SettingsBehavior.keyVisible("seekBarScrubberImage"));
+        install("glow");
+        check("glow alone opens Glow Lab", true, SettingsBehavior.keyVisible("destination.glowLab"));
+        check("glow alone exposes global color", true, SettingsBehavior.keyVisible("theme_glowColor"));
+        check("glow alone exposes layers", true, SettingsBehavior.keyVisible("theme_glowLayers"));
+        check("glow alone hides seek gradient", false, SettingsBehavior.keyVisible("seekBarGradient"));
+        install("typography");
+        check("typography alone exposes fonts", true, SettingsBehavior.keyVisible("theme_fontMode"));
+        check("typography alone hides Theme Studio", false, SettingsBehavior.keyVisible("destination.themeStudio"));
+        install("seek-bar");
+        check("seek bar alone exposes image", true, SettingsBehavior.keyVisible("seekBarScrubberImage"));
+        check("seek bar alone exposes played color", true, SettingsBehavior.keyVisible("theme_seekBar"));
+        check("unimplemented live scrubber hidden", false, SettingsBehavior.keyVisible("theme_seekBarScrubberLive"));
+        check("unimplemented heatwaves hidden", false, SettingsBehavior.keyVisible("hideHeatwaves"));
+        Row gradient = SettingsBehavior.row("effects.seekBarGradient");
+        AfterglowPrefs.remove("seekBarGradient");
+        check("gradient switch reflects effective default", true, SettingsBehavior.switchValue(gradient));
+        AfterglowPrefs.setBool("seekBarGradient", false);
+        check("gradient switch reflects explicit false", false, SettingsBehavior.switchValue(gradient));
 
         System.out.println((failures == 0 ? "PASS" : "FAIL") + " settings visibility: " + (checks - failures) + "/" + checks + " checks");
         System.exit(failures == 0 ? 0 : 1);

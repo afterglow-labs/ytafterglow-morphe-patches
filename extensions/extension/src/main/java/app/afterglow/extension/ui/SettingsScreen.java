@@ -21,6 +21,9 @@ abstract class SettingsScreen {
     /** Called after the screen has been rendered on top of the stack. */
     void onShown() {}
 
+    /** Return true when the screen handles back itself, e.g. an unsaved editor draft. */
+    boolean onBack() { return false; }
+
     /** True for screens that iOS builds as UIKit inset-grouped tables (search, tab editor). */
     boolean grouped() {
         return false;

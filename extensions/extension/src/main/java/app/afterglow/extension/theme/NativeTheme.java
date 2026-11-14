@@ -10,6 +10,7 @@ import app.afterglow.extension.InstalledTweaks;
 import app.afterglow.extension.settings.NativeThemeColors;
 import app.afterglow.extension.settings.ThemePalette;
 import app.afterglow.extension.settings.ThemeStore;
+import app.afterglow.extension.settings.ThemeRole;
 
 /** Native views cache resolved colors: one consistent palette until the requested app restart. */
 public final class NativeTheme {
@@ -18,6 +19,16 @@ public final class NativeTheme {
     private static volatile Boolean nativeDark;
 
     private NativeTheme() {}
+
+    public static ThemePalette activePalette() {
+        return InstalledTweaks.has("theme-studio") ? palette : null;
+    }
+
+    public static int foregroundColor(int original) {
+        ThemePalette active = activePalette();
+        if (active == null) return original;
+        return NativeThemeColors.foreground(active, original, nativeDark != null ? nativeDark : !active.lightFoundation);
+    }
 
     public static void onMainActivityCreate(Activity activity) {
         wrapContext(activity);

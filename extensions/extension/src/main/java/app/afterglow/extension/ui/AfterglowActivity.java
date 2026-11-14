@@ -51,6 +51,9 @@ import app.afterglow.extension.settings.Registry;
 import app.afterglow.extension.settings.TabStore;
 import app.afterglow.extension.settings.ThemeColors;
 import app.afterglow.extension.settings.ThemeStore;
+import app.afterglow.extension.settings.ThemeDocument;
+import app.afterglow.extension.settings.ThemeJson;
+import app.afterglow.extension.settings.ScrubberImage;
 import app.afterglow.extension.ui.SettingsModel.Page;
 import app.afterglow.extension.ui.SettingsModel.PageType;
 import app.afterglow.extension.ui.SettingsModel.Picker;
@@ -69,6 +72,10 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
 
     private static final int REQUEST_EXPORT = 0x7A01;
     private static final int REQUEST_IMPORT = 0x7A02;
+    private static final int REQUEST_THEME_EXPORT = 0x7A03;
+    private static final int REQUEST_THEME_IMPORT = 0x7A04;
+    private static final int REQUEST_SCRUBBER_IMAGE = 0x7A05;
+    private String pendingThemeExport;
 
     private final ArrayList<SettingsScreen> stack = new ArrayList<>();
     private final Map<String, View> rowViews = new HashMap<>();
@@ -93,6 +100,7 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
             // would show the app label ("YouTube") above Afterglow's own navigation bar.
             requestWindowFeature(Window.FEATURE_NO_TITLE);
             views = new RowViews(this, RowViews.Palette.from(getResources().getConfiguration()));
+            if (savedInstanceState != null) pendingThemeExport = savedInstanceState.getString("themeExport");
             showFrame();
             stack.add(screenFor(SettingsBehavior.page(SettingsSpec.ROOT)));
             String destination = getIntent() != null ? getIntent().getStringExtra(EXTRA_DESTINATION) : null;
@@ -130,8 +138,14 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
 
     /** Back: pop one settings screen, or close the settings from the root. */
     void handleBack() {
+        if (!stack.isEmpty() && top().onBack()) return;
         if (stack.size() > 1) pop();
         else finish();
+    }
+
+    @Override protected void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+        state.putString("themeExport", pendingThemeExport);
     }
 
     /**
@@ -533,7 +547,7 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
                 if (row.detail == SettingsModel.Detail.CACHE_SIZE && cacheSize == null) loadCacheSize();
                 String detail = SettingsBehavior.detail(row, cacheSize);
                 String description = "destination.themeStudio".equals(row.registryKey)
-                        ? "30 presets and native YouTube colors. Android 14 or newer."
+                        ? "Presets, custom themes, a color editor, and your theme library."
                         : SettingsBehavior.text(row.description);
                 view = views.detailRow(row.displayTitle(), description, detail, true, v -> onRowTap(row));
                 break;
@@ -583,6 +597,8 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
             case DESTINATION:
                 if ("destination.themeStudio".equals(row.registryKey)) {
                     push(new ThemeStudioScreen(this));
+                } else if ("destination.glowLab".equals(row.registryKey)) {
+                    push(new GlowLabScreen(this));
                 } else if (row.target == SettingsModel.Target.PAGE) {
                     push(screenFor(SettingsBehavior.page(row.targetPage)));
                 } else {
@@ -593,12 +609,29 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
                 openUrl(row.url);
                 break;
             case CUSTOM:
-                // Color and photo pickers are not ported: placeholder titled like the iOS row.
-                push(new PlaceholderScreen(row.displayTitle(), SettingsBehavior.text(row.description)));
+                if (row.custom == SettingsModel.Custom.COLOR_PICKER) colorDialog(row);
+                else if (row.custom == SettingsModel.Custom.IMAGE_PICKER)
+                    startDocument(new Intent(Intent.ACTION_OPEN_DOCUMENT).setType("image/*").addCategory(Intent.CATEGORY_OPENABLE),
+                            REQUEST_SCRUBBER_IMAGE, "No image picker is available.");
                 break;
             default:
                 break;
         }
+    }
+
+    private void colorDialog(Row row) {
+        EditText input = new EditText(this); input.setSingleLine(true);
+        Integer color = ThemeColors.color(row.key);
+        input.setText(color == null ? "#" : String.format(Locale.ROOT, "#%08X", color));
+        AlertDialog dialog = new AlertDialog.Builder(this).setTitle(row.displayTitle())
+                .setMessage("Enter #RRGGBB or #AARRGGBB.").setView(input)
+                .setNegativeButton("Cancel", null).setNeutralButton("Use Default", (d, w) -> AfterglowPrefs.remove(row.key))
+                .setPositiveButton("Apply", null).create();
+        dialog.setOnShowListener(d -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            Integer selected = ThemeColors.decode(input.getText().toString());
+            if (selected == null) { input.setError("Enter a valid hex color."); return; }
+            AfterglowPrefs.setInt(row.key, selected); dialog.dismiss();
+        })); dialog.show();
     }
 
     // ---------------------------------------------------------------- actions
@@ -744,7 +777,61 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != RESULT_OK || data == null || data.getData() == null) return;
         Uri uri = data.getData();
-        if (requestCode == REQUEST_EXPORT) {
+        if (requestCode == REQUEST_SCRUBBER_IMAGE) {
+            new Thread(() -> {
+                try (InputStream input = getContentResolver().openInputStream(uri)) {
+                    if (input == null) throw new IOException("Could not open the selected image.");
+                    String image = ScrubberImage.read(input);
+                    runOnUiThread(() -> {
+                        if (!isFinishing() && !isDestroyed()) { AfterglowPrefs.setString(ScrubberImage.KEY, image); toast("Scrubber image saved"); }
+                    });
+                } catch (Exception error) { runOnUiThread(() -> { if (!isFinishing() && !isDestroyed()) alert("Scrubber image", error.getMessage()); }); }
+            }, "Afterglow-scrubber-image").start();
+        } else if (requestCode == REQUEST_THEME_EXPORT || requestCode == REQUEST_THEME_IMPORT) {
+            String export = pendingThemeExport;
+            pendingThemeExport = null;
+            new Thread(() -> {
+                try {
+                    if (requestCode == REQUEST_THEME_EXPORT) {
+                        if (export == null) throw new IOException("The theme export expired. Please export it again.");
+                        try (OutputStream out = getContentResolver().openOutputStream(uri, "wt")) {
+                            if (out == null) throw new IOException("Could not open the selected file.");
+                            out.write(export.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+                        }
+                        runOnUiThread(() -> toast("Theme exported"));
+                    } else {
+                        byte[] bytes;
+                        try (InputStream in = getContentResolver().openInputStream(uri)) {
+                            if (in == null) throw new IOException("Could not open the selected file.");
+                            java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+                            byte[] buffer = new byte[8192]; int count;
+                            while ((count = in.read(buffer)) != -1) {
+                                if (out.size() + count > ThemeJson.MAX_LENGTH) throw new IOException("Theme file is too large.");
+                                out.write(buffer, 0, count);
+                            }
+                            bytes = out.toByteArray();
+                        }
+                        ThemeDocument theme;
+                        String text = new String(bytes, java.nio.charset.StandardCharsets.UTF_8).trim();
+                        if (text.startsWith("\uFEFF")) text = text.substring(1);
+                        if (text.startsWith("<")) theme = ThemeDocument.fromMap(PrefsTransfer.parsePropertyList(bytes));
+                        else theme = ThemeDocument.parse(text);
+                        ThemeDocument imported = theme;
+                        runOnUiThread(() -> {
+                            if (isFinishing() || isDestroyed()) return;
+                            new AlertDialog.Builder(this).setTitle("Import " + imported.name + "?")
+                                    .setMessage("Save and activate this theme, then restart YouTube?")
+                                    .setNegativeButton("Cancel", null).setPositiveButton("Import & Restart", (d, w) -> {
+                                        try { ThemeStore.importTheme(imported); AppRestart.restart(this); }
+                                        catch (IllegalArgumentException error) { alert("Could not import theme", error.getMessage()); }
+                                    }).show();
+                        });
+                    }
+                } catch (Exception error) {
+                    runOnUiThread(() -> { if (!isFinishing() && !isDestroyed()) alert("Theme file", error.getMessage()); });
+                }
+            }, "Afterglow-theme-file").start();
+        } else if (requestCode == REQUEST_EXPORT) {
             try (OutputStream out = getContentResolver().openOutputStream(uri)) {
                 if (out == null) throw new IOException("no output stream");
                 out.write(PrefsTransfer.exportPlist());
@@ -764,6 +851,22 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
             }
             refresh();
         }
+    }
+
+    void importThemeFile() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT).setType("*/*")
+                .addCategory(Intent.CATEGORY_OPENABLE);
+        try { startActivityForResult(intent, REQUEST_THEME_IMPORT); }
+        catch (Exception error) { alert("Import Theme", "No file picker is available."); }
+    }
+
+    void exportThemeFile(ThemeDocument document) {
+        pendingThemeExport = document.json();
+        String name = ThemeDocument.normalizedName(document.name).replaceAll("[^\\p{L}\\p{N}._-]", "-");
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT).setType("application/json")
+                .addCategory(Intent.CATEGORY_OPENABLE).putExtra(Intent.EXTRA_TITLE, name + ".afterglow-theme.json");
+        try { startActivityForResult(intent, REQUEST_THEME_EXPORT); }
+        catch (Exception error) { pendingThemeExport = null; alert("Export Theme", "No file picker is available."); }
     }
 
     // ---------------------------------------------------------------- search navigation
@@ -794,6 +897,7 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
             // Destinations follow their tweak, like their settings rows.
             if (destination.equals(descriptor.destination) && SettingsBehavior.keyVisible(descriptor.key)) {
                 stack.add("destination.themeStudio".equals(descriptor.key) ? new ThemeStudioScreen(this)
+                        : "destination.glowLab".equals(descriptor.key) ? new GlowLabScreen(this)
                         : new PlaceholderScreen(descriptor.title(), descriptor.description()));
                 return;
             }

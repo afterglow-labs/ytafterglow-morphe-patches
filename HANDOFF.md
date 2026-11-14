@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-13, native themes and Theme Studio presets
+> Updated: 2026-11-14, Theme Studio editor/library, native gradients, Glow, Typography and Seek bar
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, private)
-> Session summary: The shared theme engine now has a native YouTube resource/Litho adapter and a working Theme Studio preset screen. There are 18 named tweaks, with parity at 56 done / 4 n/a / 139 todo. Theme Studio remains partial: editor/library, native gradients, glow and typography are still pending.
+> Session summary: Theme Studio now includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts and custom scrubbers work in the Android 16 emulator. There are 21 named tweaks. Key-level parity remains conservative at 56 done / 4 n/a / 139 todo, including partial native coverage; the full port is not complete.
 
 ## Goal
 
@@ -11,7 +11,39 @@ Port every YTAfterglow iOS tweak to Android YouTube **21.43.523**, exactly as it
 - An Afterglow settings page lives inside YouTube's settings and shows only rows for tweaks that are installed and implemented.
 - Plumbing such as GmsCore/microG sign-in comes from Morphe's own "GmsCore support" patch, ticked in the same run.
 
-## Native theme checkpoint — 2026-11-13
+## Current theme checkpoint — 2026-11-14
+
+The active checkout remains `/home/corey/projects/ytafterglow-morphe-patches`, `main`.
+The current candidate is `build-15/YTAfterglow-0.1.0-local.mpp` under
+`/mnt/c/Users/Corey/ytag-scratch/android/port-completion-20261113/`.
+
+- Theme Studio: private drafts, 20 semantic roles, foundation/gradient/contrast helpers,
+  save/restart, custom library, duplicate, rename, delete, JSON export and JSON/XML import.
+- Added separately selectable Typography, Glow and Seek bar patches. 43 unchanged iOS font
+  assets; Apple system-only families use Android counterparts. See `docs/font-assets.json`.
+- Native feed gradients, navigation/icon tint, neutral text spans, TextView/layout/font-registry
+  adapters, styled text, icon bloom, canvas glow, custom PNG scrubber and size/motion policy.
+- Strict `--validate` passes with exit code 0: 21/21 standalone and 22/22 with official GmsCore.
+  438 theme checks and 83 settings visibility checks pass, including independent patch gating.
+- The signed candidate installed on the Android 16 phone emulator. Verified custom save and
+  restart, exported/imported theme JSON, XML import, persistent library, discard-without-saving, rename,
+  delete, native gradients, tab/player glow, selected font in feed/watch/comments/settings,
+  custom PNG/size selection and scrubber rendering, portrait/fullscreen video playback and seeking.
+- Typography/seek/color resets restore defaults and preserve the saved library. The final
+  build fixes thumbnail mask errors found in build 12; the repeated fullscreen case has no
+  YTAfterglow errors and an empty crash buffer.
+
+Important fixes from runtime testing: keep resource background colors opaque for Android's
+contrast calculation; clear only verified page/drawable backgrounds for gradients; apply fonts
+at measurement and styled-span boundaries; draw the custom scrubber after track bloom.
+See [`docs/theme-studio.md`](docs/theme-studio.md) and [`docs/port-progress.md`](docs/port-progress.md).
+
+Remaining native theme work includes buffered/live-specific scrubber roles, broader server
+control coverage and Shorts/live/promo-player verification. Exact iOS rasterization is not
+claimed. Other port groups below remain unfinished. Keep them tracked; do not mistake this
+validated theme delivery for all 199 keys being ported.
+
+## Historical native theme checkpoint — 2026-11-13
 
 The active checkout is still `/home/corey/projects/ytafterglow-morphe-patches`, on `main`.
 The **Theme Studio** named patch adds the 30 iOS presets, active identity, swatches, seasonal
@@ -46,7 +78,7 @@ Remaining themes work: native gradient attachment, fuller navigation/icon/player
 exact semantic tinting for server-driven text, custom editor/library and import/export,
 then Glow and Typography. No physical-device or video-playback proof is claimed.
 
-## Current State
+## Historical takeover state
 
 **Baseline at takeover (`750b016`; see the checkpoint below for subsequent work):**
 - **17 named tweaks**, all applied in a strict Morphe Desktop 1.20.0 run on YouTube 21.43.523: Background playback, Playback speed, Skip content warning, Video quality, Captions, Autoplay, Shorts layout and buttons, Shorts, Player buttons and menus, Watch page, Comments header, Remove ads, Navigation bar, Feed menus, Tab bar, Startup tab and animation, Privacy.
@@ -169,7 +201,7 @@ extension. The fingerprint now excludes the extension namespace. Cast visibility
 
 ## Next Steps
 
-1. **Continue themes:** finish native gradient/navigation/icon coverage and the Theme Studio editor/library. The shared palette, resource/Litho adapter, foundation selection and preset picker now exist. Do not re-ask which batch; the takeover already selected themes.
+1. **Continue the port from the current checkpoint:** the Theme Studio editor/library/transfer and native gradient/font/glow adapters now exist. Remaining native role and player coverage is listed in `docs/theme-studio.md`; then continue the other feature groups in `tools/parity.json`. Do not ask the user to select the already authorized batch again.
 2. **For a batch:**
    - Read the iOS implementation.
    - Find the Morphe equivalent in `featuremap.md`.

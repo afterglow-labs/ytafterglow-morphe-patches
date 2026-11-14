@@ -116,28 +116,35 @@
     "status": "todo"
   },
   "theme_glowEnabled": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: shared GlowStyle controls, native tab/player icon bloom, scrubber/track bloom and Glow Lab implemented. Android 16 tab, preview and portrait/fullscreen player rendering verified; Shorts/live coverage and exact iOS visual match remain."
   },
   "theme_glowPivot": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: shared GlowStyle controls, native tab/player icon bloom, scrubber/track bloom and Glow Lab implemented. Android 16 tab, preview and portrait/fullscreen player rendering verified; Shorts/live coverage and exact iOS visual match remain."
   },
   "theme_glowOverlay": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: shared GlowStyle controls, native tab/player icon bloom, scrubber/track bloom and Glow Lab implemented. Android 16 tab, preview and portrait/fullscreen player rendering verified; Shorts/live coverage and exact iOS visual match remain."
   },
   "theme_glowScrubber": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: shared GlowStyle controls, native tab/player icon bloom, scrubber/track bloom and Glow Lab implemented. Android 16 tab, preview and portrait/fullscreen player rendering verified; Shorts/live coverage and exact iOS visual match remain."
   },
   "theme_glowSeekBar": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: shared GlowStyle controls, native tab/player icon bloom, scrubber/track bloom and Glow Lab implemented. Android 16 tab, preview and portrait/fullscreen player rendering verified; Shorts/live coverage and exact iOS visual match remain."
   },
   "seekBarAnimated": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: verified native seek resources, gradient factory, final scrubber draw, PNG and motion policy. Android 16 image picker/size/reset controls, portrait/fullscreen playback and seeking verified; Shorts/live and promo scrubber coverage remains."
   },
   "disableAmbientMode": {
     "status": "todo"
   },
   "seekBarGradient": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: verified native seek resources, gradient factory, final scrubber draw, PNG and motion policy. Android 16 image picker/size/reset controls, portrait/fullscreen playback and seeking verified; Shorts/live and promo scrubber coverage remains."
   },
   "sponsorBlockEnabled": {
     "status": "todo"
@@ -589,7 +596,8 @@
     "status": "todo"
   },
   "redProgressBar": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: verified native seek resources, gradient factory, final scrubber draw, PNG and motion policy. Android 16 image picker/size/reset controls, portrait/fullscreen playback and seeking verified; Shorts/live and promo scrubber coverage remains."
   },
   "nativeDownloadRouting": {
     "status": "todo"
@@ -638,40 +646,52 @@
     "status": "todo"
   },
   "seekBarScrubberSize": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: verified native seek resources, gradient factory, final scrubber draw, PNG and motion policy. Android 16 image picker/size/reset controls, portrait/fullscreen playback and seeking verified; Shorts/live and promo scrubber coverage remains."
   },
   "theme_glowStrength": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: shared GlowStyle controls, native tab/player icon bloom, scrubber/track bloom and Glow Lab implemented. Android 16 tab, preview and portrait/fullscreen player rendering verified; Shorts/live coverage and exact iOS visual match remain."
   },
   "theme_glowStrengthMode": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: shared GlowStyle controls, native tab/player icon bloom, scrubber/track bloom and Glow Lab implemented. Android 16 tab, preview and portrait/fullscreen player rendering verified; Shorts/live coverage and exact iOS visual match remain."
   },
   "theme_glowStrengthCustom": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: shared GlowStyle controls, native tab/player icon bloom, scrubber/track bloom and Glow Lab implemented. Android 16 tab, preview and portrait/fullscreen player rendering verified; Shorts/live coverage and exact iOS visual match remain."
   },
   "theme_glowOpacity": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: shared GlowStyle controls, native tab/player icon bloom, scrubber/track bloom and Glow Lab implemented. Android 16 tab, preview and portrait/fullscreen player rendering verified; Shorts/live coverage and exact iOS visual match remain."
   },
   "theme_glowRadius": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: shared GlowStyle controls, native tab/player icon bloom, scrubber/track bloom and Glow Lab implemented. Android 16 tab, preview and portrait/fullscreen player rendering verified; Shorts/live coverage and exact iOS visual match remain."
   },
   "theme_glowLayers": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: shared GlowStyle controls, native tab/player icon bloom, scrubber/track bloom and Glow Lab implemented. Android 16 tab, preview and portrait/fullscreen player rendering verified; Shorts/live coverage and exact iOS visual match remain."
   },
   "theme_fontMode": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: TextView, layout/measurement, styled-span and native font-registry adapters; 43 iOS font assets. Android 16 settings/tab/player/feed/comment text verified. Apple system faces use Android equivalents; exact family/weight/size parity across all surfaces remains unverified."
   },
   "theme_fontSizeMode": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: TextView, layout/measurement, styled-span and native font-registry adapters; 43 iOS font assets. Android 16 settings/tab/player/feed/comment text verified. Apple system faces use Android equivalents; exact family/weight/size parity across all surfaces remains unverified."
   },
   "theme_fontWeightMode": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: TextView, layout/measurement, styled-span and native font-registry adapters; 43 iOS font assets. Android 16 settings/tab/player/feed/comment text verified. Apple system faces use Android equivalents; exact family/weight/size parity across all surfaces remains unverified."
   },
   "theme_fontStyleMode": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: TextView, layout/measurement, styled-span and native font-registry adapters; 43 iOS font assets. Android 16 settings/tab/player/feed/comment text verified. Apple system faces use Android equivalents; exact family/weight/size parity across all surfaces remains unverified."
   },
   "theme_tabLabelSizeMode": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: TextView, layout/measurement, styled-span and native font-registry adapters; 43 iOS font assets. Android 16 settings/tab/player/feed/comment text verified. Apple system faces use Android equivalents; exact family/weight/size parity across all surfaces remains unverified."
   },
   "startupTab": {
     "status": "done",
@@ -714,9 +734,10 @@
   },
   "destination.themeStudio": {
     "status": "todo",
-    "note": "partial: 30 iOS presets, active identity, swatches and reset; native surface/text resources and Litho on Android 14+. Editor, saved library, native gradients and glow remain unimplemented."
+    "note": "partial: 30 presets, draft editor, persistent custom library, theme JSON/XML transfer, contrast helpers and native gradients. Android 16 save/restart, export/import and gradient verified. Remaining semantic native roles and broader player coverage tracked in docs/theme-studio.md."
   },
   "destination.glowLab": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: shared GlowStyle controls, native tab/player icon bloom, scrubber/track bloom and Glow Lab implemented. Android 16 tab, preview and portrait/fullscreen player rendering verified; Shorts/live coverage and exact iOS visual match remain."
   }
 }

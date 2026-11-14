@@ -119,6 +119,7 @@ final class SettingsBehavior {
 
     /** The value a switch shows: Lite Mode's forced value when forced (iOS ytagBool). */
     static boolean switchValue(Row row) {
+        if ("seekBarGradient".equals(row.key)) return ThemeStore.seekBarRainbowEnabled();
         return LiteMode.effectiveBool(row.key);
     }
 
@@ -237,10 +238,6 @@ final class SettingsBehavior {
     /** A search entry shows when every page on its way and its row show (same rules as rows). */
     static boolean searchEntryShown(SearchEntry entry, boolean advanced) {
         if (entry.advancedOnly && !advanced) return false;
-        // Theme Studio currently offers presets. Its iOS editor-color search aliases must wait
-        // for the actual editor, even though they point to the same destination row.
-        if ("themes.themeStudio".equals(entry.rowId)
-                && entry.kind == SettingsModel.SearchKind.SETTING) return false;
         pages();
         for (int i = 1; i < entry.pageChain.length; i++) {
             Row opener = openers.get(entry.pageChain[i]);

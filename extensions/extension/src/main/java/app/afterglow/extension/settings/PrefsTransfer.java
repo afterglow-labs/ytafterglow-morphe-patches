@@ -26,8 +26,8 @@ import java.util.TreeSet;
  * <p>Values map one-to-one: plist booleans, integers, reals and strings become
  * the same SharedPreferences types; the {@code activeTabs} array round-trips
  * through {@link TabStore}'s encoding. iOS stores theme colors and the scrubber
- * image as NSKeyedArchiver/PNG {@code <data>} blobs, which have no Android
- * meaning yet, so import skips {@code <data>} and {@code <date>} values.
+ * image as NSKeyedArchiver/PNG {@code <data>} blobs. PNG scrubber images round-trip;
+ * archived UIColor and date values are skipped. Use a theme file for portable colors.
  */
 public final class PrefsTransfer {
     public static final String FORMAT = "YTAfterglowPreferences";
@@ -70,6 +70,11 @@ public final class PrefsTransfer {
     }
 
     private static String plistValue(String key, Object value, String indent) {
+        if (ScrubberImage.KEY.equals(key) && value instanceof String) {
+            try { java.util.Base64.getDecoder().decode((String) value); }
+            catch (IllegalArgumentException invalid) { return null; }
+            return indent + "<data>" + value + "</data>\n";
+        }
         if (value instanceof Boolean) return indent + ((Boolean) value ? "<true/>" : "<false/>") + "\n";
         if (value instanceof Integer || value instanceof Long) return indent + "<integer>" + value + "</integer>\n";
         if (value instanceof Float || value instanceof Double) {
@@ -143,6 +148,10 @@ public final class PrefsTransfer {
     }
 
     private static Object convert(String key, Object value) {
+        if (value instanceof byte[] && ScrubberImage.KEY.equals(key)) {
+            try { return ScrubberImage.normalize((byte[]) value); }
+            catch (IOException invalid) { return null; }
+        }
         if (value instanceof Boolean || value instanceof String) return value;
         if (value instanceof Long) {
             long number = (Long) value;
@@ -164,7 +173,10 @@ public final class PrefsTransfer {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         byte[] buffer = new byte[8192];
         int read;
-        while ((read = input.read(buffer)) != -1) out.write(buffer, 0, read);
+        while ((read = input.read(buffer)) != -1) {
+            if (out.size() + read > 8 * 1024 * 1024) throw new IOException("Preferences file is too large.");
+            out.write(buffer, 0, read);
+        }
         return out.toByteArray();
     }
 
@@ -179,8 +191,15 @@ public final class PrefsTransfer {
         return null;
     }
 
+    /** Theme files share the iOS XML property-list value grammar. */
+    public static Object parsePropertyList(byte[] data) throws Exception {
+        if (data.length > ThemeJson.MAX_LENGTH) throw new IOException("Theme file is too large.");
+        return parse(data);
+    }
+
     /** Reads the element at the current START_TAG and leaves the parser on its END_TAG. */
     private static Object readValue(XmlPullParser parser) throws Exception {
+        if (parser.getDepth() > 32) throw new IOException("Property list is nested too deeply.");
         String name = parser.getName();
         switch (name) {
             case "dict": {
@@ -193,6 +212,7 @@ public final class PrefsTransfer {
                     if (event != XmlPullParser.START_TAG) continue;
                     if ("key".equals(parser.getName())) {
                         key = parser.nextText();
+                        if (map.containsKey(key)) throw new IOException("Duplicate property-list key: " + key);
                     } else {
                         Object value = readValue(parser);
                         if (key != null && !(value instanceof Unsupported)) map.put(key, value);
@@ -212,6 +232,8 @@ public final class PrefsTransfer {
             }
             case "string":
                 return parser.nextText();
+            case "data":
+                return java.util.Base64.getMimeDecoder().decode(parser.nextText());
             case "integer":
                 return Long.parseLong(parser.nextText().trim());
             case "real":

@@ -48,7 +48,8 @@ final class ThemeOverlay {
                 String[] pair = line.split("=", 2);
                 if (pair.length != 2) throw new IllegalStateException("Invalid theme resource binding");
                 String[] role = pair[1].split(":", 2);
-                Integer color = NativeThemeColors.role(palette, ThemeRole.valueOf(role[0]));
+                ThemeRole semantic = ThemeRole.valueOf(role[0]);
+                Integer color = NativeThemeColors.resourceColor(palette, semantic);
                 if (color != null) colors.put(pair[0], role.length == 1 ? color
                         : NativeThemeColors.withOpacity(color, Double.parseDouble(role[1])));
             }

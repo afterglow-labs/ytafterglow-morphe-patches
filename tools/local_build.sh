@@ -54,6 +54,9 @@ JAVA_HOME="$JDK" "$D8" --release --min-api 26 --lib "$ANDROID_JAR" --classpath "
 
 echo "==> bundle"
 cp -r "$OUT/patch-classes/." "$OUT/bundle/"
+if [[ -d "$ROOT/patches/src/main/resources" ]]; then
+    cp -r "$ROOT/patches/src/main/resources/." "$OUT/bundle/"
+fi
 rm -rf "$OUT/bundle/META-INF"
 cp "$OUT/patch-dex/classes.dex" "$OUT/bundle/classes.dex"
 cat > "$OUT/MANIFEST.MF" <<EOF

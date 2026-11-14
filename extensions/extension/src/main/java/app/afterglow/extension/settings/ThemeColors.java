@@ -5,8 +5,8 @@ package app.afterglow.extension.settings;
  * theme store uses (YTAGTheme.m YTAGThemeLegacyKeyForRole). Legacy lookups return
  * explicitly stored colors; semantic consumers use ThemeStore's resolved palette.
  *
- * <p>Storage: iOS keeps each color as an archived UIColor blob. Theme Studio is not
- * ported to Android yet, so a color is read from an ARGB integer (Integer/Long) or
+ * <p>Storage: iOS keeps each legacy color as an archived UIColor blob. Android
+ * stores an ARGB integer (Integer/Long) or
  * a "#RRGGBB" / "#AARRGGBB" string. A missing or unreadable value means "use
  * YouTube's native color", as on iOS.
  */

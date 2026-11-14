@@ -52,6 +52,13 @@ def main():
     # Internal keys (theme colors, scrubber image, the tab list) have settings rows too,
     # so a tweak may own them; they just aren't required to have an owner.
     known = {entry["key"] for entry in registry["entries"]} | internal
+    for key, implementation in tweaks.get("implementedInternalKeys", {}).items():
+        if key not in internal:
+            errors.append(f"implementedInternalKeys lists non-internal key {key}; use parity.json")
+        elif key not in owners or len(owners[key]) != 1:
+            errors.append(f"implemented internal key {key} must have one tweak owner")
+        if not isinstance(implementation, str) or not implementation.strip():
+            errors.append(f"implemented internal key {key} needs an implementation reference")
     for key in owners:
         if key not in known:
             errors.append(f"tweaks.json lists {key}, which is neither a registry nor an internal key")

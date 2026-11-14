@@ -443,5 +443,12 @@
         "destination.controlCenter"
       ]
     }
-  ]
+  ],
+  "implementedInternalKeys": {
+    "seekBarScrubberImage": "SeekBarTheme and AfterglowActivity color/image picker; runtime QA pending",
+    "theme_seekBar": "SeekBarTheme and AfterglowActivity color/image picker; runtime QA pending",
+    "theme_seekBarLive": "SeekBarTheme and AfterglowActivity color/image picker; runtime QA pending",
+    "theme_seekBarScrubber": "SeekBarTheme and AfterglowActivity color/image picker; runtime QA pending",
+    "theme_glowColor": "GlowStyle, GlowLabScreen and AfterglowActivity color picker"
+  }
 }

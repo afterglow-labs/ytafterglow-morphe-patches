@@ -68,6 +68,7 @@ final class RowViews {
         view.setTextSize(TypedValue.COMPLEX_UNIT_SP, sp);
         view.setTextColor(color);
         if (bold) view.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+        app.afterglow.extension.theme.Typography.textView(view, false);
         return view;
     }
 

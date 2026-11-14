@@ -1,10 +1,11 @@
-# Native themes and the first Theme Studio screen
+# Native themes
 
-This batch adds the separately selectable **Theme Studio** patch. It exposes the working
-preset portion of the iOS screen: active theme, all 30 catalog presets, four-role swatches,
-Holiday Themes, activation, and reset. Applying or resetting requests a YouTube restart,
-because native views cache their resolved colors. Editor, saved-library, theme-file transfer,
-native gradient attachment, glow and typography controls remain unavailable.
+The separately selectable **Theme Studio** patch includes all 30 presets, a custom editor,
+saved library, JSON/XML theme import, JSON export, activation and reset. Native page gradients,
+navigation/icon adapters and semantic foreground spans extend the original resource adapter.
+**Typography**, **Glow** and **Seek bar** are separate named patches. See
+[`theme-studio.md`](theme-studio.md) for their implementation, runtime evidence and remaining gaps.
+Applying or resetting a theme restarts YouTube because native views cache resolved colors.
 
 Native resources require **Android 14 (API 34) or newer**. Older devices retain YouTube's
 colors and see the OS requirement in Theme Studio. The extension's existing minimum SDK
@@ -19,10 +20,15 @@ overridden. Each alias retains its original resource reference when its role is 
 
 The covered roles are base/elevated/navigation surfaces, primary/secondary text, accent,
 selected navigation text, borders, and some style-based icons and overlay controls. This is
-not full icon/player/seek-bar coverage. Server-driven text can still use its native foundation
-colors rather than the exact semantic tint. A background-only import supplies readable primary
-and secondary text from its foundation. Presets with gradients use their explicit solid
-background in native YouTube; existing Afterglow settings still render the gradient.
+not full semantic coverage of every player element. A background-only import supplies readable
+primary and secondary text from its foundation. Neutral foreground spans are recolored at their
+text boundary. Native gradients attach to the activity content; verified page containers and
+background drawables become transparent. Navigation surfaces retain their own role color.
+
+Android resource backgrounds stay opaque even when a page gradient is active. Making them
+transparent caused MediaRouteButton's contrast calculation to crash at launch. User alpha is
+composited over the selected foundation for resources; transparency is applied only at the
+view/drawable boundary. A JVM regression test and emulator cold launch cover this distinction.
 
 `NativeTheme` attaches a self-targeting `FabricatedOverlay` through a `ResourcesLoader` to
 the app's base contexts. All resources use the final runtime package name, including when
@@ -65,15 +71,15 @@ skips the short-lived restart process.
 ## Gates and scope
 
 - Theme Studio and Reset All Colors appear only when the named patch is installed.
-- Search exposes preset entries, while editor-color aliases remain hidden.
-- Parity is 56 done / 4 not applicable / 139 todo; Theme Studio is explicitly **partial**.
-- The engine suite has 292 checks, including native appearance selection, fallback, alpha and selected-chip
-  preservation. Settings visibility has 67 checks. Both pass, as do catalog, parity and
-  named-tweak checks.
-- Build and runtime evidence for this batch is under
-  `/mnt/c/Users/Corey/ytag-scratch/android/native-theme-20261113-01/`.
+- Search exposes the theme editor entries; native-only controls require their named patch.
+- `tools/parity.json` records key-level completion and partial coverage without treating a
+  functioning settings page as proof of every native surface.
+- The engine suite has 438 checks, including documents, library transactions, glow and seek
+  motion. Settings visibility has 83 checks.
+- Current build/runtime evidence is under
+  `/mnt/c/Users/Corey/ytag-scratch/android/port-completion-20261113/`.
 
-## Verified build and emulator results
+## Original adapter verification — 2026-11-13
 
 `build-08/YTAfterglow-0.1.0-local.mpp` passes archive integrity and strict Desktop 1.20.0
 validation: `standalone-08` applies all 18 named patches; `combined-08` applies all 19 selected
@@ -95,6 +101,6 @@ Key evidence: `verified-warm-home.png`, `verified-restart-dark.png`,
 `verified-runtime.log`, `verified-crash.log`, and the two strict patch result JSON files.
 This is emulator evidence, not physical-device, playback, or complete iOS visual-parity proof.
 
-Next: complete native gradient/navigation/icon coverage, then semantic persistence and the
-custom Theme Studio editor/library. Glow, typography and seek-bar rendering still require
-their own adapters and runtime validation.
+The later editor/library, gradient, glow, typography and seek-bar work is documented in
+[`theme-studio.md`](theme-studio.md); the results above preserve the original solid-color and
+reset checkpoint.

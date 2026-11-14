@@ -87,7 +87,7 @@ def render():
         "",
         f"    private static final String[] BASE = {java_array(tweaks['base'], 12)};",
         "",
-        f"    private static final String[] SHOWN = {java_array(shown_keys(parity), 12)};",
+        f"    private static final String[] SHOWN = {java_array(sorted(set(shown_keys(parity)) | set(tweaks.get('implementedInternalKeys', {}))), 12)};",
         "",
         "    /** Keys of the always-installed settings page. */",
         "    public static final Set<String> BASE_KEYS;",
