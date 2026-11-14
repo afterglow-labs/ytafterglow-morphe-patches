@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-14, automatic fullscreen, exit on finish and portrait rotation
+> Updated: 2026-11-14, native overlay visibility and fullscreen action refresh
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, private)
-> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and five player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. There are 26 named tweaks. Key-level parity remains conservative at 90 done / 4 n/a / 105 todo, including partial native coverage; the full port is not complete.
+> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. There are 26 named tweaks. Key-level parity remains conservative at 94 done / 4 n/a / 101 todo, including partial native coverage; the full port is not complete.
 
 ## Goal
 
@@ -11,7 +11,33 @@ Port every YTAfterglow iOS tweak to Android YouTube **21.43.523**, exactly as it
 - An Afterglow settings page lives inside YouTube's settings and shows only rows for tweaks that are installed and implemented.
 - Plumbing such as GmsCore/microG sign-in comes from Morphe's own "GmsCore support" patch, ticked in the same run.
 
-## Current fullscreen checkpoint — 2026-11-14
+## Current native overlay checkpoint — 2026-11-14
+
+Build 31 adds title, background shading, fullscreen actions and channel watermark
+switches to **Player overlay**. All nine overlay switches default off and reset
+correctly. The Android 16 emulator verifies independent hides/restoration, combined
+fullscreen/portrait behavior, watermark playback and retained control fades.
+
+**Player buttons and menus** now handles fullscreen Share/Save independently with
+live restoration. It resets the native cached presenter, restores its current
+model and re-emits the native measured dimensions. Shared icon data caused the
+old under-video filter to hide neighboring buttons; matching native accessibility
+IDs fixes that. Fresh-playback under-video tests pass. Its cached bar still needs
+the video reopened after a setting change, so Share/Save remain partial. Continue
+that live-refresh boundary, then the remaining full port.
+
+Strict build-31 runs pass 26/26 standalone, 27/27 with GmsCore and 28/28 with
+GmsCore plus Spoof video streams, all exit 0. Both independently selected groups
+also pass standalone strict isolation on build 30. 46 action-filter regression
+checks and 196 settings checks pass. There are 214 recorded production inputs.
+Candidate: `build-31/YTAfterglow-0.1.0-local.mpp` under the evidence root below;
+the signed emulator APK is `overlay-test-31.apk`. Final build-31 checks confirm
+live fullscreen hide/restore and independent under-video hides after reopening.
+The final runtime log has no Afterglow errors and its crash buffer is empty;
+defaults are restored and the app is stopped. Delivery provenance is recorded in
+`delivery-31.json` under the evidence root. See [`docs/player-behavior.md`](docs/player-behavior.md).
+
+## Previous fullscreen checkpoint — 2026-11-14
 
 Build 27 adds separately selectable **Fullscreen**: automatic entry after the iOS
 750ms delay, exit at playback completion, and retaining fullscreen through portrait

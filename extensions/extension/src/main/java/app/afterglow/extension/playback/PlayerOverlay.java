@@ -31,6 +31,10 @@ public final class PlayerOverlay {
     public static void captions(ImageView view) { bind(view, "hideSubs"); }
     public static void collapse(ImageView view) { bind(view, "hidePlayerCollapseButton"); }
     public static void fullscreen(ImageView view) { bind(view, "hidePlayerFullscreenButton"); }
+    public static void title(View view) { bind(view, "hideOverlayTitle"); }
+    public static void shading(View view) { bind(view, "noDarkBg"); }
+    public static void actions(View view) { bind(view, "noFullscreenActions"); }
+    public static void watermark(ImageView view) { bind(view, "noWatermarks"); }
 
     private static void bindNamed(View root, String name, String key) {
         int id = root.getResources().getIdentifier(name, "id", root.getContext().getPackageName());

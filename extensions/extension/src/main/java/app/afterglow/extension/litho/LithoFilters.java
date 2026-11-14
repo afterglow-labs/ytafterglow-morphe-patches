@@ -11,6 +11,7 @@ import app.afterglow.extension.litho.filters.AdsFilter;
 import app.afterglow.extension.litho.filters.CommentsHeaderFilter;
 import app.afterglow.extension.litho.filters.ContinueWatchingFilter;
 import app.afterglow.extension.litho.filters.PlayerActionButtonsFilter;
+import app.afterglow.extension.litho.filters.PlayerOverlayFilter;
 import app.afterglow.extension.litho.filters.ShortsActionBarFilter;
 import app.afterglow.extension.litho.filters.ShortsFeedFilter;
 import app.afterglow.extension.litho.filters.ShortsOverlayFilter;
@@ -38,6 +39,7 @@ public final class LithoFilters {
         add("shorts-layout", ShortsOverlayFilter::new);
         add("shorts", ShortsFeedFilter::new);
         add("player-buttons-menus", PlayerActionButtonsFilter::new);
+        add("player-overlay", PlayerOverlayFilter::new);
         add("watch-page", ContinueWatchingFilter::new);
         add("comments-header", CommentsHeaderFilter::new);
         add("navigation-bar", SubbarFilter::new);

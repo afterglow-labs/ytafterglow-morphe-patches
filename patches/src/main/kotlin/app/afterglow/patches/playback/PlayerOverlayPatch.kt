@@ -11,6 +11,8 @@ import app.afterglow.patches.shared.afterglowExtensionPatch
 import app.afterglow.patches.shared.invokeRegisters
 import app.morphe.patcher.Fingerprint
 import app.morphe.patcher.InstructionLocation.MatchAfterWithin
+import app.morphe.patcher.InstructionLocation.MatchAfterImmediately
+import app.morphe.patcher.checkCast
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
 import app.morphe.patcher.fieldAccess
 import app.morphe.patcher.literal
@@ -74,5 +76,62 @@ internal val playerOverlayHookPatch = bytecodePatch {
         fullscreen.method.addInstructions(fullscreenCast + 1,
             "invoke-static/range { v$fullscreenRegister .. v$fullscreenRegister }, $OVERLAY->fullscreen(Landroid/widget/ImageView;)V")
         println("Afterglow overlay controllers: captions=${captions.method.definingClass}, collapse=${collapse.method.definingClass}, fullscreen=${fullscreen.method.definingClass}")
+
+        // The title has its own parent: the collapse/overflow controls are siblings.
+        val heading = Fingerprint(name = "<init>", returnType = "V",
+            parameters = listOf("Landroid/view/View;", "I", "Z"), filters = listOf(
+                resourceLiteral(ResourceType.ID, "player_video_heading"),
+                checkCast("Lcom/google/android/apps/youtube/app/player/overlay/InterceptingFrameLayout;", MatchAfterWithin(10))
+            ))
+        val headingCast = heading.instructionMatches.last().index
+        val headingRegister = (heading.method.implementation!!.instructions[headingCast] as OneRegisterInstruction).registerA
+        heading.method.addInstructions(headingCast + 1,
+            "invoke-static/range { v$headingRegister .. v$headingRegister }, $OVERLAY->title(Landroid/view/View;)V")
+
+        // These are the native controls' center/top/bottom scrims, not ambient lighting.
+        // Resolve each match after the preceding edit, since all three share one method.
+        for (name in listOf("scrim_overlay", "top_gradient_scrim_overlay", "bottom_gradient_scrim_overlay")) {
+            val scrim = Fingerprint(returnType = "V", filters = listOf(
+                resourceLiteral(ResourceType.ID, name),
+                checkCast("Landroid/widget/ImageView;", MatchAfterWithin(10))
+            ))
+            val cast = scrim.instructionMatches.last().index
+            val register = (scrim.method.implementation!!.instructions[cast] as OneRegisterInstruction).registerA
+            scrim.method.addInstructions(cast + 1,
+                "invoke-static/range { v$register .. v$register }, $OVERLAY->shading(Landroid/view/View;)V")
+            println("Afterglow overlay shading $name: ${scrim.method.definingClass}->${scrim.method.name}")
+        }
+        val topBackground = Fingerprint(name = "<init>", returnType = "V",
+            parameters = listOf("Landroid/view/View;", "I", "Z"), filters = listOf(
+                resourceLiteral(ResourceType.ID, "top_bar_background"),
+                methodCall(smali = "Landroid/view/View;->findViewById(I)Landroid/view/View;", location = MatchAfterWithin(3)),
+                opcode(Opcode.MOVE_RESULT_OBJECT, MatchAfterImmediately())
+            ))
+        val backgroundRead = topBackground.instructionMatches.last().index
+        val backgroundRegister = (topBackground.method.implementation!!.instructions[backgroundRead] as OneRegisterInstruction).registerA
+        topBackground.method.addInstructions(backgroundRead + 1,
+            "invoke-static/range { v$backgroundRegister .. v$backgroundRegister }, $OVERLAY->shading(Landroid/view/View;)V")
+
+        val actions = Fingerprint(accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
+            returnType = "V", parameters = listOf("Landroid/view/View;"), filters = listOf(
+                resourceLiteral(ResourceType.ID, "quick_actions_element_container"),
+                checkCast("Landroid/view/ViewGroup;", MatchAfterWithin(10))
+            ))
+        val actionsCast = actions.instructionMatches.last().index
+        val actionsRegister = (actions.method.implementation!!.instructions[actionsCast] as OneRegisterInstruction).registerA
+        actions.method.addInstructions(actionsCast + 1,
+            "invoke-static/range { v$actionsRegister .. v$actionsRegister }, $OVERLAY->actions(Landroid/view/View;)V")
+
+        // Legacy in-video programming still has a native ImageView in 21.43.523.
+        // Modern featured-channel watermarks are handled by PlayerOverlayFilter.
+        val watermark = Fingerprint(returnType = "Landroid/view/View;", filters = listOf(
+            resourceLiteral(ResourceType.ID, "branding_watermark"),
+            checkCast("Landroid/widget/ImageView;", MatchAfterWithin(10))
+        ))
+        val watermarkCast = watermark.instructionMatches.last().index
+        val watermarkRegister = (watermark.method.implementation!!.instructions[watermarkCast] as OneRegisterInstruction).registerA
+        watermark.method.addInstructions(watermarkCast + 1,
+            "invoke-static/range { v$watermarkRegister .. v$watermarkRegister }, $OVERLAY->watermark(Landroid/widget/ImageView;)V")
+        println("Afterglow overlay title=${heading.method.definingClass}, actions=${actions.method.definingClass}, watermark=${watermark.method.definingClass}")
     }
 }

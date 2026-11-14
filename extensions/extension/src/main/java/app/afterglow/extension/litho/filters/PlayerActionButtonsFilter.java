@@ -9,8 +9,6 @@
 
 package app.afterglow.extension.litho.filters;
 
-import app.afterglow.extension.litho.ByteArrayFilterGroup;
-import app.afterglow.extension.litho.ByteArrayFilterGroupList;
 import app.afterglow.extension.litho.LithoComponent;
 import app.afterglow.extension.litho.LithoFilter;
 import app.afterglow.extension.litho.StringFilterGroup;
@@ -26,14 +24,15 @@ import app.afterglow.extension.litho.StringFilterGroupList;
  * accessibility id ({@code id.video.share.button}, {@code id.video.add_to.button},
  * {@code id.video.remix.button}, {@code id.ui.add_to.offline.button}) or, for
  * Clip, its {@code clip_button.eml} component, and falls back to the English
- * label. The same ids come from YouTube's server here; instead of English labels
- * the fallback is each button's icon, which works in every language.
+ * label. The same ids come from YouTube's server here and work in every language.
+ * Current action models share sibling icons, so icon bytes cannot identify a button.
  */
 public final class PlayerActionButtonsFilter extends LithoFilter {
     private final StringFilterGroup actionBar;
+    private final StringFilterGroup quickActions;
+    private final StringFilterGroupList quickButtonsById = new StringFilterGroupList();
     private final StringFilterGroupList buttonsById = new StringFilterGroupList();
     private final StringFilterGroup clipButton;
-    private final ByteArrayFilterGroupList buttonIcons = new ByteArrayFilterGroupList();
 
     public PlayerActionButtonsFilter() {
         // Every component of the action bar element has the bar's identifier.
@@ -41,6 +40,15 @@ public final class PlayerActionButtonsFilter extends LithoFilter {
                 new String[] {"noPlayerDownloadButton", "noPlayerShareButton", "noPlayerSaveButton",
                         "noPlayerRemixButton", "noPlayerClipButton"},
                 "video_action_bar.e"
+        );
+        // Confirmed in 21.43.523 runtime: the fullscreen bar has a separate identifier,
+        // but uses the same native Share and Save accessibility ids and icon models.
+        // Only these two iOS preferences also govern the on-video action controls.
+        quickActions = StringFilterGroup.anyOf(
+                new String[] {"noPlayerShareButton", "noPlayerSaveButton"}, "quick_actions.e");
+        quickButtonsById.addAll(
+                new StringFilterGroup("noPlayerShareButton", "id.video.share.button"),
+                new StringFilterGroup("noPlayerSaveButton", "id.video.add_to.button")
         );
 
         buttonsById.addAll(
@@ -52,20 +60,7 @@ public final class PlayerActionButtonsFilter extends LithoFilter {
 
         clipButton = new StringFilterGroup("noPlayerClipButton", "clip_button.e");
 
-        buttonIcons.addAll(
-                new ByteArrayFilterGroup("noPlayerDownloadButton",
-                        "yt_outline_download_", "yt_outline_experimental_download_"),
-                new ByteArrayFilterGroup("noPlayerShareButton",
-                        "yt_outline_share_", "yt_outline_experimental_share_"),
-                new ByteArrayFilterGroup("noPlayerSaveButton",
-                        "yt_outline_bookmark_", "yt_outline_experimental_bookmark_", "yt_outline_list_add_"),
-                new ByteArrayFilterGroup("noPlayerRemixButton",
-                        "yt_outline_youtube_shorts_plus", "yt_outline_experimental_remix", "yt_outline_remix_"),
-                new ByteArrayFilterGroup("noPlayerClipButton",
-                        "yt_outline_scissors_", "yt_outline_experimental_scissors_")
-        );
-
-        addIdentifierCallbacks(actionBar);
+        addIdentifierCallbacks(actionBar, quickActions);
     }
 
     @Override
@@ -76,13 +71,19 @@ public final class PlayerActionButtonsFilter extends LithoFilter {
 
         // The "more" button lists the actions that did not fit, with their icons: never it.
         String name = component.componentName();
-        if (name.startsWith("overflow_menu_button")) return false;
+        if (component.pathContains("|overflow_menu_button.")) return false;
+
+        if (matchedGroup == quickActions) {
+            // These buttons share a model containing every action's icon. The native
+            // accessibility id identifies this button; icon bytes would hide its siblings.
+            return quickButtonsById.matches(component.accessibility());
+        }
 
         if (buttonsById.matches(component.accessibility())) return true;
         if (clipButton.matches(name)) return true;
 
-        // A button without a known id: tell it by its icon. Only a button itself, so the bar's
-        // other parts are never encoded.
-        return name.contains("button.e") && buttonIcons.matches(component);
+        // Leave unidentified buttons intact. Their shared model can contain Share/Save
+        // icons even when this component belongs to Like or another unrelated action.
+        return false;
     }
 }

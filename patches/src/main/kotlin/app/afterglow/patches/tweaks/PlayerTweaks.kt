@@ -7,6 +7,7 @@ import app.afterglow.patches.playback.doubleTapGestureHookPatch
 import app.afterglow.patches.playback.freeZoomHookPatch
 import app.afterglow.patches.playback.fullscreenHookPatch
 import app.afterglow.patches.playback.portraitFullscreenHookPatch
+import app.afterglow.patches.litho.afterglowLithoFilterPatch
 import app.afterglow.patches.settings.afterglowSettingsPatch
 import app.afterglow.patches.shared.Constants.COMPATIBILITY_YOUTUBE
 import app.afterglow.patches.shared.markTweakInstalled
@@ -48,10 +49,10 @@ val playerGesturesTweakPatch = bytecodePatch(
 @Suppress("unused")
 val playerOverlayTweakPatch = bytecodePatch(
     name = "Player overlay",
-    description = "Lets you hide captions, previous/next, fullscreen, collapse and overflow controls in the native player.",
+    description = "Lets you hide native player controls, title, background shading, fullscreen actions and channel watermarks.",
     default = true,
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
-    dependsOn(afterglowSettingsPatch, playerOverlayHookPatch)
+    dependsOn(afterglowSettingsPatch, playerOverlayHookPatch, afterglowLithoFilterPatch)
     execute { markTweakInstalled("player-overlay") }
 }

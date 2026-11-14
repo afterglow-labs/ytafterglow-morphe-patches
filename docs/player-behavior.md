@@ -81,14 +81,18 @@ progress; see `tools/parity.json` for each preference's status.
 
 ## Player overlay
 
-The independently selectable **Player overlay** patch exposes five switches in
+The independently selectable **Player overlay** patch exposes nine switches in
 `Player > Overlay` when Advanced mode is enabled:
 
+- Hide video title
 - Hide Fullscreen button
 - Hide More button
 - Hide Collapse button
 - Hide Subtitles button
 - Hide Previous and Next buttons
+- Remove dark background
+- Disable fullscreen actions
+- Hide Watermarks
 
 All default off. Bindings attach at the native controls (`Lolx.E`), captions
 (`Loex`), collapse (`Lrud`) and fullscreen (`Loft`) controllers. Hiding moves the
@@ -109,7 +113,7 @@ their original enabled/clickable states.
 Evidence in the same directory: `overlay-default-player-18.png`,
 `overlay-live-hidden-18-dismissed.png`, `overlay-fullscreen-faded-18.png`,
 `overlay-fullscreen-restored-18.png` and `overlay-portrait-restored-18.xml`.
-The rest of the overlay options remain hidden and tracked as unfinished. Inline
+The remaining overlay options stay hidden and tracked as unfinished. Inline
 feed-player and physical-device behavior have not been runtime verified.
 The five switches and Advanced mode were restored off after testing.
 `runtime-overlay-18.log` has no errors and `crash-overlay-18.log` is empty.
@@ -162,3 +166,41 @@ separate result/ZIP audit. The three complete all-feature runs exited 0.
 Final `runtime-fullscreen-27.log` contains no Afterglow errors;
 `crash-fullscreen-27.log` is empty. `fullscreen-final-reset-27.xml` confirms all
 visible Controls switches are off; Advanced mode stayed off throughout this batch.
+
+## Additional native overlay surfaces
+
+Title hiding binds the native `player_video_heading` parent in `Lrud`; collapse
+and overflow are separate siblings. Background hiding binds the center, top and
+bottom control scrims in `Lolx.F` plus `top_bar_background`, leaving ambient
+lighting and the native button backgrounds intact. Fullscreen actions use the
+`Loks` quick-actions container. These share the reversible visibility binding.
+
+Watermarks have two implementations: the legacy `Locu` branding ImageView and
+the modern `featured_channel_watermark_overlay` component. The latter follows
+YouTube's component updates, including its per-second playback refresh. Build 28
+verifies title, shading and actions independently, and the visible playing
+watermark off/on/off. Controls fade normally; the runtime log has no errors and
+the crash buffer is empty. Evidence: `overlay-title-{hidden,restored}-28.png`,
+`overlay-shading-{hidden,restored}-28.png`, `overlay-actions-{hidden,restored}-28.xml`
+and `overlay-watermark-{visible,hidden-playing,restored-playing}-28.png`.
+
+Fullscreen Share and Save belong to **Player buttons and menus**, independently
+of **Player overlay**. They use the native `quick_actions` accessibility ids.
+The whole action model contains every sibling's icon, so both surfaces use
+native accessibility IDs and exclude overflow descendants. Clip retains its
+dedicated component match. A native refresh bridge uses `Lokv.ly` to release
+the presenter's cached tree, restores the presenter's current model through
+`Lokv.H`, and re-emits its last measured dimensions through `Lokv.f`. An attached
+view observes preference changes and posts this refresh after drawing; it does
+not retain a previous video's model. Build 30 contains this correction and passes
+46 action-filter regression checks. The Android 16 emulator verifies Share-only,
+Save-only, both hidden and both restored in one paused fullscreen video, retaining
+Like/Dislike/Comments/overflow. Both feature groups pass standalone strict
+isolation in build 30. Build 31 passes all 26/27/28 standalone/GmsCore/streaming
+selections with exit 0.
+
+The fresh-playback under-video tests also preserve neighboring buttons with either
+Share or Save hidden. That bar still caches its old layout after a settings round
+trip: reopening the video applies the new setting. The two keys remain partial
+until live refresh of that surface is implemented. Evidence includes
+`actions-*-30.xml`, `under-actions-*-31.xml` and `under-actions-live-31.json`.

@@ -197,7 +197,8 @@ public final class SettingsVisibilityTest {
 
         install("player-overlay");
         for (String key : new String[] {"hideSubs", "hidePrevNext", "hidePlayerFullscreenButton",
-                "hidePlayerCollapseButton", "hidePlayerOverflowButton"}) {
+                "hidePlayerCollapseButton", "hidePlayerOverflowButton", "hideOverlayTitle",
+                "noDarkBg", "noFullscreenActions", "noWatermarks"}) {
             check("overlay patch exposes " + key, true, SettingsBehavior.keyVisible(key));
         }
         check("overlay patch does not enable gestures", false, SettingsBehavior.keyVisible("tapToSeek"));

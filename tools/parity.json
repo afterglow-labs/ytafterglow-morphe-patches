@@ -351,11 +351,13 @@
   },
   "noPlayerShareButton": {
     "status": "todo",
-    "note": "partial: Litho action-bar button done; the on-video share button is a View still to hook."
+    "note": "Partial: native fullscreen Share/Save hide independently and together, and restore live without restarting; Like/Dislike/Comments/overflow survive. Under-video native-ID filtering is verified on fresh playback and preserves neighboring buttons. The cached under-video bar still requires reopening the video after a setting change; live refresh remains pending.",
+    "where": "litho/filters/PlayerActionButtonsFilter.java + playback/QuickActions.java + playback/QuickActionsPatch.kt"
   },
   "noPlayerSaveButton": {
     "status": "todo",
-    "note": "partial: Litho action-bar button done; the on-video save button is a View still to hook."
+    "note": "Partial: native fullscreen Share/Save hide independently and together, and restore live without restarting; Like/Dislike/Comments/overflow survive. Under-video native-ID filtering is verified on fresh playback and preserves neighboring buttons. The cached under-video bar still requires reopening the video after a setting change; live refresh remains pending.",
+    "where": "litho/filters/PlayerActionButtonsFilter.java + playback/QuickActions.java + playback/QuickActionsPatch.kt"
   },
   "noPlayerRemixButton": {
     "status": "done",
@@ -393,7 +395,9 @@
     "status": "todo"
   },
   "hideOverlayTitle": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/PlayerOverlayPatch.kt + playback/PlayerOverlay.java + litho/filters/PlayerOverlayFilter.java",
+    "note": "Strict 21.43.523 validation and Android 16 runtime pass. Title, controls shading and fullscreen actions hide/restore independently; modern watermark disappears during playback and returns when disabled. Combined portrait/fullscreen controls, fading and reset verified. Legacy watermark is source/patch-validated; physical devices and inline feeds unverified."
   },
   "hidePlayerFullscreenButton": {
     "status": "done",
@@ -430,17 +434,23 @@
     "status": "todo"
   },
   "noDarkBg": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/PlayerOverlayPatch.kt + playback/PlayerOverlay.java + litho/filters/PlayerOverlayFilter.java",
+    "note": "Strict 21.43.523 validation and Android 16 runtime pass. Title, controls shading and fullscreen actions hide/restore independently; modern watermark disappears during playback and returns when disabled. Combined portrait/fullscreen controls, fading and reset verified. Legacy watermark is source/patch-validated; physical devices and inline feeds unverified."
   },
   "noFullscreenActions": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/PlayerOverlayPatch.kt + playback/PlayerOverlay.java + litho/filters/PlayerOverlayFilter.java",
+    "note": "Strict 21.43.523 validation and Android 16 runtime pass. Title, controls shading and fullscreen actions hide/restore independently; modern watermark disappears during playback and returns when disabled. Combined portrait/fullscreen controls, fading and reset verified. Legacy watermark is source/patch-validated; physical devices and inline feeds unverified."
   },
   "stockVolumeHUD": {
     "status": "n/a",
     "why": "Android YouTube already shows the system volume panel; there is no custom HUD to swap."
   },
   "noWatermarks": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/PlayerOverlayPatch.kt + playback/PlayerOverlay.java + litho/filters/PlayerOverlayFilter.java",
+    "note": "Strict 21.43.523 validation and Android 16 runtime pass. Title, controls shading and fullscreen actions hide/restore independently; modern watermark disappears during playback and returns when disabled. Combined portrait/fullscreen controls, fading and reset verified. Legacy watermark is source/patch-validated; physical devices and inline feeds unverified."
   },
   "videoEndTime": {
     "status": "todo"
