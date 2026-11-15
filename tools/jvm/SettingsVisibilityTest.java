@@ -92,6 +92,18 @@ public final class SettingsVisibilityTest {
             expectSearch(c, advanced, shownSearch, hiddenSearch);
         }
 
+        install("player-overlay");
+        AfterglowPrefs.remove("pauseOnOverlay");
+        check("overlay alone exposes pause on overlay", true, SettingsBehavior.keyVisible("pauseOnOverlay"));
+        check("pause on overlay defaults off", false, AfterglowPrefs.getBool("pauseOnOverlay"));
+        AfterglowPrefs.setBool("advancedMode", false);
+        check("overlay page requires advanced mode", false, SettingsBehavior.shown(SettingsBehavior.row("player.overlay")));
+        AfterglowPrefs.setBool("advancedMode", true);
+        check("overlay page available in advanced mode", true, SettingsBehavior.shown(SettingsBehavior.row("player.overlay")));
+        check("overlay alone does not expose fullscreen automation", false, SettingsBehavior.keyVisible("autoFullscreen"));
+        install("shorts-layout");
+        check("other tweak does not expose pause on overlay", false, SettingsBehavior.keyVisible("pauseOnOverlay"));
+
         // Theme effects remain independently selectable, including internal color/image keys.
         install("theme-studio");
         check("studio alone opens editor", true, SettingsBehavior.keyVisible("destination.themeStudio"));

@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-14, preferences-transfer checkpoint
+> Updated: 2026-11-14, pause-on-overlay checkpoint
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, private)
-> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. Shorts fullscreen combines native pinches, expanded content, idle overlays and continuity between reels. Shorts-only mode adds native live/cold routing, independent hidden tabs and its two-finger exit. The independent Shorts layout tweak can now hide the native player layer while retaining video and gestures. There are 28 named tweaks. Key-level parity remains conservative at 125 done / 4 n/a / 70 todo, including partial native coverage; the full port is not complete.
+> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. Shorts fullscreen combines native pinches, expanded content, idle overlays and continuity between reels. Shorts-only mode adds native live/cold routing, independent hidden tabs and its two-finger exit. The independent Shorts layout tweak can now hide the native player layer while retaining video and gestures. There are 28 named tweaks. Key-level parity remains conservative at 126 done / 4 n/a / 69 todo, including partial native coverage; the full port is not complete.
 
 ## Goal
 
@@ -10,6 +10,37 @@ Port every YTAfterglow iOS tweak to Android YouTube **21.43.523**, exactly as it
 - Each Afterglow feature group is a separately named tweak in Morphe's list (names from `tools/tweaks.json`).
 - An Afterglow settings page lives inside YouTube's settings and shows only rows for tweaks that are installed and implemented.
 - Plumbing such as GmsCore/microG sign-in comes from Morphe's own "GmsCore support" patch, ticked in the same run.
+
+## Verified pause-on-overlay checkpoint
+
+Build96 completes the default-OFF advanced Pause on overlay switch under the
+independent Player overlay tweak. It observes the standard controls' final native
+visibility and calls that owner's explicit pause/play commands. Native readiness,
+foreground ownership and per-owner duplicate/reentrancy guards preserve normal
+manual controls and avoid acting on ended or unavailable players.
+
+29 transition-policy and 433 settings checks pass. Strict standalone, GmsCore,
+streaming and independent selections pass 28/29/30/1/3. All 256 production input
+hashes and bundle integrity match. 35 full and 23 independent observations are
+reviewed, including 9 explicitly limited observations. Corrected captures verify
+show/pause, hide/resume, native manual Play/Pause, fullscreen and portrait return,
+cold persistence, background pause preservation, Shorts motion, live OFF and
+actual page/full reset. Final logs are clean, defaults are restored and the exact
+full APK is restored, hash-verified and stopped.
+
+Original evidence retains a loading frame, transient control-capture assumptions,
+a Shorts accessibility-label mismatch, a premature media-key state check,
+independent preroll/autoplay assumptions, an overly restrictive Reset-row
+visibility margin and interrupted runner attempts. Their bounded continuations
+pass; no production change was needed for those test corrections. The independent
+post-reset capture verifies playing content before its extra frames enter a
+native midroll; those extra frames have explicitly limited scope. The runner
+interruption cause is unknown.
+
+Physical devices, casting and live/DVR playback remain untested. Evidence:
+execution-96.json, pause-overlay-audit-96.json and delivery-96.json under
+port-completion-20261113. See docs/pause-on-overlay.md. Continue the remaining
+native player controls and full Android port.
 
 ## Verified preferences-transfer checkpoint
 

@@ -323,3 +323,12 @@ in crash-shorts-progress-87-only.log and the execution audit.
 - 427 settings checks, 438 theme checks, strict 28/29/30/1/3, ZIP integrity and all 253 production hashes pass. 15 final full and 9 independent observations are reviewed. Development93 has 15 observations covering XML, theme rename and rejection; development94 retains 12 observations including two limited cold-failure observations. Picker-navigation failure and interrupted build wrappers remain documented with successful continuations/retries.
 - Final full/independent logs are clean; defaults and the hash-verified full APK are restored and stopped. Bundle: 8,694,296 bytes; SHA-256 `4645fccaa1df9ec38445eae163f5a0b3927d35a591d01da577da3c891cb3e48d`. Evidence: execution-95.json, preferences-audit-95.json and delivery-95.json. Physical Android/iOS interoperability remains untested.
 - Parity: 125 done / 4 n/a / 70 todo. The full port remains active; continue native player-overlay controls and remaining feature mappings.
+
+
+## Session Ledger Checkpoint — Pause on overlay, build 96
+
+- Advanced default-OFF Pause on overlay now uses the standard native controls owner's final visibility and explicit pause/play commands. Foreground/readiness and per-owner feedback guards preserve native manual playback and avoid replaying ended videos.
+- 29 policy checks, 433 settings checks, strict 28/29/30/1/3, ZIP integrity and all 256 production hashes pass. 35 full and 23 independent observations are reviewed, with 9 explicitly limited observations. Successful continuations verify show/pause, hide/resume, manual Play/Pause, fullscreen/portrait, cold persistence, background pause, Shorts motion, live OFF and actual resets.
+- Loading/transient captures, a Shorts label mismatch, the premature media-key assertion, independent preroll/autoplay assumptions, the Reset-row visibility-margin correction and interrupted runner attempts remain in the evidence. Final app/extension/crash logs are clean; defaults and the exact full APK are restored and stopped. Physical devices, casting and live/DVR are untested.
+- Bundle: 8,711,671 bytes; SHA-256 `f5386d2dc0d9b87ea758c6af48d0251954eb00c82032a2b9a836c499a03a140d`. Evidence: execution-96.json, pause-overlay-audit-96.json and delivery-96.json.
+- Parity: 126 done / 4 n/a / 69 todo. Continue the remaining native controls and full port.

@@ -38,6 +38,7 @@ internal val playerOverlayHookPatch = bytecodePatch {
                 resourceLiteral(ResourceType.ID, "player_control_next_button_touch_area"),
                 methodCall(parameters = listOf("Landroid/view/View;", "I"))
             ))
+        installPauseOnOverlay(controls.method)
         val index = controls.instructionMatches.last().index
         val root = controls.method.implementation!!.instructions[index].invokeRegisters.first()
         controls.method.addInstructions(index,

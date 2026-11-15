@@ -63,7 +63,7 @@ val playerGesturesTweakPatch = bytecodePatch(
 @Suppress("unused")
 val playerOverlayTweakPatch = bytecodePatch(
     name = "Player overlay",
-    description = "Lets you hide native player controls, title, HUD messages, background shading, fullscreen actions and channel watermarks.",
+    description = "Lets you hide native player controls, title, HUD messages, background shading, fullscreen actions and channel watermarks, and pause playback while the controls appear.",
     default = true,
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)

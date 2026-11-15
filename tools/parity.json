@@ -481,7 +481,9 @@
     "note": "Independent install and default-off settings; iOS rounded remaining-time/rate calculation and US 12/24-hour formats. Strict standalone/GmsCore/streaming/isolation and Android 16 portrait/fullscreen, paused 2x/0.25x, new video, Shorts exclusion and live reset pass. Deferred native text handling preserves the native minimum width on reset. Physical-device, live/DVR and casting behavior unverified."
   },
   "pauseOnOverlay": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/PauseOnOverlay.java + playback/OverlayPauseSession.java + playback/PauseOnOverlayPatch.kt",
+    "note": "Default-OFF advanced switch owned by Player overlay. Final native standard-controls visibility drives the owning native pause/play commands with readiness/foreground and weak per-owner feedback guards. 29 policy checks, 433 settings checks, strict 28/29/30/1/3 and 256 source hashes pass. 35 full and 23 independent observations reviewed (9 explicitly limited); corrected observations verify show/pause, hide/resume, manual controls, fullscreen, cold persistence, background pause, Shorts motion, live OFF and resets. Original test assumptions and interrupted wrappers are retained. Physical devices, casting and live/DVR untested."
   },
   "shortsOnlyMode": {
     "status": "done",
