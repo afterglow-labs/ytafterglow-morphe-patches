@@ -426,6 +426,7 @@ public final class TweakCatalog {
             "removeSaveToPlaylistMenu",
             "removeShareMenu",
             "removeWatchLaterMenu",
+            "replacePrevNext",
             "resumeShorts",
             "seekBarAnimated",
             "seekBarGradient",

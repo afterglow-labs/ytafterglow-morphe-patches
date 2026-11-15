@@ -455,7 +455,9 @@
     "note": "Strict 21.43.523 standalone/GmsCore validation passes. Android 16 portrait/fullscreen: actual switches hide and restore existing controls without restart; fades and native enabled states survive reset. Inline-feed and physical-device runtime remain unverified."
   },
   "replacePrevNext": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/PlayerPaddlesPatch.kt + playback/PlayerPaddles.java + playback/PaddlePolicy.java",
+    "note": "Default-OFF advanced native rewind/fast-forward replacement for singleton VODs in independent Player overlay. Native interval, seek handlers and original model retained; playlists/live keep native controls. 60 policy and 447 settings checks, strict 29/30/31/1/3 selections and 267 production hashes pass. 41 full and 24 independent emulator observations reviewed (4 limited). Native 10-second seeks, fullscreen, hide/show, live OFF, cold persistence, eye composition, Shorts playback, independent ownership and resets pass. Readiness-gated playlist round trip passes; initial loading failures remain recorded. Physical devices, other seek intervals and alternate player architecture runtime untested."
   },
   "noDarkBg": {
     "status": "done",

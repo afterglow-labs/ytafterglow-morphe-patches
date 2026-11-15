@@ -523,7 +523,8 @@ public final class SettingsVisibilityTest {
             check("overlay patch exposes " + key, true, SettingsBehavior.keyVisible(key));
         }
         check("overlay patch does not enable gestures", false, SettingsBehavior.keyVisible("tapToSeek"));
-        check("overlay patch keeps unfinished replacement controls hidden", false, SettingsBehavior.keyVisible("replacePrevNext"));
+        check("overlay patch exposes replacement controls", true, SettingsBehavior.keyVisible("replacePrevNext"));
+        check("replacement controls default OFF", false, AfterglowPrefs.getBool("replacePrevNext"));
         AfterglowPrefs.setBool("advancedMode", false);
         check("overlay page follows iOS advanced gate", false, SettingsBehavior.shown(SettingsBehavior.row("player.overlay")));
         AfterglowPrefs.setBool("advancedMode", true);
@@ -534,6 +535,7 @@ public final class SettingsVisibilityTest {
         check("Remove ads alone does not expose Music control", false, SettingsBehavior.keyVisible("hidePlayerYouTubeMusicButton"));
         install();
         check("uninstalled Music control stays hidden", false, SettingsBehavior.keyVisible("hidePlayerYouTubeMusicButton"));
+        check("uninstalled replacement controls stay hidden", false, SettingsBehavior.keyVisible("replacePrevNext"));
 
         install();
         check("SponsorBlock stays off when uninstalled", false, SponsorSettings.current().shouldRun(false));

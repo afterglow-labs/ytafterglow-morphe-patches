@@ -39,6 +39,7 @@ internal val playerOverlayHookPatch = bytecodePatch {
                 methodCall(parameters = listOf("Landroid/view/View;", "I"))
             ))
         installPauseOnOverlay(controls.method)
+        installPlayerPaddles()
         val index = controls.instructionMatches.last().index
         val root = controls.method.implementation!!.instructions[index].invokeRegisters.first()
         controls.method.addInstructions(index,
