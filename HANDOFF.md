@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-14, About and diagnostics checkpoint
+> Updated: 2026-11-14, preferences-transfer checkpoint
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, private)
-> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. Shorts fullscreen combines native pinches, expanded content, idle overlays and continuity between reels. Shorts-only mode adds native live/cold routing, independent hidden tabs and its two-finger exit. The independent Shorts layout tweak can now hide the native player layer while retaining video and gestures. There are 28 named tweaks. Key-level parity remains conservative at 123 done / 4 n/a / 72 todo, including partial native coverage; the full port is not complete.
+> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. Shorts fullscreen combines native pinches, expanded content, idle overlays and continuity between reels. Shorts-only mode adds native live/cold routing, independent hidden tabs and its two-finger exit. The independent Shorts layout tweak can now hide the native player layer while retaining video and gestures. There are 28 named tweaks. Key-level parity remains conservative at 125 done / 4 n/a / 70 todo, including partial native coverage; the full port is not complete.
 
 ## Goal
 
@@ -10,6 +10,41 @@ Port every YTAfterglow iOS tweak to Android YouTube **21.43.523**, exactly as it
 - Each Afterglow feature group is a separately named tweak in Morphe's list (names from `tools/tweaks.json`).
 - An Afterglow settings page lives inside YouTube's settings and shows only rows for tweaks that are installed and implemented.
 - Plumbing such as GmsCore/microG sign-in comes from Morphe's own "GmsCore support" patch, ticked in the same run.
+
+## Verified preferences-transfer checkpoint
+
+Build95 completes About's preference import/export through Android's document
+picker. XML and binary plists carry archived UIKit colors, saved themes, semantic
+records, ordered tabs, data, dates and precise numbers. Original values survive
+export while their Android representation is unchanged; native edits take
+precedence. Invalid files leave the entire current setup intact. Full reset
+removes native values and private preservation/encoding records.
+
+103 transfer checks use the actual codec and Android SDK XML serializer; Python's
+independent plistlib compares the exports. Settings and theme checks pass at 427
+and 438. Strict standalone/GmsCore/streaming/independent selections pass
+28/29/30/1/3; all 253 production hashes and bundle integrity match. 15 final full
+and 9 independent observations are reviewed. Binary import/export, exact cold
+persistence, corrected tab normalization, saved-theme restoration and actual
+reset pass. The full final APK is restored, hash-verified and stopped; app,
+extension and crash logs are clean.
+
+Development93 has 15 reviewed observations covering XML, live colors and saved
+themes, Android rename, atomic rejection and reset. Its missed offscreen picker
+file was resolved by bounded scrolling. Development94 has 12 reviewed observations;
+two cold observations explicitly retain a real defect: Android's indented XML
+serializer appended four spaces after a final newline. The SDK source reproduces
+it. Final95 encodes only affected strings with private markers; reads/exports
+decode them and edits/removal/reset clear markers. A separate regression prevents
+invalid tab entries from returning through retained originals. Both regressions
+fail against their original sources and pass with the corrections. Interrupted
+patch wrappers and fresh successful retries remain in the evidence.
+
+Physical Android and iOS device interoperability remain untested. Preserving an
+unported preference does not implement its feature. Evidence and committed bundle
+provenance: execution-95.json, preferences-audit-95.json and delivery-95.json under
+port-completion-20261113. See docs/preferences-transfer.md. The full port remains
+active; continue the remaining native player-overlay controls and feature mappings.
 
 ## Verified About actions and diagnostics checkpoint
 

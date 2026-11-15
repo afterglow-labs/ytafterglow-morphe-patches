@@ -321,6 +321,8 @@ public final class TweakCatalog {
             "24hrFormat",
             "action.clearCache",
             "action.clearDebugLog",
+            "action.exportPreferences",
+            "action.importPreferences",
             "action.resetSettings",
             "action.resetThemeColors",
             "advancedMode",

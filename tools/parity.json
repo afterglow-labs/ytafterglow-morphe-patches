@@ -840,10 +840,14 @@
     "where": "ThemeStudioScreen, AfterglowActivity RESET_ALL_COLORS and ThemeStore.resetToSystem; restart removes native resource overlay"
   },
   "action.exportPreferences": {
-    "status": "todo"
+    "status": "done",
+    "where": "extension/settings/PrefsTransfer + PropertyList + LegacyColor + AfterglowActivity",
+    "note": "XML/binary property-list transfer through native document pickers, UIKit color archives, saved-theme/semantic JSON bridges and exact retained originals. Native edits supersede originals; malformed imports are atomic and reset clears all private records. Final95 corrects invalid-tab retention and real Android newline persistence. 103 transfer checks, 427 settings checks, 438 theme checks, strict 28/29/30/1/3 and 253 source hashes pass. 15 full and 9 independent observations reviewed, including exact cold exports and reset; development93 verifies XML and Android theme rename. Physical interoperability untested."
   },
   "action.importPreferences": {
-    "status": "todo"
+    "status": "done",
+    "where": "extension/settings/PrefsTransfer + PropertyList + LegacyColor + AfterglowActivity",
+    "note": "XML/binary property-list transfer through native document pickers, UIKit color archives, saved-theme/semantic JSON bridges and exact retained originals. Native edits supersede originals; malformed imports are atomic and reset clears all private records. Final95 corrects invalid-tab retention and real Android newline persistence. 103 transfer checks, 427 settings checks, 438 theme checks, strict 28/29/30/1/3 and 253 source hashes pass. 15 full and 9 independent observations reviewed, including exact cold exports and reset; development93 verifies XML and Android theme rename. Physical interoperability untested."
   },
   "action.resetSettings": {
     "status": "done",

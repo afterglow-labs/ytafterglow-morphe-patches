@@ -3,6 +3,8 @@ package app.afterglow.extension.settings;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -17,6 +19,7 @@ import app.afterglow.extension.Afterglow;
  */
 public final class AfterglowPrefs {
     public static final String FILE = "ytafterglow_prefs";
+    private static final String STRING_STORAGE = "__afterglow_android_string_v1:";
 
     /** Called after any Afterglow value changes, with the key that changed. */
     public interface Listener {
@@ -83,11 +86,9 @@ public final class AfterglowPrefs {
         SharedPreferences p = prefs();
         String fallback = defaultString(key);
         if (p == null) return fallback;
-        try {
-            return p.getString(key, fallback);
-        } catch (ClassCastException e) {
-            return fallback;
-        }
+        Map<String, ?> values = p.getAll();
+        Object value = values.get(key);
+        return value instanceof String ? decodedString(values, key, (String) value) : fallback;
     }
 
     public static float getFloat(String key, float fallback) {
@@ -108,36 +109,37 @@ public final class AfterglowPrefs {
     public static void setBool(String key, boolean value) {
         SharedPreferences p = prefs();
         if (p == null) return;
-        p.edit().putBoolean(key, value).apply();
+        p.edit().remove(stringMarker(key)).putBoolean(key, value).apply();
         notifyChanged(key);
     }
 
     public static void setInt(String key, int value) {
         SharedPreferences p = prefs();
         if (p == null) return;
-        p.edit().putInt(key, value).apply();
+        p.edit().remove(stringMarker(key)).putInt(key, value).apply();
         notifyChanged(key);
     }
 
     public static void setString(String key, String value) {
         SharedPreferences p = prefs();
         if (p == null) return;
-        if (value == null) p.edit().remove(key).apply();
-        else p.edit().putString(key, value).apply();
+        SharedPreferences.Editor editor = p.edit();
+        putString(editor, key, value);
+        editor.apply();
         notifyChanged(key);
     }
 
     public static void setFloat(String key, float value) {
         SharedPreferences p = prefs();
         if (p == null) return;
-        p.edit().putFloat(key, value).apply();
+        p.edit().remove(stringMarker(key)).putFloat(key, value).apply();
         notifyChanged(key);
     }
 
     public static void remove(String key) {
         SharedPreferences p = prefs();
         if (p == null) return;
-        p.edit().remove(key).apply();
+        p.edit().remove(stringMarker(key)).remove(key).apply();
         notifyChanged(key);
     }
 
@@ -161,21 +163,53 @@ public final class AfterglowPrefs {
         for (Map.Entry<String, ?> entry : values.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
-            if (key == null) continue;
+            if (key == null || isStorageKey(key)) continue;
             if (value instanceof Boolean) editor.putBoolean(key, (Boolean) value);
             else if (value instanceof Integer) editor.putInt(key, (Integer) value);
             else if (value instanceof Long) editor.putLong(key, (Long) value);
             else if (value instanceof Float) editor.putFloat(key, (Float) value);
-            else if (value instanceof String) editor.putString(key, (String) value);
+            else if (value instanceof String) putString(editor, key, (String) value);
         }
         editor.apply();
         notifyChanged(null);
     }
 
-    /** Raw access for import/export; values are Boolean, Integer, Float, Long or String. */
+    /** Logical values for import/export; private storage markers are never exposed. */
     public static Map<String, ?> snapshot() {
         SharedPreferences p = prefs();
-        return p == null ? new HashMap<String, Object>() : p.getAll();
+        Map<String, Object> result = new HashMap<>();
+        if (p == null) return result;
+        Map<String, ?> values = p.getAll();
+        for (Map.Entry<String, ?> entry : values.entrySet()) {
+            String key = entry.getKey();
+            if (isStorageKey(key)) continue;
+            Object value = entry.getValue();
+            result.put(key, value instanceof String ? decodedString(values, key, (String) value) : value);
+        }
+        return result;
+    }
+
+    static boolean isStorageKey(String key) { return key.startsWith(STRING_STORAGE); }
+
+    private static String stringMarker(String key) {
+        return STRING_STORAGE + Base64.getEncoder().encodeToString(key.getBytes(StandardCharsets.UTF_8));
+    }
+
+    private static void putString(SharedPreferences.Editor editor, String key, String value) {
+        String marker = stringMarker(key);
+        if (value == null) editor.remove(key).remove(marker);
+        else if (value.endsWith("\n")) {
+            // Android's indented FastXmlSerializer adds spaces after a final newline.
+            // A separate marker distinguishes encoded data from literal Base64 text.
+            editor.putString(key, Base64.getEncoder().encodeToString(value.getBytes(StandardCharsets.UTF_8)));
+            editor.putBoolean(marker, true);
+        } else editor.putString(key, value).remove(marker);
+    }
+
+    private static String decodedString(Map<String, ?> values, String key, String value) {
+        if (!Boolean.TRUE.equals(values.get(stringMarker(key)))) return value;
+        try { return new String(Base64.getDecoder().decode(value), StandardCharsets.UTF_8); }
+        catch (IllegalArgumentException invalid) { return value; }
     }
 
     static boolean available() { return prefs() != null; }
