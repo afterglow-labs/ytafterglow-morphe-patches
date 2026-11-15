@@ -394,10 +394,14 @@
     "note": "menu rows dropped by icon type; patch applies on 21.43.523; not yet confirmed on a device"
   },
   "muteButton": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/OverlayButtons.java + playback/OverlayButtonsPatch.kt",
+    "note": "Default-ON advanced switch owned by independent Overlay buttons. Native watch facade drives actual mute/unmute; native lock entity and bounded fullscreen request drive lock/unlock. 21 request, 441 settings and 17 deterministic WatchActions threading checks pass. Strict selections 29/30/31/1/3 and 260 production hashes pass. 31 full and 21 independent observations reviewed (1 limited); application mixer gain, both unlock paths, cold OFF, live/page/full reset and owner visibility verified on Android16 emulator. Build99 ANR was traced to the existing WatchActions lock inversion and corrected in100. Physical devices, casting and audible hardware output untested."
   },
   "lockButton": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/OverlayButtons.java + playback/OverlayButtonsPatch.kt",
+    "note": "Default-ON advanced switch owned by independent Overlay buttons. Native watch facade drives actual mute/unmute; native lock entity and bounded fullscreen request drive lock/unlock. 21 request, 441 settings and 17 deterministic WatchActions threading checks pass. Strict selections 29/30/31/1/3 and 260 production hashes pass. 31 full and 21 independent observations reviewed (1 limited); application mixer gain, both unlock paths, cold OFF, live/page/full reset and owner visibility verified on Android16 emulator. Build99 ANR was traced to the existing WatchActions lock inversion and corrected in100. Physical devices, casting and audible hardware output untested."
   },
   "downloadButton": {
     "status": "todo"

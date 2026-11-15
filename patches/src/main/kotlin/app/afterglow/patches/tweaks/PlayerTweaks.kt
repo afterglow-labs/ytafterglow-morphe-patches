@@ -10,11 +10,23 @@ import app.afterglow.patches.playback.fullscreenHookPatch
 import app.afterglow.patches.playback.portraitFullscreenHookPatch
 import app.afterglow.patches.playback.endTimeHookPatch
 import app.afterglow.patches.playback.chapterSnapHookPatch
+import app.afterglow.patches.playback.overlayButtonsHookPatch
 import app.afterglow.patches.litho.afterglowLithoFilterPatch
 import app.afterglow.patches.settings.afterglowSettingsPatch
 import app.afterglow.patches.shared.Constants.COMPATIBILITY_YOUTUBE
 import app.afterglow.patches.shared.markTweakInstalled
 import app.morphe.patcher.patch.bytecodePatch
+
+@Suppress("unused")
+val overlayButtonsTweakPatch = bytecodePatch(
+    name = "Overlay buttons",
+    description = "Adds Afterglow mute, lock and settings buttons to the standard player overlay.",
+    default = true,
+) {
+    compatibleWith(COMPATIBILITY_YOUTUBE)
+    dependsOn(afterglowSettingsPatch, overlayButtonsHookPatch)
+    execute { markTweakInstalled("overlay-buttons") }
+}
 
 @Suppress("unused")
 val endTimeTweakPatch = bytecodePatch(

@@ -107,9 +107,7 @@ internal val watchActionsHookPatch = bytecodePatch {
             move-result v0
             if-nez v0, :end
             check-cast p1, $modelType
-            check-cast p2, $contextType
             iput-object p1, p0, $model
-            iput-object p2, p0, $context
         """)
         bridgeMethod("afterglow_refreshActions", emptyList(), "Z", 5, """
             invoke-virtual { p0 }, ${disposed.smali}
@@ -140,6 +138,18 @@ internal val watchActionsHookPatch = bytecodePatch {
         if (contextEmit < 0) throw PatchException("Reactive component has no context emission")
         // The native monitor and disposed checks already guard this call.
         moveContext.addInstructions(contextEmit, "iput-object p1, p0, $context")
+        // Initial subscription also publishes its scoped context while holding the
+        // native owner monitor. Cache it there, so deferred model observations can
+        // never overwrite a newer context after Litho transfers ownership.
+        val emit = (moveContext.implementation!!.instructions[contextEmit + 1] as ReferenceInstruction)
+            .reference as MethodReference
+        val subscribeContextEmit = subscribe.implementation!!.instructions.indexOfFirst {
+            ((it as? ReferenceInstruction)?.reference as? MethodReference)?.smali == emit.smali
+        }
+        val contextParameter = subscribe.parameterTypes.map { it.toString() }.withIndex()
+            .single { it.value == contextType }.index + 1
+        require(subscribeContextEmit >= 0) { "Reactive subscription has no context emission" }
+        subscribe.addInstructions(subscribeContextEmit, "iput-object p$contextParameter, p0, $context")
         // Mirror native disposal. Cached data lives on the owner, never in a global strong map.
         for (candidate in owner.methods.toList()) {
             if (candidate.name == "<init>" || conversionType in candidate.parameterTypes) continue

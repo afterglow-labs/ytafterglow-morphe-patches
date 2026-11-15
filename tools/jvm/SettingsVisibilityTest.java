@@ -104,6 +104,18 @@ public final class SettingsVisibilityTest {
         install("shorts-layout");
         check("other tweak does not expose pause on overlay", false, SettingsBehavior.keyVisible("pauseOnOverlay"));
 
+        install("overlay-buttons");
+        AfterglowPrefs.remove("muteButton"); AfterglowPrefs.remove("lockButton");
+        check("buttons alone expose mute", true, SettingsBehavior.keyVisible("muteButton"));
+        check("buttons alone expose lock", true, SettingsBehavior.keyVisible("lockButton"));
+        check("mute button defaults on", true, AfterglowPrefs.getBool("muteButton"));
+        check("lock button defaults on", true, AfterglowPrefs.getBool("lockButton"));
+        check("buttons alone do not expose overlay pause", false, SettingsBehavior.keyVisible("pauseOnOverlay"));
+        check("buttons alone do not expose automatic fullscreen", false, SettingsBehavior.keyVisible("autoFullscreen"));
+        install("player-overlay");
+        check("player overlay does not own mute button", false, SettingsBehavior.keyVisible("muteButton"));
+        check("player overlay does not own lock button", false, SettingsBehavior.keyVisible("lockButton"));
+
         // Theme effects remain independently selectable, including internal color/image keys.
         install("theme-studio");
         check("studio alone opens editor", true, SettingsBehavior.keyVisible("destination.themeStudio"));

@@ -50,8 +50,23 @@ public final class WatchActions {
             boolean watch = identifier != null && identifier.contains("video_action_bar.e");
             boolean fullscreen = identifier != null && identifier.contains("quick_actions.e");
             if (!watch && !fullscreen) return;
-            controller.afterglow_rememberActions(model, context);
-            synchronized (BOUND) { BOUND.put(controller, hiddenButtons()); }
+            int rendered = hiddenButtons();
+            // Conversion callbacks can hold the native component-store monitor.
+            // Native layout holds the owner monitor while subscribing to that store.
+            // Always leave the callback before acquiring the owner, even on main.
+            MAIN.post(() -> {
+                try {
+                    controller.afterglow_rememberActions(model, context);
+                    synchronized (BOUND) { BOUND.put(controller, rendered); }
+                    // A settings refresh may have run before this owner was recorded.
+                    if (rendered != hiddenButtons()) {
+                        MAIN.removeCallbacks(REFRESH);
+                        MAIN.post(REFRESH);
+                    }
+                } catch (Throwable error) {
+                    Afterglow.error("WatchActions.remember", error);
+                }
+            });
         } catch (Throwable error) {
             Afterglow.error("WatchActions.observe", error);
         }

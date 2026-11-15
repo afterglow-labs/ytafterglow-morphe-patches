@@ -378,6 +378,8 @@ public final class TweakCatalog {
             "hideShortsSource",
             "hideShortsThanks",
             "hideSubs",
+            "lockButton",
+            "muteButton",
             "noAds",
             "noCast",
             "noContentWarning",

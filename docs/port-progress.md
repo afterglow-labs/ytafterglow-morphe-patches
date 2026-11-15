@@ -332,3 +332,40 @@ in crash-shorts-progress-87-only.log and the execution audit.
 - Loading/transient captures, a Shorts label mismatch, the premature media-key assertion, independent preroll/autoplay assumptions, the Reset-row visibility-margin correction and interrupted runner attempts remain in the evidence. Final app/extension/crash logs are clean; defaults and the exact full APK are restored and stopped. Physical devices, casting and live/DVR are untested.
 - Bundle: 8,711,671 bytes; SHA-256 `f5386d2dc0d9b87ea758c6af48d0251954eb00c82032a2b9a836c499a03a140d`. Evidence: execution-96.json, pause-overlay-audit-96.json and delivery-96.json.
 - Parity: 126 done / 4 n/a / 69 todo. Continue the remaining native controls and full port.
+
+## Session Ledger Checkpoint — native mute and lock, build100
+
+Build100 adds the independently named Overlay buttons tweak. Default-ON Mute and
+Lock switches retain the advanced Player > Overlay rows and translations. The
+utility row includes Afterglow Settings and follows the native player bounds.
+Mute uses the native watch facade; Lock requests native fullscreen and publishes
+the native lock state. Both custom and native unlock work, including portrait
+return. The row stays usable above the native lock input layer.
+
+21 request-policy, 441 settings and 17 threading checks pass. Strict standalone,
+GmsCore, streaming and independent selections pass 29/30/31/1/3. All 260 production
+inputs and bundle integrity match. 31 full and 21 independent observations are
+visually reviewed (1 limited). The same native audio track changes from 0dB to
+-inf and back, including while locked. Cold visibility, live OFF, independent
+settings ownership, page/full reset, minimized-player exclusion and Shorts motion
+pass. Defaults and the exact full APK are restored, hash-verified and stopped.
+Final app/extension/crash and ANR logs are clean.
+
+Build97 exposed lazy root binding and input interception; build99 corrected both.
+Build99 then exposed a real existing WatchActions deadlock. Its retained ANR trace
+proves a component-store/owner monitor inversion. Build100 defers observations
+until the callback returns and captures scoped context inside native subscription
+and transfer. The deterministic old-code regression fails; the corrected version
+passes. Warm unavailable-to-playable navigation and live Share/Save refresh pass.
+The third warm intent retained the existing video; that capture proves response
+and motion only. A test-script variable collision and strict UTF8 log decoding
+failure are retained with their successful corrections; raw logs are preserved.
+The independent baseline initially buffered into a preroll. Its original failure
+is retained; the continuation skips the native ad and verifies actual content.
+
+Physical devices, casting and alternate player architecture runtime are untested.
+The emulator has audio output disabled; mixer gain is verified, audible hardware
+output is not. Evidence: execution-100.json, overlay-buttons-audit-100.json and
+delivery-100.json under port-completion-20261113. See docs/overlay-buttons.md.
+Continue the eye/declutter modes and remaining native mappings. The full port
+remains incomplete at 128 done / 4 n/a / 67 todo.
