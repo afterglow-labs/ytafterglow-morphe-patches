@@ -32,6 +32,8 @@ public final class OverlayButtons {
     private static final Map<View, WeakReference<Binding>> BOUND = new WeakHashMap<>();
     private static WeakReference<OverlayActionController> controller = new WeakReference<>(null);
     private static final OverlayLockRequest REQUEST = new OverlayLockRequest();
+    private static final String[] EYE_LABELS = {"Hide YouTube controls", "Use timed Afterglow controls",
+            "Keep only the eye", "Restore all controls"};
     private OverlayButtons() {}
 
     public static void setController(OverlayActionController value) {
@@ -45,12 +47,20 @@ public final class OverlayButtons {
     }
 
     public static void bind(FrameLayout root) {
+        bind(root, false);
+    }
+
+    public static void bindShorts(FrameLayout root) {
+        bind(root, true);
+    }
+
+    private static void bind(FrameLayout root, boolean shorts) {
         if (root == null || !InstalledTweaks.has("overlay-buttons")) return;
         Afterglow.runOnMain(() -> {
             WeakReference<Binding> reference = BOUND.get(root);
             Binding old = reference == null ? null : reference.get();
             if (old != null) { old.refresh(); return; }
-            Binding binding = new Binding(root);
+            Binding binding = new Binding(root, shorts);
             BOUND.put(root, new WeakReference<>(binding));
             root.addOnAttachStateChangeListener(binding);
             if (root.isAttachedToWindow()) binding.onViewAttachedToWindow(root);
@@ -62,17 +72,20 @@ public final class OverlayButtons {
     }
 
     private static final class Binding implements View.OnAttachStateChangeListener,
-            ViewTreeObserver.OnPreDrawListener, AfterglowPrefs.Listener, VideoState.Listener {
+            ViewTreeObserver.OnPreDrawListener, AfterglowPrefs.Listener, VideoState.Listener,
+            OverlayModes.Listener {
         final FrameLayout root;
         final LinearLayout row;
-        final Button mute, lock, settings;
+        final Button mute, lock, settings, eye;
+        final boolean shorts;
         final int containerId;
         FrameLayout host;
         ViewTreeObserver observer;
         boolean attached, failed;
 
-        Binding(FrameLayout root) {
+        Binding(FrameLayout root, boolean shorts) {
             this.root = root;
+            this.shorts = shorts;
             containerId = root.getResources().getIdentifier("player_overlays_custom_views_container",
                     "id", root.getContext().getPackageName());
             row = new LinearLayout(root.getContext());
@@ -83,11 +96,15 @@ public final class OverlayButtons {
             mute = new Button(root, "Mute", 0);
             lock = new Button(root, "Lock controls", 1);
             settings = new Button(root, "Afterglow Settings", 2);
-            for (Button button : new Button[] {mute, lock, settings}) {
+            eye = new Button(root, "Hide YouTube controls", 3);
+            for (Button button : new Button[] {mute, lock, settings, eye}) {
                 row.addView(button, new LinearLayout.LayoutParams(dp(44), dp(44)));
             }
             mute.setOnClickListener(v -> toggleMute());
             lock.setOnClickListener(v -> toggleLock());
+            eye.setOnClickListener(v -> {
+                if (foreground() && enabled("overlayDeclutterButton")) OverlayModes.cycle();
+            });
             settings.setOnClickListener(v -> {
                 try {
                     if (!foreground()) return;
@@ -96,7 +113,7 @@ public final class OverlayButtons {
             });
             FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(
                     FrameLayout.LayoutParams.WRAP_CONTENT, dp(44), Gravity.TOP | Gravity.END);
-            layout.topMargin = dp(54);
+            layout.topMargin = dp(shorts ? 84 : 54);
             layout.setMarginEnd(dp(14));
             row.setLayoutParams(layout);
             row.setVisibility(View.GONE);
@@ -111,6 +128,7 @@ public final class OverlayButtons {
             observer.addOnPreDrawListener(this);
             AfterglowPrefs.addListener(this);
             VideoState.addListener(this);
+            OverlayModes.addListener(this);
             refresh();
         }
 
@@ -122,18 +140,21 @@ public final class OverlayButtons {
             observer = null;
             AfterglowPrefs.removeListener(this);
             VideoState.removeListener(this);
+            OverlayModes.removeListener(this);
         }
 
         @Override public boolean onPreDraw() { refresh(); return true; }
         @Override public void onChanged(String key) { Afterglow.runOnMain(this::refresh); }
         @Override public void onPlayerType(PlayerType type) { Afterglow.runOnMain(this::refresh); }
+        @Override public void onOverlayModeChanged() { refresh(); }
         @Override public void onNewVideo(String id) {
             Afterglow.runOnMain(() -> { REQUEST.cancel(); refresh(); });
         }
 
         boolean watch() {
             return attached && InstalledTweaks.has("overlay-buttons")
-                    && VideoState.playerType().isMaximizedOrFullscreen() && !VideoState.isShortsPlayerInFront()
+                    && (shorts ? VideoState.isShortsPlayerInFront()
+                    : VideoState.playerType().isMaximizedOrFullscreen() && !VideoState.isShortsPlayerInFront())
                     && !VideoState.isAdPlaying();
         }
 
@@ -154,6 +175,7 @@ public final class OverlayButtons {
 
         boolean attachRow() {
             if (host != null) return true;
+            if (shorts) { host = root; host.addView(row); return true; }
             if (containerId == 0) return false;
             // YouTube's lock UI is a full-player sibling above the controls root.
             // Its native custom-view container sits above that layer and already
@@ -177,10 +199,20 @@ public final class OverlayButtons {
                 boolean visible = watch() && attachRow();
                 setVisibility(row, visible);
                 if (!visible) return;
-                setVisibility(mute, enabled("muteButton"));
-                setVisibility(lock, enabled("lockButton"));
+                boolean controls = OverlayModes.controlsVisible();
+                setVisibility(mute, !shorts && controls && enabled("muteButton"));
+                setVisibility(lock, !shorts && controls && enabled("lockButton"));
+                setVisibility(settings, controls);
+                setVisibility(eye, enabled("overlayDeclutterButton"));
+                eye.setAlpha(OverlayModes.eyeOpacity());
+                String eyeLabel = EYE_LABELS[OverlayModes.mode()];
+                if (!eyeLabel.contentEquals(eye.getContentDescription())) {
+                    eye.setContentDescription(eyeLabel);
+                    eye.active = OverlayModes.mode() == 0 || OverlayModes.mode() == 3;
+                    eye.invalidate();
+                }
                 if (!enabled("lockButton")) REQUEST.cancel();
-                OverlayActionController value = actions();
+                OverlayActionController value = shorts ? null : actions();
                 boolean ready = value != null;
                 mute.setEnabled(ready);
                 lock.setEnabled(ready && value.afterglow_lockState() != 0 && !REQUEST.pending());
@@ -275,6 +307,7 @@ public final class OverlayButtons {
         Button(View root, String label, int kind) {
             super(root.getContext());
             this.kind = kind;
+            active = kind == 3;
             setContentDescription(label);
             setClickable(true);
             setFocusable(true);
@@ -325,7 +358,7 @@ public final class OverlayButtons {
                         active ? 180 : 150, false, paint);
                 if (active) canvas.drawLine(17, 8, 17, 11, paint);
                 canvas.drawLine(7, 8, 7, 11, paint);
-            } else {
+            } else if (kind == 2) {
                 paint.setStyle(Paint.Style.STROKE);
                 paint.setStrokeWidth(3);
                 canvas.drawCircle(12, 12, 6.5f, paint);
@@ -335,6 +368,19 @@ public final class OverlayButtons {
                 }
                 paint.setStrokeWidth(2);
                 canvas.drawCircle(12, 12, 2.2f, paint);
+            } else {
+                paint.setStyle(Paint.Style.STROKE);
+                Path outline = new Path();
+                outline.moveTo(1, 12);
+                outline.quadTo(12, 0, 23, 12);
+                outline.quadTo(12, 24, 1, 12);
+                canvas.drawPath(outline, paint);
+                paint.setStyle(Paint.Style.FILL);
+                canvas.drawCircle(12, 12, 3.5f, paint);
+                if (active) {
+                    paint.setStyle(Paint.Style.STROKE);
+                    canvas.drawLine(3, 3, 21, 21, paint);
+                }
             }
             canvas.restore();
         }

@@ -5,6 +5,7 @@ import app.afterglow.patches.shared.addFieldGetter
 import app.afterglow.patches.shared.addMethod
 import app.afterglow.patches.shared.smali
 import app.afterglow.patches.video.addPublicMethod
+import app.afterglow.patches.tweaks.navigation.shortsPlayerLayerHookPatch
 import app.morphe.patcher.Fingerprint
 import app.morphe.patcher.fieldAccess
 import app.morphe.patcher.literal
@@ -27,7 +28,7 @@ import com.android.tools.smali.dexlib2.iface.reference.StringReference
  * Lastx.ax controls skip-silence and must not be used for mute.
  */
 internal val overlayButtonsHookPatch = bytecodePatch {
-    dependsOn(fullscreenHookPatch)
+    dependsOn(fullscreenHookPatch, shortsPlayerLayerHookPatch)
     execute {
         val extension = "$EXTENSION_PACKAGE/playback/OverlayButtons;"
         val bridge = "$EXTENSION_PACKAGE/playback/OverlayActionController;"
@@ -145,6 +146,7 @@ internal val overlayButtonsHookPatch = bytecodePatch {
                 rootSetup.addInstructionsAtControlFlowLabel(index,
                     "invoke-virtual/range { p0 .. p0 }, ${controlHost.type}->afterglow_bindOverlayButtons()V")
             }
+        installOverlayModes(controlHost, rootSetup, root)
         println("Afterglow overlay buttons: host=${host.type}; root=${root.smali}; setup=${rootSetup.smali}; mute=${mute.smali}; unmute=${unmute.smali}; lock=${setLock.smali}")
     }
 }

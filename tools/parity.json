@@ -410,7 +410,9 @@
     "status": "todo"
   },
   "overlayDeclutterButton": {
-    "status": "todo"
+    "status": "done",
+    "where": "playback/OverlayModes.java + OverlayModeSession.java + native watch/Shorts presentation hooks",
+    "note": "Default-ON advanced Clean overlay button in independent Overlay buttons. Four process-wide modes share native watch and Shorts, with a three-second timeout and native-show reveal. 55 session and 445 settings checks, strict 29/30/31/1/3 selections and 264 production hashes pass. 46 full and 34 independent emulator observations reviewed (3 limited). Native controls restore, mode survives surface changes and fullscreen lock, mute/unmute works while pinned/locked, preference OFF/cold/reset and Pause on overlay/Shorts layer composition pass. Fresh process resets mode; page reset preserves it. Physical devices and audible hardware output untested. Control Center Reset Player Overlay action remains pending."
   },
   "hideOverlayTitle": {
     "status": "done",

@@ -407,6 +407,7 @@ public final class TweakCatalog {
             "noVoiceSearchButton",
             "noWatermarks",
             "noYTLogo",
+            "overlayDeclutterButton",
             "pauseOnOverlay",
             "persistentProgressBar",
             "pinchToFullscreenShorts",

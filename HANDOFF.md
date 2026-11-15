@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-14, native mute and lock checkpoint
+> Updated: 2026-11-14, eye modes checkpoint
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, private)
-> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. Shorts fullscreen combines native pinches, expanded content, idle overlays and continuity between reels. Shorts-only mode adds native live/cold routing, independent hidden tabs and its two-finger exit. The independent Shorts layout tweak can now hide the native player layer while retaining video and gestures. There are 29 named tweaks. Key-level parity remains conservative at 128 done / 4 n/a / 67 todo, including partial native coverage; the full port is not complete.
+> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. Shorts fullscreen combines native pinches, expanded content, idle overlays and continuity between reels. Shorts-only mode adds native live/cold routing, independent hidden tabs and its two-finger exit. The independent Shorts layout tweak can now hide the native player layer while retaining video and gestures. The player and Shorts share all four eye modes, and native mute and fullscreen lock work independently. There are 29 named tweaks. Key-level parity remains conservative at 129 done / 4 n/a / 66 todo, including partial native coverage; the full port is not complete.
 
 ## Goal
 
@@ -10,6 +10,55 @@ Port every YTAfterglow iOS tweak to Android YouTube **21.43.523**, exactly as it
 - Each Afterglow feature group is a separately named tweak in Morphe's list (names from `tools/tweaks.json`).
 - An Afterglow settings page lives inside YouTube's settings and shows only rows for tweaks that are installed and implemented.
 - Plumbing such as GmsCore/microG sign-in comes from Morphe's own "GmsCore support" patch, ticked in the same run.
+
+## Verified eye modes checkpoint
+
+Build103 completes the default-ON advanced Clean overlay button under the
+independent Overlay buttons tweak. One process-wide mode cycles through native
+controls, pinned Afterglow controls, timed controls and the eye alone on standard
+watch and Shorts. Timed controls hide after three seconds and a fresh native show
+reveals them again. Native requested visibility remains intact for Pause on overlay.
+
+55 session-policy and 445 settings checks pass. Strict standalone, GmsCore,
+streaming and independent selections pass 29/30/31/1/3; all 264 production input
+hashes and bundle integrity match. 46 full and 34 independent observations are
+visually reviewed (3 limited). Watch/Shorts cycle, timeout, reveal, restoration,
+surface continuity, fullscreen lock and timed rotation pass. Native mixer gain
+changes from 0dB to -inf and back while pinned and locked. Live and cold OFF,
+independent ownership, page/full reset, Shorts player-layer composition and
+Pause on overlay pass. The page reset preserves session mode; a fresh process
+starts at default. Defaults and the exact full APK are restored and stopped.
+Final app, extension, crash and ANR logs are clean.
+
+Development101 failed strict matching before installation because its fingerprint
+checks had the wrong instruction order. Development102 passed initial runtime
+scenarios but failed Pause on overlay in a fresh pinned player. Packaged DEX
+proved its visibility mask skipped native lazy controls initialization. Showing
+normal controls once made pause/resume work, confirming the missing controller.
+Build103 preserves initialization before masking visibility; the fresh-process
+pause regression now passes. Native requested visibility remains unmodified.
+Development102's navigation, stale media-session and scroll-test corrections
+remain documented with their original failures. Native clock and decoded-frame
+checks verify warm playback after Shorts without trusting that stale status.
+Build103 also retains an initial ADB-server connection failure before app launch;
+the recovered baseline passed without a production change.
+
+Independent testing retained three observations with black video captures between
+decoded frames. The emulator later disappeared during a cold-launch preroll.
+Its configured swiftshader_indirect mode was unsupported by emulator37.2.12 and
+fell back to the host GPU, whose log contains graphics memory-import errors.
+The exact cause of the process exit and individual black frames is unestablished.
+The same AVD and hash-verified APK resumed with supported SwiftShader; cold OFF,
+remaining reset checks and a separate five-state Shorts motion follow-up pass.
+Both log periods and the interrupted phase are retained in the release audit.
+
+Physical devices, casting and alternate player architecture runtime are untested.
+The emulator has audio output disabled; mixer gain is checked, audible output is
+not. Reset Player Overlay belongs to the unported Control Center: its internal
+reset entry point exists, but the action remains pending and hidden. Evidence:
+execution-103.json, eye-modes-audit-103.json and delivery-103.json under
+port-completion-20261113. See docs/overlay-eye-modes.md. Continue the remaining
+native mappings and full port, now 129 done / 4 n/a / 66 todo.
 
 ## Verified native mute and lock checkpoint
 

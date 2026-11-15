@@ -110,11 +110,15 @@ public final class SettingsVisibilityTest {
         check("buttons alone expose lock", true, SettingsBehavior.keyVisible("lockButton"));
         check("mute button defaults on", true, AfterglowPrefs.getBool("muteButton"));
         check("lock button defaults on", true, AfterglowPrefs.getBool("lockButton"));
+        check("buttons alone expose eye modes", true, SettingsBehavior.keyVisible("overlayDeclutterButton"));
+        check("eye button defaults on", true, AfterglowPrefs.getBool("overlayDeclutterButton"));
+        check("unported Control Center reset stays hidden", false, SettingsBehavior.keyVisible("action.resetOverlayMode"));
         check("buttons alone do not expose overlay pause", false, SettingsBehavior.keyVisible("pauseOnOverlay"));
         check("buttons alone do not expose automatic fullscreen", false, SettingsBehavior.keyVisible("autoFullscreen"));
         install("player-overlay");
         check("player overlay does not own mute button", false, SettingsBehavior.keyVisible("muteButton"));
         check("player overlay does not own lock button", false, SettingsBehavior.keyVisible("lockButton"));
+        check("player overlay does not own eye button", false, SettingsBehavior.keyVisible("overlayDeclutterButton"));
 
         // Theme effects remain independently selectable, including internal color/image keys.
         install("theme-studio");
