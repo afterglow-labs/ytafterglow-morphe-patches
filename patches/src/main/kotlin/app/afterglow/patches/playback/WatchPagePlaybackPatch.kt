@@ -217,6 +217,7 @@ internal val watchPagePlaybackHookPatch = bytecodePatch(
     dependsOn(afterglowExtensionPatch)
 
     execute {
+        installWatchNextSections()
         val autoplayInactivity = AutoplayInactivityLimitFingerprint.method
         val autoplayInactivityIndex = AutoplayInactivityLimitFingerprint.instructionMatches[3].index
         val inactivity = InactivityLimitFingerprint.method

@@ -295,7 +295,9 @@
     "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "noRelatedWatchNexts": {
-    "status": "todo"
+    "status": "done",
+    "where": "extensions/extension/src/main/java/app/afterglow/extension/playback/WatchNextSections.java + patches/src/main/kotlin/app/afterglow/patches/playback/WatchNextSectionsPatch.kt",
+    "note": "Default-OFF native watch-list information/comments boundary, copied display model and live restoration under independent Watch page. 459 settings checks, strict 29/30/31/1/3 selections and 269 production hashes pass. 36 full and 34 independent observations reviewed (5 limited). Hide/restore, cold start, description/comments/Share, scrolling, fullscreen, native-ad independence and resets pass; full Home/playlist/Shorts and children's-video information preserved. Emulator host crashes and QA corrections retained with successful continuations; see docs/watch-next.md. Physical/elevated-metapanel runtime untested; unknown boundaries fail open."
   },
   "hideEndScreenCards": {
     "status": "done",

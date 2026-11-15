@@ -56,7 +56,7 @@ val playerButtonsMenusTweakPatch = bytecodePatch(
 @Suppress("unused")
 val watchPageTweakPatch = bytecodePatch(
     name = "Watch page",
-    description = "Lets you hide the Continue watching card, the \"Are you still watching?\" pause, end-screen cards and end-screen related videos.",
+    description = "Lets you hide below-player recommendations while keeping video information and comments, the Continue watching card, the \"Are you still watching?\" pause, end-screen cards and end-screen related videos.",
     default = true,
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)

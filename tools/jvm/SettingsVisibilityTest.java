@@ -19,6 +19,7 @@ import app.afterglow.extension.navigation.Subbar;
 import app.afterglow.extension.navigation.ShortsProgressPolicy;
 import app.afterglow.extension.navigation.ShortsFullscreenPolicy;
 import app.afterglow.extension.settings.AfterglowPrefs;
+import app.afterglow.extension.settings.LiteMode;
 import app.afterglow.extension.settings.TweakCatalog;
 import app.afterglow.extension.sponsorblock.SponsorCategory;
 import app.afterglow.extension.sponsorblock.SponsorSettings;
@@ -536,6 +537,28 @@ public final class SettingsVisibilityTest {
         install();
         check("uninstalled Music control stays hidden", false, SettingsBehavior.keyVisible("hidePlayerYouTubeMusicButton"));
         check("uninstalled replacement controls stay hidden", false, SettingsBehavior.keyVisible("replacePrevNext"));
+
+        install();
+        AfterglowPrefs.remove("noRelatedWatchNexts");
+        check("watch recommendations default visible", false, AfterglowPrefs.getBool("noRelatedWatchNexts"));
+        check("uninstalled up-next setting stays hidden", false, SettingsBehavior.keyVisible("noRelatedWatchNexts"));
+        AfterglowPrefs.setBool("noRelatedWatchNexts", true);
+        check("import cannot expose uninstalled up-next setting", false, SettingsBehavior.keyVisible("noRelatedWatchNexts"));
+        install("watch-page");
+        AfterglowPrefs.setBool("advancedMode", false);
+        check("watch page alone exposes up-next setting", true, SettingsBehavior.keyVisible("noRelatedWatchNexts"));
+        check("up-next setting is available without advanced mode", true, SettingsBehavior.shown(SettingsBehavior.row("playback.noRelatedWatchNexts")));
+        check("installed watch page honors imported up-next choice", true, LiteMode.effectiveBool("noRelatedWatchNexts"));
+        AfterglowPrefs.remove("noRelatedWatchNexts");
+        check("up-next reset restores recommendations", false, LiteMode.effectiveBool("noRelatedWatchNexts"));
+        AfterglowPrefs.setBool("liteModeEnabled", true);
+        check("Lite Mode hides up-next", true, LiteMode.effectiveBool("noRelatedWatchNexts"));
+        check("Lite Mode preserves stored up-next default", false, AfterglowPrefs.getBool("noRelatedWatchNexts"));
+        AfterglowPrefs.setBool("liteModeEnabled", false);
+        check("leaving Lite Mode restores up-next default", false, LiteMode.effectiveBool("noRelatedWatchNexts"));
+        check("watch page does not expose autoplay setting", false, SettingsBehavior.keyVisible("autoplayMode"));
+        install("player-overlay");
+        check("overlay alone does not expose up-next setting", false, SettingsBehavior.keyVisible("noRelatedWatchNexts"));
 
         install();
         check("SponsorBlock stays off when uninstalled", false, SponsorSettings.current().shouldRun(false));

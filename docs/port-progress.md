@@ -457,3 +457,50 @@ its control check has limited scope. Full-app playlist metadata and navigation
 are separately verified. Evidence: execution-104.json, paddles-audit-104.json and delivery-104.json
 under port-completion-20261113. See docs/player-paddles.md. The full port remains
 incomplete at 130 done / 4 n/a / 65 todo.
+
+## Session Ledger Checkpoint — watch recommendations, build105
+
+Build105 completes the default-OFF Hide up-next panel switch under Player >
+Playback, owned by the independent Watch page tweak. It uses YouTube's own
+information/comments boundary and filters a copy of the main watch-list model.
+The original response, metadata, comments, playlist and playback owners remain
+intact. Live OFF restores the original list and its continuations. Unknown
+information boundaries retain native content.
+
+459 settings checks and strict standalone/GmsCore/streaming/Watch-page-only/
+independent selections pass 29/30/31/1/3. All 269 production inputs, signed DEX,
+installed APK hashes and bundle integrity match. 36 full and
+34 independent observations are visually reviewed (5 limited).
+Live hide/restore, cold persistence, native description/comments/Share panels,
+fullscreen, repeated scrolling and page/full resets pass. The full build also
+preserves children's-video information/actions, Home, playlist entries/minibar
+and decoded Shorts playback. The independent install verifies behavior with
+native ads present and organic recommendations below them. Defaults and the
+exact full APK are restored, hash-verified and stopped.
+
+Two ON description attempts terminated the Windows qemu emulator process with
+access violation 0xc0000005. OFF opened, and the identical APK subsequently passed
+ON description/comments/Share after restarting with the swangle option. Startup
+still reported SwiftShader; the exact host crash cause is unestablished. These
+failed runs, Windows events and the successful continuations are retained. The
+available app logs have no target-app crash, ANR or Afterglow exception.
+
+QA corrections cover a timed Pause tap, an absent Description accessibility
+label, controls covered by the native playlist panel, an ad occupying the first
+recommendation viewport, a native pause-ad panel covering information, and
+incomplete swipe arguments. Collapsing the pause-ad panel restores the intact
+information/comments section with recommendations still hidden. The original scrolled
+frame mislabeled as restored information is retained with limited scope; a fresh
+OFF baseline verifies the actual information section after a return gesture
+entered native fullscreen. Three independent screenshots were black despite
+populated UI hierarchies; they remain limited evidence. The affected comments
+dismissal, portrait return and scroll transitions pass separate visual follow-ups.
+The exact cause of the black captures is unestablished. The DEX reader now
+escapes modified UTF-8 bytes. No application source changed during validation.
+
+Physical devices and the separate elevated metapanel architecture remain runtime
+untested. Lite/import rules have unit/source proof. Native continuation
+cancellation has source proof and hidden-list scroll checks; no forced in-flight
+network race is claimed. Evidence: execution-105.json, next-audit-105.json,
+next-development-105.json and delivery-105.json under port-completion-20261113.
+See docs/watch-next.md. Full port remains incomplete: 131 done / 4 n/a / 64 todo.

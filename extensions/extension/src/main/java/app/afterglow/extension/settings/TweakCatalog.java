@@ -399,6 +399,7 @@ public final class TweakCatalog {
             "noPlayerShareButton",
             "noPromotionCards",
             "noRelatedVids",
+            "noRelatedWatchNexts",
             "noSearchButton",
             "noSearchHistory",
             "noShareChunk",
