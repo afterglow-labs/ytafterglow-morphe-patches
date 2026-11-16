@@ -7,6 +7,8 @@ import app.afterglow.patches.shared.Constants.COMPATIBILITY_YOUTUBE
 import app.afterglow.patches.shared.afterglowExtensionPatch
 import app.afterglow.patches.shared.markTweakInstalled
 import app.morphe.patcher.patch.bytecodePatch
+import app.morphe.patcher.patch.InstallerType
+import app.morphe.patcher.patch.PatchAvailability
 
 /*
  * The Afterglow tweaks as Morphe shows them: one named patch per tweak in
@@ -19,9 +21,39 @@ import app.morphe.patcher.patch.bytecodePatch
  */
 
 @Suppress("unused")
+val gmsCoreSupportTweakPatch = bytecodePatch(
+    name = "GmsCore support",
+    description = "Runs Afterglow alongside the original YouTube app and supports signing in through compatible GmsCore.",
+    default = true,
+) {
+    compatibleWith(COMPATIBILITY_YOUTUBE)
+    availability { installer, _ ->
+        when (installer) {
+            InstallerType.MOUNT -> PatchAvailability.UNAVAILABLE
+            InstallerType.STANDARD, InstallerType.SHIZUKU -> PatchAvailability.REQUIRED
+        }
+    }
+    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch,
+        app.afterglow.patches.compat.morphe.gmsCoreSupportHookPatch)
+    execute { markTweakInstalled("gmscore-support") }
+}
+
+@Suppress("unused")
+val spoofVideoStreamsTweakPatch = bytecodePatch(
+    name = "Spoof video streams",
+    description = "Uses compatible YouTube player clients to keep video playback working in the patched app.",
+    default = true,
+) {
+    compatibleWith(COMPATIBILITY_YOUTUBE)
+    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch,
+        app.afterglow.patches.compat.morphe.spoofVideoStreamsHookPatch)
+    execute { markTweakInstalled("spoof-video-streams") }
+}
+
+@Suppress("unused")
 val shortsLayoutTweakPatch = bytecodePatch(
     name = "Shorts layout and buttons",
-    description = "Hides the Shorts player buttons and overlay parts you turn off in YTAfterglow settings.",
+    description = "Hides the Shorts player buttons and overlay parts you turn off in Afterglow settings.",
     default = true,
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
@@ -62,6 +94,55 @@ val watchPageTweakPatch = bytecodePatch(
     compatibleWith(COMPATIBILITY_YOUTUBE)
     dependsOn(afterglowExtensionPatch, afterglowSettingsPatch, afterglowLithoFilterPatch, app.afterglow.patches.playback.watchPagePlaybackHookPatch)
     execute { markTweakInstalled("watch-page") }
+}
+
+@Suppress("unused")
+val miniPlayerTweakPatch = bytecodePatch(
+    name = "Mini player",
+    description = "Enables playback for restricted videos in the mini player and restores the original playlist minibar.",
+    default = true,
+) {
+    compatibleWith(COMPATIBILITY_YOUTUBE)
+    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch,
+        app.afterglow.patches.playback.miniPlayerPlaybackHookPatch,
+        app.afterglow.patches.playback.playlistMinibarHookPatch)
+    execute { markTweakInstalled("miniplayer") }
+}
+
+@Suppress("unused")
+val longPressToolsTweakPatch = bytecodePatch(
+    name = "Long-press tools",
+    description = "Copies timestamped video links when you tap Pause, as selected in Afterglow settings.",
+    default = true,
+) {
+    compatibleWith(COMPATIBILITY_YOUTUBE)
+    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch,
+        app.afterglow.patches.menus.longPressToolsHookPatch)
+    execute { markTweakInstalled("long-press-tools") }
+}
+
+@Suppress("unused")
+val nativeShareTweakPatch = bytecodePatch(
+    name = "Native share sheet",
+    description = "Opens Android's share sheet for YouTube links when enabled in Afterglow settings.",
+    default = true,
+) {
+    compatibleWith(COMPATIBILITY_YOUTUBE)
+    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch,
+        app.afterglow.patches.tweaks.navigation.morpheFallbackNativeShareHookPatch)
+    execute { markTweakInstalled("native-share") }
+}
+
+@Suppress("unused")
+val fixAlbumsTweakPatch = bytecodePatch(
+    name = "Fix album covers",
+    description = "Loads album and profile images from an alternate YouTube image server when enabled in Afterglow settings.",
+    default = true,
+) {
+    compatibleWith(COMPATIBILITY_YOUTUBE)
+    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch,
+        app.afterglow.patches.tweaks.navigation.morpheFallbackAlbumCoversHookPatch)
+    execute { markTweakInstalled("fix-albums") }
 }
 
 @Suppress("unused")

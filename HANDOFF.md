@@ -1,15 +1,46 @@
 # Handoff
 
-> Updated: 2026-11-14, watch recommendations checkpoint
+> Updated: 2026-11-16, integrated Morphe compatibility release
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, public as verified 2026-11-15)
-> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. Shorts fullscreen combines native pinches, expanded content, idle overlays and continuity between reels. Shorts-only mode adds native live/cold routing, independent hidden tabs and its two-finger exit. The independent Shorts layout tweak can now hide the native player layer while retaining video and gestures. The player and Shorts share all four eye modes, and native mute and fullscreen lock work independently. Standalone videos can use native rewind/fast-forward buttons while playlists and live playback keep their controls. Below-player recommendations can be hidden while retaining video information and comments. There are 29 named tweaks. Key-level parity remains conservative at 131 done / 4 n/a / 64 todo, including partial native coverage; the full port is not complete.
+> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. Shorts fullscreen combines native pinches, expanded content, idle overlays and continuity between reels. Shorts-only mode adds native live/cold routing, independent hidden tabs and its two-finger exit. The independent Shorts layout tweak can now hide the native player layer while retaining video and gestures. The player and Shorts share all four eye modes, and native mute and fullscreen lock work independently. Standalone videos can use native rewind/fast-forward buttons while playlists and live playback keep their controls. Below-player recommendations can be hidden while retaining video information and comments. There are 35 named patches, including integrated GmsCore and stream support. New playback and sharing controls are documented in the build110 release checkpoint; title/description copying remains hidden. Key-level parity remains conservative at 131 done / 4 n/a / 64 todo, including partial native coverage; the full port is not complete.
 
 ## Goal
 
-Port every YTAfterglow iOS tweak to Android YouTube **21.43.523**, exactly as it behaves on iOS: same settings, defaults, screens, translations and theme/glow look. Deliver it as the user's own standalone Morphe patch source, a `.mpp` bundle that Morphe Desktop or Manager loads next to Morphe's own list.
+Port every Afterglow iOS tweak to Android YouTube **21.43.523**, exactly as it behaves on iOS: same settings, defaults, screens, translations and theme/glow look. Deliver it as the user's own standalone Morphe patch source, a `.mpp` bundle that Morphe Desktop or Manager loads next to Morphe's own list.
 - Each Afterglow feature group is a separately named tweak in Morphe's list (names from `tools/tweaks.json`).
 - An Afterglow settings page lives inside YouTube's settings and shows only rows for tweaks that are installed and implemented.
-- Plumbing such as GmsCore/microG sign-in comes from Morphe's own "GmsCore support" patch, ticked in the same run.
+- GmsCore and stream compatibility are included as named patches in this bundle, adapted from pinned Morphe sources. Use these selections with Afterglow; avoid duplicate compatibility patches from another source. The companion GmsCore app remains a separate installation.
+
+## Integrated compatibility release: build110
+
+The new bundle contains 35 named patches, including GmsCore support and Spoof
+video streams. Full35 and independent6 strict application and APK assembly pass
+using only this bundle. The existing package identity is retained for upgrades.
+All 324 frozen production/provenance inputs match the packaged source, and all
+15 pinned upstream resources and bundled notices pass hash checks. Settings
+ownership, defaults and reset checks pass 518/518.
+
+Android 16 emulator checks prove decoded watch playback, native Pause timestamp
+copying, Android share-sheet OFF/ON/OFF and repeated dismissal/reopening, and
+made-for-kids mini-player OFF/ON behavior with Background playback OFF. Manual
+mini-player pause and resume remain intact. Playlist restart and playback work;
+the OFF baseline already rendered the original resource layout, so no floating-to-full
+visual transition is claimed. Image rendering works with the album-host switch
+ON; a region-blocked network fixture has not been tested.
+
+The build109 text-copy experiment did not reach its intended title-copy action.
+Native description text selection remained available. Build110 excludes the
+experimental text-hook dependency and hides Copy video details, even when that
+preference was previously enabled or imported. The source experiment is retained
+for future work; no title/description-copy completion is claimed.
+
+User-facing names and descriptions use Afterglow. Open-source notices and the
+GPL are bundled in both the MPP and APK, with About → Credits entries. The full
+iOS port remains incomplete at 131 done / 4 n/a / 64 todo. See
+[release-build110.md](docs/release-build110.md) for the final delivery and testing
+limits, and [morphe-compatibility.md](docs/morphe-compatibility.md) for pinned
+sources and runtime assets. Historical checkpoints below retain their original
+build-specific counts and validation scope.
 
 ## Verified watch recommendations checkpoint
 

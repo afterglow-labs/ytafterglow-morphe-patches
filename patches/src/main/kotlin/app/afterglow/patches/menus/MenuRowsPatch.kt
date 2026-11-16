@@ -43,7 +43,7 @@ internal object MenuRowBuilderFingerprint : Fingerprint(
  * The rows are Views, not Litho components, so the Litho filter cannot see them.
  */
 internal val menuRowsHookPatch = bytecodePatch(
-    description = "Lets YTAfterglow leave rows out of YouTube's video menus.",
+    description = "Lets Afterglow leave rows out of YouTube's video menus.",
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
     dependsOn(afterglowExtensionPatch)

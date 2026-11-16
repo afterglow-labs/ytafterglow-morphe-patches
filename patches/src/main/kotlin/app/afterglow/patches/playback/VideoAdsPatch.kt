@@ -44,7 +44,7 @@ internal object PlayerBytesAdLayoutFingerprint : Fingerprint(
  * ads are the Litho filter's job.
  */
 internal val videoAdsHookPatch = bytecodePatch(
-    description = "Stops video ads from loading when YTAfterglow removes ads.",
+    description = "Stops video ads from loading when Afterglow removes ads.",
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
     dependsOn(afterglowExtensionPatch)

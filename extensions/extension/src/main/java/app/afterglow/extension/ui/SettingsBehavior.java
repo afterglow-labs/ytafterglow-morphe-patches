@@ -133,6 +133,11 @@ final class SettingsBehavior {
     /** iOS ytag_switchDescriptionForDescriptor (Settings.x:775-795). */
     static String switchDescription(Row row) {
         String base = text(row.description);
+        if ("copyVideoInfo".equals(row.key)) {
+            base = "Long press the video title to copy it, or description text to select and copy it.";
+        } else if ("nativeShare".equals(row.key) && base != null) {
+            base = base.replace("iOS", "Android");
+        }
         if (row.plainDescription) return base;
         List<String> parts = new ArrayList<>();
         if (base != null && !base.isEmpty()) parts.add(base);
@@ -146,7 +151,11 @@ final class SettingsBehavior {
         if (forced != null) parts.add(forced ? NOTE_LITE_ON : NOTE_LITE_OFF);
         // Fix (duplicated restart sentence): iOS appends "Restart YouTube to apply." even when the
         // description already asks for a restart; the generator marks those rows suppressRestartNote.
-        if (descriptor != null && descriptor.isRestartRequired() && !row.suppressRestartNote) parts.add(NOTE_RESTART);
+        // Android creates and caches the playlist bar, its event owner and animator
+        // separately; they must all switch layouts in a fresh process.
+        boolean restartRequired = "playlistOldMinibar".equals(row.key)
+                || (descriptor != null && descriptor.isRestartRequired());
+        if (restartRequired && !row.suppressRestartNote) parts.add(NOTE_RESTART);
         return parts.isEmpty() ? null : join(" ", parts);
     }
 

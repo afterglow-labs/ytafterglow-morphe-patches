@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Strict, offline patch-application check; optionally combine with an official GmsCore bundle."""
+"""Strict, offline patch-application check; supports external plumbing for older bundles."""
 import argparse
 import json
 from pathlib import Path
@@ -36,6 +36,11 @@ def main():
         if unknown:
             parser.error(f"Unknown Afterglow patches: {sorted(unknown)}")
         names = [name for name in names if name in set(args.patch)]
+    if args.gms_bundle:
+        duplicate = set(names) & {"GmsCore support", "Spoof video streams", *args.official_patch}
+        if duplicate:
+            parser.error("Compatibility patches selected from both bundles: " + ", ".join(sorted(duplicate))
+                         + ". Use the Afterglow bundle alone, or select only its feature patches for a legacy comparison.")
     if args.out.exists():
         parser.error(f"Output directory already exists: {args.out}; choose a new run directory")
     args.out.mkdir(parents=True)

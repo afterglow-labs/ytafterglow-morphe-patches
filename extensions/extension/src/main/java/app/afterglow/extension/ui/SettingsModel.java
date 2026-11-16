@@ -58,7 +58,7 @@ final class SettingsModel {
 
         /** iOS LOC(): the device language, then English; a missing key shows the English/echoed key. */
         String get() {
-            return key == null ? en : L10n.get(key, en);
+            return L10n.get(key, en);
         }
     }
 

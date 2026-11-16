@@ -78,7 +78,7 @@ internal object AdultContentSetPropertiesFingerprint : Fingerprint(
  * `Lasgu;->sa(Laluu;)V`.
  */
 internal val contentWarningHookPatch = bytecodePatch(
-    description = "Accepts YouTube's viewer discretion dialog when YTAfterglow skips it.",
+    description = "Accepts YouTube's viewer discretion dialog when Afterglow skips it.",
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
     dependsOn(afterglowExtensionPatch)

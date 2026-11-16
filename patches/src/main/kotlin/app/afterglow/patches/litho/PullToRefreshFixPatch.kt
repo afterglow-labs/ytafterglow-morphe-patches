@@ -31,7 +31,7 @@ import app.morphe.patcher.patch.bytecodePatch
  * method jumps past the inserted instruction and is unchanged.
  */
 internal val pullToRefreshFixPatch = bytecodePatch(
-    description = "Keeps pull to refresh working when YTAfterglow hides the first item of a list.",
+    description = "Keeps pull to refresh working when Afterglow hides the first item of a list.",
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
 

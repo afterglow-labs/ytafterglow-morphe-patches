@@ -2,8 +2,8 @@ group = "app.afterglow"
 
 patches {
     about {
-        name = "YTAfterglow"
-        description = "YTAfterglow for YouTube on Android: every Afterglow tweak, setting and screen from the iOS tweak."
+        name = "Afterglow"
+        description = "Afterglow for YouTube on Android. The iOS feature port is in progress."
         source = "git@github.com:afterglow-labs/ytafterglow-morphe-patches.git"
         author = "afterglow-labs"
         contact = "https://github.com/afterglow-labs/ytafterglow-morphe-patches/issues"
@@ -22,6 +22,13 @@ dependencies {
 }
 
 tasks {
+    processResources {
+        from(rootProject.file("NOTICE"))
+        from(rootProject.file("LICENSE"))
+        from(rootProject.file("NOTICE")) { into("afterglow/licenses") }
+        from(rootProject.file("LICENSE")) { into("afterglow/licenses") }
+    }
+
     register<JavaExec>("generatePatchesList") {
         description = "Build patch with patch list"
 

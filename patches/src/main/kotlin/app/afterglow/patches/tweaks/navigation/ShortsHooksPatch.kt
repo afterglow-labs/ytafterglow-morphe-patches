@@ -43,7 +43,7 @@ internal const val SHORTS_HOOKS = "$EXTENSION_PACKAGE/navigation/ShortsHooks;"
  * Shorts-only tab hiding and the independent two-finger exit gesture.
  */
 internal val shortsHooksPatch = bytecodePatch(
-    description = "Hooks the Shorts player for the YTAfterglow Shorts settings.",
+    description = "Hooks the Shorts player for the Afterglow Shorts settings.",
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
     dependsOn(afterglowExtensionPatch, startupHooksPatch, shortsProgressHookPatch, shortsFullscreenHookPatch)

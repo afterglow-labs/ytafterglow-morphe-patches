@@ -57,12 +57,15 @@ cp -r "$OUT/patch-classes/." "$OUT/bundle/"
 if [[ -d "$ROOT/patches/src/main/resources" ]]; then
     cp -r "$ROOT/patches/src/main/resources/." "$OUT/bundle/"
 fi
+cp "$ROOT/NOTICE" "$ROOT/LICENSE" "$OUT/bundle/"
+mkdir -p "$OUT/bundle/afterglow/licenses"
+cp "$ROOT/NOTICE" "$ROOT/LICENSE" "$OUT/bundle/afterglow/licenses/"
 rm -rf "$OUT/bundle/META-INF"
 cp "$OUT/patch-dex/classes.dex" "$OUT/bundle/classes.dex"
 cat > "$OUT/MANIFEST.MF" <<EOF
 Manifest-Version: 1.0
-Name: YTAfterglow
-Description: YTAfterglow for YouTube on Android: every Afterglow tweak, setting and screen from the iOS tweak.
+Name: Afterglow
+Description: Afterglow for YouTube on Android. The iOS feature port is in progress.
 Version: $VERSION
 Timestamp: $(date +%s000)
 Source: git@github.com:afterglow-labs/ytafterglow-morphe-patches.git

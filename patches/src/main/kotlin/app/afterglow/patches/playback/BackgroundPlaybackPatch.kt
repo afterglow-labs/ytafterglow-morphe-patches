@@ -144,7 +144,7 @@ internal object PlayingWhenBackgroundedFingerprint : Fingerprint(
  *   the foreground (flag 45770945 off), which background playback would otherwise cause.
  */
 internal val backgroundPlaybackHookPatch = bytecodePatch(
-    description = "Lets videos keep playing in the background when YTAfterglow allows it.",
+    description = "Lets videos keep playing in the background when Afterglow allows it.",
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
     dependsOn(afterglowExtensionPatch, videoStatePatch)

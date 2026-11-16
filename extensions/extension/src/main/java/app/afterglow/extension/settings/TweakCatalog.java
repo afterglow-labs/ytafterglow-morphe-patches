@@ -298,6 +298,8 @@ public final class TweakCatalog {
             new Tweak("control-center", "Afterglow Control Center", new String[] {
                     "destination.controlCenter",
                 }),
+            new Tweak("gmscore-support", "GmsCore support", new String[] {}),
+            new Tweak("spoof-video-streams", "Spoof video streams", new String[] {}),
     };
 
     private static final String[] BASE = new String[] {
@@ -334,6 +336,7 @@ public final class TweakCatalog {
             "cellQualityIndex",
             "classicQuality",
             "commentsHeaderMode",
+            "copyWithTimestamp",
             "debugHUDEnabled",
             "debugLogDownloads",
             "debugLogEnabled",
@@ -348,6 +351,7 @@ public final class TweakCatalog {
             "disableAutoCaptions",
             "dontSnapToChapter",
             "exitFullscreen",
+            "fixAlbums",
             "frostedPivot",
             "hideEndScreenCards",
             "hideHeatwaves",
@@ -379,7 +383,9 @@ public final class TweakCatalog {
             "hideShortsThanks",
             "hideSubs",
             "lockButton",
+            "miniplayer",
             "muteButton",
+            "nativeShare",
             "noAds",
             "noCast",
             "noContentWarning",
@@ -412,6 +418,7 @@ public final class TweakCatalog {
             "pauseOnOverlay",
             "persistentProgressBar",
             "pinchToFullscreenShorts",
+            "playlistOldMinibar",
             "portraitFullscreen",
             "premiumYTLogo",
             "redProgressBar",

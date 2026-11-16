@@ -138,7 +138,7 @@ private fun MutableMethod.raiseSpeedClampMaximum() {
  *   or its own 4x, so a limit of 2x or more is raised to 5x, as iOS does; lower limits stay.
  */
 internal val playbackSpeedHookPatch = bytecodePatch(
-    description = "Sets YouTube's hold-to-speed rate and default playback rate from YTAfterglow.",
+    description = "Sets YouTube's hold-to-speed rate and default playback rate from Afterglow.",
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
     dependsOn(afterglowExtensionPatch, videoStatePatch)

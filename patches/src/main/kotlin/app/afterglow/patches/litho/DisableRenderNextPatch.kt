@@ -38,7 +38,7 @@ import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
  * 6. The hybrid presenter always takes the Litho path, in case an element is RenderNext anyway.
  */
 internal val disableRenderNextPatch = bytecodePatch(
-    description = "Renders every element with Litho, so YTAfterglow's Litho filters see all of them.",
+    description = "Renders every element with Litho, so Afterglow's Litho filters see all of them.",
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
 

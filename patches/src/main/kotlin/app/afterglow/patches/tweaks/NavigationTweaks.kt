@@ -30,7 +30,7 @@ val tabBarTweakPatch = bytecodePatch(
 @Suppress("unused")
 val startupTweakPatch = bytecodePatch(
     name = "Startup tab and animation",
-    description = "Opens YouTube on the startup tab you pick in YTAfterglow settings.",
+    description = "Opens YouTube on the startup tab you pick in Afterglow settings.",
     default = true,
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)

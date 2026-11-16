@@ -42,7 +42,7 @@ internal const val NAVIGATION_BAR_HOOKS = "$EXTENSION_PACKAGE/navigation/Navigat
  * tweak id and each setting at runtime.
  */
 internal val navigationBarHooksPatch = bytecodePatch(
-    description = "Hooks YouTube's toolbar for the YTAfterglow Navigation bar settings.",
+    description = "Hooks YouTube's toolbar for the Afterglow Navigation bar settings.",
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
     dependsOn(afterglowExtensionPatch)

@@ -32,7 +32,7 @@ internal const val STARTUP_HOOKS = "$EXTENSION_PACKAGE/navigation/StartupHooks;"
  * show/skip decision is spread over several flags; it needs a device to check.
  */
 internal val startupHooksPatch = bytecodePatch(
-    description = "Hooks YouTube's start page for the YTAfterglow startup settings.",
+    description = "Hooks YouTube's start page for the Afterglow startup settings.",
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
     dependsOn(afterglowExtensionPatch)

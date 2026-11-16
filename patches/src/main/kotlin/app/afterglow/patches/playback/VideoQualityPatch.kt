@@ -103,7 +103,7 @@ internal object SetVideoQualityMenuFingerprint : Fingerprint(
  * viewer had tapped it.
  */
 internal val videoQualityHookPatch = bytecodePatch(
-    description = "Selects the default video quality YTAfterglow is set to for Wi-Fi and mobile data.",
+    description = "Selects the default video quality Afterglow is set to for Wi-Fi and mobile data.",
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
     dependsOn(afterglowExtensionPatch, videoStatePatch, disableRenderNextPatch)

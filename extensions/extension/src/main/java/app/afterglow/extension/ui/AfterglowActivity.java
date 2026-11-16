@@ -377,6 +377,14 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
             if (page.type == PageType.ROOT) list.addView(views.wordmarkHeader());
             else if (page.sectionTitle != null) list.addView(views.sectionTitle(page.sectionTitle.get()));
             for (Row row : page.rows) addRow(list, row);
+            if ("page:about.credits".equals(page.id)) {
+                list.addView(views.spacer());
+                list.addView(views.header("Android open source", "Includes source adapted from Morphe and ReVanced."));
+                list.addView(views.detailRow("Open-source notices", "Attribution and notices for the Android patches.", null,
+                        true, v -> showLicenseAsset("Open-source notices", "NOTICE")));
+                list.addView(views.detailRow("GNU General Public License", "Version 3", null,
+                        true, v -> showLicenseAsset("GNU General Public License", "LICENSE")));
+            }
         }
     }
 
@@ -573,6 +581,8 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
         AfterglowPrefs.setBool(key, checked);
         if (LiteMode.KEY.equals(key)) {
             liteModeRestartAlert(checked);
+        } else if ("playlistOldMinibar".equals(key)) {
+            playlistMinibarRestartAlert();
         } else if ("debugLogFirehose".equals(key) && checked) {
             AfterglowPrefs.setBool("debugLogEnabled", true);
         } else if ("debugLogEnabled".equals(key) && !checked) {
@@ -643,8 +653,13 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
         switch (row.action) {
             case RESET_DEFAULTS:
                 // iOS resetDefaultsItemWithKeys (Settings.x:1486-1519): no confirmation, toast "Done".
-                for (String key : SettingsBehavior.resetKeys(row)) AfterglowPrefs.remove(key);
+                boolean restartPlaylist = false;
+                for (String key : SettingsBehavior.resetKeys(row)) {
+                    if ("playlistOldMinibar".equals(key) && AfterglowPrefs.getBool(key)) restartPlaylist = true;
+                    AfterglowPrefs.remove(key);
+                }
                 toast(L10n.get("Done", "Done"));
+                if (restartPlaylist) playlistMinibarRestartAlert();
                 break;
             case RESET_ALL_COLORS:
                 confirm(L10n.get("ResetAllColors", "Reset All Colors"),
@@ -705,6 +720,12 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
     private void liteModeRestartAlert(boolean enabled) {
         confirm(enabled ? "Lite Mode Enabled" : "Lite Mode Disabled",
                 "Lite Mode needs a restart before the startup debloat profile fully applies.",
+                "Restart Now", "Later", () -> AppRestart.restart(this), null);
+    }
+
+    private void playlistMinibarRestartAlert() {
+        confirm(L10n.get("PlaylistOldMinibar", "Old playlist minibar"),
+                "Restart YouTube to switch playlist bar layouts.",
                 "Restart Now", "Later", () -> AppRestart.restart(this), null);
     }
 
@@ -843,10 +864,15 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
                 toast(L10n.get("Error.FailedToExport", "Failed to export preferences"));
             }
         } else if (requestCode == REQUEST_IMPORT) {
+            boolean oldPlaylistBar = AfterglowPrefs.getBool("playlistOldMinibar");
             try (InputStream in = getContentResolver().openInputStream(uri)) {
                 if (in == null) throw new IOException("no input stream");
                 PrefsTransfer.importPlist(in);
                 toast(L10n.get("Done", "Done"));
+                if (SettingsBehavior.keyVisible("playlistOldMinibar")
+                        && oldPlaylistBar != AfterglowPrefs.getBool("playlistOldMinibar")) {
+                    playlistMinibarRestartAlert();
+                }
             } catch (PrefsTransfer.ImportException error) {
                 toast(error.getMessage());
             } catch (Throwable error) {
@@ -911,6 +937,19 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
 
     void alert(String title, String message) {
         new AlertDialog.Builder(this).setTitle(title).setMessage(message).setPositiveButton("OK", null).show();
+    }
+
+    private void showLicenseAsset(String title, String fileName) {
+        try (InputStream input = getAssets().open("afterglow/licenses/" + fileName)) {
+            java.io.ByteArrayOutputStream bytes = new java.io.ByteArrayOutputStream();
+            byte[] buffer = new byte[4096];
+            int length;
+            while ((length = input.read(buffer)) != -1) bytes.write(buffer, 0, length);
+            alert(title, new String(bytes.toByteArray(), java.nio.charset.StandardCharsets.UTF_8));
+        } catch (IOException error) {
+            Afterglow.error("AfterglowActivity.showLicenseAsset", error);
+            alert(title, "Could not read the bundled notice.");
+        }
     }
 
     private void confirm(String title, String message, String positive, String negative, Runnable onPositive, Runnable onNegative) {

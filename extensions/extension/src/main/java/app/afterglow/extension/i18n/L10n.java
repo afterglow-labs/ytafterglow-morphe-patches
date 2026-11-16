@@ -17,12 +17,18 @@ public final class L10n {
     private L10n() {}
 
     public static String get(String key, String fallback) {
-        if (key == null || key.isEmpty()) return fallback == null ? "" : fallback;
+        if (key == null || key.isEmpty()) return displayText(fallback == null ? "" : fallback);
         ensureLoaded();
         String value = current.get(key);
         if (value == null || value.isEmpty()) value = english.get(key);
-        if (value == null || value.isEmpty()) return fallback == null ? key : fallback;
-        return value;
+        if (value == null || value.isEmpty()) value = fallback == null ? key : fallback;
+        return displayText(value);
+    }
+
+    /** Keep the imported iOS tables intact while using the Android display name. */
+    private static String displayText(String value) {
+        return value.replace("YTAfterglow", "Afterglow").replace("YT Afterglow", "Afterglow")
+                .replace("YouTube Afterglow", "Afterglow");
     }
 
     /** Like {@link #get} but converts iOS format specifiers (%@, %ld, %lu, %1$@) for String.format. */

@@ -33,7 +33,7 @@ internal const val PRIVACY_HOOKS = "$EXTENSION_PACKAGE/navigation/PrivacyHooks;"
  * "Privacy" patch.
  */
 internal val privacyHooksPatch = bytecodePatch(
-    description = "Hooks YouTube's links, sharing and search suggestions for the YTAfterglow Privacy settings.",
+    description = "Hooks YouTube's links, sharing and search suggestions for the Afterglow Privacy settings.",
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
     dependsOn(afterglowExtensionPatch)

@@ -315,10 +315,12 @@
     "note": "patch applies on 21.43.523; not yet confirmed on a device"
   },
   "miniplayer": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: native pause-only mode override at enforcement and resume eligibility; JVM policy checks pass; strict and runtime validation pending"
   },
   "playlistOldMinibar": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: retained native playlist bar selected coherently across18 reads, process-latched with restart guidance; strict and runtime validation pending"
   },
   "portraitFullscreen": {
     "status": "done",
@@ -675,7 +677,8 @@
     "note": "menu rows dropped by icon type; patch applies on 21.43.523; not yet confirmed on a device"
   },
   "copyVideoInfo": {
-    "status": "todo"
+    "status": "todo",
+    "note": "Pending and hidden: build109 native title and description long-press checks did not reach the copy action. Experimental Morphe text adapters remain in source but are excluded from the released patch dependency graph. Exact iOS Description-header copy menu and modern native text-view dispatch remain pending."
   },
   "saveProfilePhoto": {
     "status": "todo"
@@ -687,13 +690,16 @@
     "status": "todo"
   },
   "nativeShare": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: adapted Morphe ShareEntity and ShareEndpoint hooks with iOS-compatible entity mapping, fail-open unknown entities and chooser failures; 104 fallback checks pass; strict/runtime validation pending"
   },
   "fixAlbums": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: adapted Morphe image URL hook scoped to the two iOS yt3 image hosts; 104 fallback checks pass; strict/runtime validation pending"
   },
   "copyWithTimestamp": {
-    "status": "todo"
+    "status": "todo",
+    "note": "partial: copies the current video timestamp after a ready native Pause-button click; clipboard policy checks pass; strict and runtime validation pending"
   },
   "advancedMode": {
     "status": "done",

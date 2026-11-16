@@ -442,6 +442,16 @@
       "keys": [
         "destination.controlCenter"
       ]
+    },
+    {
+      "id": "gmscore-support",
+      "name": "GmsCore support",
+      "keys": []
+    },
+    {
+      "id": "spoof-video-streams",
+      "name": "Spoof video streams",
+      "keys": []
     }
   ],
   "implementedInternalKeys": {

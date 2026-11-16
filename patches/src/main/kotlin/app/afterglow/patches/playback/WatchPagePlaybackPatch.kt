@@ -211,7 +211,7 @@ internal object RemoveOnLayoutChangeListenerFingerprint : Fingerprint(
  *   screen are not shown.
  */
 internal val watchPagePlaybackHookPatch = bytecodePatch(
-    description = "Hides the continue watching prompt and the end screen of videos when YTAfterglow does.",
+    description = "Hides the continue watching prompt and the end screen of videos when Afterglow does.",
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
     dependsOn(afterglowExtensionPatch)

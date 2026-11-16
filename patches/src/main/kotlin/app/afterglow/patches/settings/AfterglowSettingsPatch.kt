@@ -108,6 +108,13 @@ internal val afterglowSettingsPatch = resourcePatch(
     dependsOn(afterglowExtensionPatch)
 
     execute {
+        val licenseDirectory = get("assets/afterglow/licenses")
+        licenseDirectory.mkdirs()
+        for (name in listOf("NOTICE", "LICENSE")) {
+            val input = object {}.javaClass.getResourceAsStream("/afterglow/licenses/$name")
+                ?: error("Missing bundled $name")
+            input.use { source -> licenseDirectory.resolve(name).outputStream().use(source::copyTo) }
+        }
         document("AndroidManifest.xml").use { document ->
             val application = document.getElementsByTagName("application").item(0) as Element
 

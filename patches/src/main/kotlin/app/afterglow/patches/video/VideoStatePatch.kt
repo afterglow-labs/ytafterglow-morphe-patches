@@ -148,7 +148,7 @@ private fun MutableClass.singleMethod(returnType: String, parameters: List<Strin
  *   player type, the Shorts player view and the play/pause state are passed on as they change.
  */
 val videoStatePatch = bytecodePatch(
-    description = "Tells YTAfterglow which video plays, its time, length, speed and state.",
+    description = "Tells Afterglow which video plays, its time, length, speed and state.",
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
     dependsOn(afterglowExtensionPatch)

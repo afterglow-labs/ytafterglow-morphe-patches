@@ -38,7 +38,7 @@ internal const val TAB_BAR_HOOKS = "$EXTENSION_PACKAGE/navigation/TabBarHooks;"
  * `bottom_bar_container` (`InitializeBottomBarContainerFingerprint`), and their taps a command router.
  */
 internal val tabBarHooksPatch = bytecodePatch(
-    description = "Hooks YouTube's tab bar for the YTAfterglow Tab bar settings.",
+    description = "Hooks YouTube's tab bar for the Afterglow Tab bar settings.",
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
     dependsOn(afterglowExtensionPatch)

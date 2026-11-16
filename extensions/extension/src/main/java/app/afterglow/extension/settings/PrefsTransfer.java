@@ -89,7 +89,7 @@ public final class PrefsTransfer {
         Map<?, ?> root = (Map<?, ?>) plist;
         Object source = root.get("preferences");
         if (source == null && root.get("format") == null) source = root;
-        if (!(source instanceof Map)) throw new ImportException("The selected file does not contain YTAfterglow preferences.");
+        if (!(source instanceof Map)) throw new ImportException("The selected file does not contain Afterglow preferences.");
         Map<String, Object> values = new LinkedHashMap<>(), retained = new LinkedHashMap<>();
         int inactive = 0;
         try {

@@ -63,7 +63,8 @@ public final class SettingsVisibilityTest {
             expectAbout(c);
             check(c + "root.search shown", true, SettingsBehavior.shown(SettingsBehavior.row("root.search")));
             // Destinations whose features are not ported yet stay hidden.
-            expectHidden(c, "root.liteMode", "root.aiHome", "root.abLab", "root.vault", "root.tools");
+            expectHidden(c, "root.liteMode", "root.aiHome", "root.abLab", "root.vault");
+            check(c + "tools page is available", true, SettingsBehavior.shown(SettingsBehavior.row("root.tools")));
             check(c + "theme presets available", true, SettingsBehavior.shown(SettingsBehavior.row("themes.themeStudio")));
             expectSearch(c, advanced, list("Advanced", "Theme Presets", "GradientStart", "PrimaryText"), list("LiteMode"));
         }
@@ -559,6 +560,51 @@ public final class SettingsVisibilityTest {
         check("watch page does not expose autoplay setting", false, SettingsBehavior.keyVisible("autoplayMode"));
         install("player-overlay");
         check("overlay alone does not expose up-next setting", false, SettingsBehavior.keyVisible("noRelatedWatchNexts"));
+
+        String[][] newTools = {
+                {"miniplayer", "miniplayer", "playback.miniplayer", "playback.reset.action"},
+                {"miniplayer", "playlistOldMinibar", "playback.playlistOldMinibar", "playback.reset.action"},
+                {"long-press-tools", "copyWithTimestamp", "tools.copyWithTimestamp", "tools.reset.action"},
+                {"native-share", "nativeShare", "tools.nativeShare", "tools.reset.action"},
+                {"fix-albums", "fixAlbums", "tools.fixAlbums", "tools.reset.action"}
+        };
+        for (String[] tool : newTools) {
+            String owner = tool[0], key = tool[1];
+            install();
+            AfterglowPrefs.setBool("liteModeEnabled", false);
+            AfterglowPrefs.setBool("advancedMode", false);
+            AfterglowPrefs.remove(key);
+            check(key + " defaults off", false, AfterglowPrefs.getBool(key));
+            check(key + " is hidden without its patch", false, SettingsBehavior.keyVisible(key));
+            AfterglowPrefs.setBool(key, true);
+            check(key + " import cannot expose an uninstalled feature", false, SettingsBehavior.keyVisible(key));
+            install("shorts-layout");
+            check(key + " is hidden with unrelated patch", false, SettingsBehavior.keyVisible(key));
+            install(owner);
+            check(key + " owner exposes the control", true, SettingsBehavior.keyVisible(key));
+            check(key + " honors the saved choice", true, SettingsBehavior.switchValue(SettingsBehavior.row(tool[2])));
+            check(key + " basic visibility", !"playlistOldMinibar".equals(key), SettingsBehavior.shown(SettingsBehavior.row(tool[2])));
+            AfterglowPrefs.setBool("advancedMode", true);
+            check(key + " advanced visibility", true, SettingsBehavior.shown(SettingsBehavior.row(tool[2])));
+            AfterglowPrefs.setBool("liteModeEnabled", true);
+            check(key + " Lite Mode preserves the saved choice", true, LiteMode.effectiveBool(key));
+            AfterglowPrefs.setBool("liteModeEnabled", false);
+            for (String resetKey : SettingsBehavior.resetKeys(SettingsBehavior.row(tool[3]))) AfterglowPrefs.remove(resetKey);
+            check(key + " page reset restores off", false, SettingsBehavior.switchValue(SettingsBehavior.row(tool[2])));
+        }
+        install("miniplayer");
+        check("playlist bar describes required restart", true,
+                SettingsBehavior.switchDescription(SettingsBehavior.row("playback.playlistOldMinibar")).contains(SettingsBehavior.NOTE_RESTART));
+        check("mini player does not expose copy controls", false, SettingsBehavior.keyVisible("copyVideoInfo"));
+        install("long-press-tools");
+        AfterglowPrefs.setBool("copyVideoInfo", true);
+        check("unverified text-copy entry stays hidden", false, SettingsBehavior.keyVisible("copyVideoInfo"));
+        check("unverified text-copy row stays hidden", false, SettingsBehavior.shown(SettingsBehavior.row("tools.copyVideoInfo")));
+        check("copy tools do not expose native share", false, SettingsBehavior.keyVisible("nativeShare"));
+        check("copy tools do not expose album fix", false, SettingsBehavior.keyVisible("fixAlbums"));
+        check("unsupported post operations stay hidden", false, SettingsBehavior.keyVisible("postManager"));
+        check("unsupported comment operations stay hidden", false, SettingsBehavior.keyVisible("commentManager"));
+        check("unsupported profile saving stays hidden", false, SettingsBehavior.keyVisible("saveProfilePhoto"));
 
         install();
         check("SponsorBlock stays off when uninstalled", false, SponsorSettings.current().shouldRun(false));

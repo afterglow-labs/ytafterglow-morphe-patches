@@ -53,7 +53,7 @@ private const val ELEMENT_PROTO_INTERFACE = "$EXTENSION_LITHO/ElementProto;"
  * (no height constraint) by them.
  */
 internal val lithoConversionContextPatch = bytecodePatch(
-    description = "Exposes YouTube's Litho conversion context to the YTAfterglow extension.",
+    description = "Exposes YouTube's Litho conversion context to the Afterglow extension.",
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
 
@@ -114,7 +114,7 @@ internal val lithoConversionContextPatch = bytecodePatch(
  *   rewrite (not used by filtering).
  */
 internal val afterglowLithoFilterPatch = bytecodePatch(
-    description = "Hides the Litho components that YTAfterglow's filters match.",
+    description = "Hides the Litho components that Afterglow's filters match.",
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
 
