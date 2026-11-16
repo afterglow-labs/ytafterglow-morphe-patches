@@ -1,7 +1,7 @@
 {
-  "download_url": "https://github.com/afterglow-labs/ytafterglow-morphe-patches/releases/download/v0.1.0-build.105/YTAfterglow_Android_20261115T054247Z_yt21.43.523_7953bb65.mpp",
-  "created_at": "2026-11-16T05:31:42",
-  "page_url": "https://github.com/afterglow-labs/ytafterglow-morphe-patches/releases/tag/v0.1.0-build.105",
-  "description": "YTAfterglow for YouTube 21.43.523: 29 independently selectable feature groups. Build 105 preview; the full iOS port remains in progress.",
-  "version": "0.1.0-build.105"
+  "download_url": "https://github.com/afterglow-labs/ytafterglow-morphe-patches/releases/download/v0.1.0-build.110/Afterglow_Android_20261116T071817Z_yt21.43.523_087c1c93.mpp",
+  "created_at": "2026-11-16T07:20:03",
+  "page_url": "https://github.com/afterglow-labs/ytafterglow-morphe-patches/releases/tag/v0.1.0-build.110",
+  "description": "Afterglow for YouTube 21.43.523: 35 selectable patches, including integrated GmsCore support and stream spoofing. Build 110 preview; use the default selection for the tested playback configuration.",
+  "version": "0.1.0-build.110"
 }
