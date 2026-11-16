@@ -49,8 +49,9 @@ are optional. Custom development focuses on features Morphe does not provide.
 See the [complete feature mapping](docs/morphe-catalog.md) for all inclusions,
 overlaps and the two excluded branding patches.
 
-Validation includes settings checks, strict patch application and APK assembly,
-and Android 16 emulator checks. See [the release checkpoint](docs/release-build118.md)
+Validation includes 518 settings checks, strict patching and APK assembly for
+99/default, 8/independent and 122/all selections, successful patching and signing
+in Morphe Manager 2.6, and Android 16 emulator checks. See [the release checkpoint](docs/release-build118.md)
 for exact selections and limits. Physical-device testing and account login remain unverified.
 
 Upstream-derived code retains its attribution and license notices, also available

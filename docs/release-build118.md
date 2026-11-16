@@ -40,9 +40,12 @@ of these selections from this bundle alone:
 
 The actual bundle loader verifies 122 unique names, 99 defaults, an acyclic
 411-object dependency graph and six forwarded original option objects.
-Morphe Manager **2.6.0 / patcher 2.4.0** also imported the integrated build116
-candidate and applied, rebuilt and signed all 99 default patches successfully.
-The final published source update is checked separately.
+Morphe Manager **2.6.0 / patcher 2.4.0** updates the existing published GitHub
+source from 35 to 122 patches. Using that downloaded build118 source alone, it
+applies all 99 defaults, rebuilds and signs the stock APK successfully in 39.0
+seconds. The temporary local source is removed, and the published Afterglow
+source remains enabled. Manager's internal version display remains 0.1.0; the
+feed version is 0.1.0-build.118.
 
 The source import is reproducible from pinned, hash-checked inputs. All 1,378
 provenance records match, and the three original runtime extension assets are
@@ -74,6 +77,11 @@ remain unverified. Applying all patches successfully does not establish every
 combination of runtime settings. Configure overlapping optional policies one at
 a time. The custom iOS parity ledger remains separate from this imported feature
 coverage and does not gate these features.
+
+The public feed points to build118 and its anonymous download matches SHA-256
+`1a024b624c0a23706c8ea88cc69c42d456af83790e7c1fed4af21707631f586f`
+(**24,339,655 bytes**). The release tag points to source commit
+`46310a3c5cd30dd4be837eac5aaa28571de6edb3`.
 
 The release includes the `.mpp`, SHA-256 checksum and a delivery manifest with
 the source commit, pinned inputs and validation results. Only the patch bundle

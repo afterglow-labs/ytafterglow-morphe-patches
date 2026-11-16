@@ -31,6 +31,13 @@ Strict patching and APK assembly pass for default99, independent8 and all122
 selections. The loader verifies the shared dependency graph and original options;
 settings checks pass 518/518. Source/runtime provenance and licenses are checked.
 The original text-copy implementation replaces the excluded Afterglow experiment.
+Build118 is published: the public feed/download checksum is verified, and Manager
+2.6 updates the existing source to 122 patches, applies all 99 defaults, rebuilds
+and signs successfully. The final default APK passes emulator playback, dislike
+counts, exact title copying and DeArrow replacement/restoration with an empty
+crash buffer. Its installed hash matches the signed candidate; settings are
+restored and YouTube is stopped. Physical devices and account login remain
+unverified; the download entry reaches sign-in on this emulator.
 Existing Afterglow owners and preferences are retained, and overlapping additions
 are optional. See [release-build118.md](docs/release-build118.md) for delivery,
 Manager/runtime validation and limits, and [morphe-catalog.md](docs/morphe-catalog.md)
