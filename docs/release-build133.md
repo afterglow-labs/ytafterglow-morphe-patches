@@ -61,6 +61,12 @@ all six download actions. Its installed SHA matches the signed candidate, with
 an empty crash buffer. The temporary clipboard probe is removed, and the original
 emulator renderer and host clipboard settings are restored.
 
+Morphe Manager **2.6.0** refreshes the existing public Afterglow source to **127
+patches**, then applies the **104 defaults** to the verified stock APK and
+rebuilds and signs successfully. The saved APK passes ZIP integrity and Android
+v2 signature verification. The original Morphe source remains disabled, and
+no temporary local source is used.
+
 The Android 16 emulator checkpoints include adaptive video and audio downloads,
 captions, thumbnails, Vault import/export and owned viewers. A four-hour 720p
 download resumes across restart and upgrade, finishes in the background and

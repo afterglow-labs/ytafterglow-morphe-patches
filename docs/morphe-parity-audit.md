@@ -1,11 +1,11 @@
 # Android parity and imported Morphe functionality
 
-Updated for frozen build133 on 2026-11-16. `tools/parity.json` contains 199 entries:
+Updated for published build133 on 2026-11-16. `tools/parity.json` contains 199 entries:
 **195 done, 4 not applicable and 0 TODO**. This records functional Android
 implementation, including supported platform adaptations. It does not claim
 runtime coverage for every physical device, account, server layout or setting
-combination. Build133 is not yet published; the release manifest and public feed
-establish publication.
+combination. [Build133 is published](release-build133.md); its public feed and
+anonymous bundle download checksum are verified.
 
 The bundle has **127 public patches and 104 defaults**: 41 Afterglow/compatibility
 patches and 86 original Morphe features. The reuse boundary is the pinned Morphe

@@ -1,6 +1,6 @@
 # Afterglow download and destination port validation
 
-This is the frozen build133 checkpoint, not a publication announcement. Build133
+This is the published [build133 checkpoint](release-build133.md). Build133
 has 1,806 hashed production/provenance inputs and a functional Android ledger of
 195 done / 4 not applicable / 0 TODO. The release manifest and public source feed
 identify which snapshot has been published. A successful patch application
@@ -77,6 +77,15 @@ text direction, comment headers and Shorts subscription commands. Regressions
 also exercise the actual download manager's temporary-file ownership and verify
 that generated watch-action bridges contain real DEX catch handlers. Input
 hashes tie each retained result to its tested source.
+
+## Published-source consumer check
+
+The public feed points to build133, and an anonymous bundle download matches its
+recorded SHA-256. Manager 2.6 refreshes the existing Afterglow source to 127 patches
+and successfully applies the 104 defaults to the same hash-verified stock APK.
+Its saved 239,549,401-byte output passes ZIP integrity and Android v2 signature
+verification. The privately signed runtime-tested APK and its Vault data remain
+installed; the Manager-signed output is retained locally as a separate artifact.
 
 ## Remaining coverage limits
 

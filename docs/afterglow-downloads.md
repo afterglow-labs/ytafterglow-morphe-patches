@@ -1,11 +1,11 @@
 # Afterglow downloads and Vault
 
-Frozen build133 includes the Android download feature with Afterglow's own sheets, durable queue, saved
+Published [build133](release-build133.md) includes the Android download feature with Afterglow's own sheets, durable queue, saved
 files and Vault. The original Morphe Downloads patch is excluded from the public
 selection. Return YouTube Dislike and the other integrated Morphe features keep
 their existing implementations. Original post-image/GIF downloading also remains
 Morphe-owned; it is separate from Afterglow's video/audio/caption/thumbnail queue.
-This checkpoint is verified locally and is not a publication announcement.
+The public source feed and release download are verified.
 
 ## Flow
 
@@ -68,7 +68,7 @@ disabled when its optional patch is absent, preserving saved ON/OFF values. The
 other 1,804 inputs, including the download/Vault implementation, are unchanged.
 The 74 actual Premium-session checks, 51 watch DEX checks and fresh 540-setting
 run pass. The exact build133 APK also resolves all six download actions in the
-final smoke; publication is pending. The media
+final smoke. The public release and source feed are verified. The media
 results below retain their earlier tested scope.
 
 Retained focused evidence matches the frozen download inputs: 119

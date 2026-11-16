@@ -1,8 +1,8 @@
 # Handoff
 
-> Updated: 2026-11-16, frozen build133 release candidate
+> Updated: 2026-11-16, published build133
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, public as verified 2026-11-15)
-> Session summary: Build133 passes source/package checks and its final emulator smoke; publication is pending. It contains 127 public patches and 104 defaults: 41 Afterglow/compatibility patches and 86 original Morphe features. Afterglow owns Downloads and Vault, Theme Studio and its other custom destinations; original Morphe Return YouTube Dislike, DeArrow, Copy text and post-image downloading remain integrated. Original settings are available through Afterglow settings → Additional features. The functional Android parity ledger is 195 done / 4 n/a / 0 todo. This is implementation coverage, not a claim that every physical device, account, server variant or optional combination has been tested. Build118 and earlier sections below are historical.
+> Session summary: Build133 is published, with its public feed and anonymous download checksum verified. It contains 127 public patches and 104 defaults: 41 Afterglow/compatibility patches and 86 original Morphe features. Afterglow owns Downloads and Vault, Theme Studio and its other custom destinations; original Morphe Return YouTube Dislike, DeArrow, Copy text and post-image downloading remain integrated. Original settings are available through Afterglow settings → Additional features. The functional Android parity ledger is 195 done / 4 n/a / 0 todo. This is implementation coverage, not a claim that every physical device, account, server variant or optional combination has been tested. Build118 and earlier sections below are historical.
 
 ## Goal
 
@@ -12,9 +12,8 @@ The user explicitly prefers these over Morphe's download interface. Preserve
 and complete Theme Studio and the remaining Afterglow destinations. Morphe
 remains the implementation for shared features such as Return YouTube Dislike;
 the downloader is the explicit exception to the earlier reuse instruction.
-Frozen build133 includes that work and passes the checks described below. It is
-not part of the published build118 until the final delivery and feed publication
-complete. Do not infer publication from a successful local build or install.
+Published build133 includes that work and passes the checks described below.
+The public source feed points to its verified release bundle.
 
 Deliver a usable Afterglow bundle for Android YouTube **21.43.523**. Reuse Morphe's
 existing feature implementations and settings wherever Morphe already provides a
@@ -29,7 +28,7 @@ bundle. The build110 checkpoint below predates this broader integration.
 - An Afterglow settings page lives inside YouTube's settings and shows only rows for tweaks that are installed and implemented.
 - GmsCore and stream compatibility are included as named patches in this bundle, adapted from pinned Morphe sources. Use these selections with Afterglow; avoid duplicate compatibility patches from another source. The companion GmsCore app remains a separate installation.
 
-## Current checkpoint: frozen build133, publication pending
+## Current checkpoint: published build133
 
 All 1,806 production/provenance inputs are recorded in `source-133.json` under
 `~/.cache/ytafterglow-android/afterglow-vault-20261116/`. Strict Desktop1.20 /
@@ -77,14 +76,19 @@ host-text replacement was independently identified; no app workaround was added.
 
 Final smoke and settings cleanup are complete. The temporary clipboard probe is
 removed, and the original emulator renderer and host clipboard sharing are
-restored. The scoped acceptance record passes for build133. The remaining
-delivery work is the clean source commit, unique artifact, publication and feed
-verification. The
-release manifest and public feed establish publication. The
+restored. The scoped acceptance record passes for build133. Source commit
+`7ca14e1894419665b6078fd0af7225c979f9a216` is pushed to main and tagged
+`v0.1.0-build.133`. The release includes the unique `.mpp`, checksum and
+provenance manifest. The public feed and anonymous bundle download are verified. The
 [build133 release record](docs/release-build133.md) tracks delivery status. See
 [parity audit](docs/morphe-parity-audit.md), [downloads](docs/afterglow-downloads.md),
 [long-press tools](docs/long-press-tools.md), [profile/post images](docs/avatar-photos.md)
 and [Description copying](docs/description-header.md) for precise scope and limits.
+
+Manager 2.6 refreshes the existing public source to 127 patches and successfully
+applies all 104 defaults to the verified stock APK. The saved APK passes ZIP
+integrity and Android v2 signature verification. The original Morphe source
+remains disabled; no temporary local source is used.
 
 ## Historical integrated Morphe feature release: build118
 
@@ -1249,27 +1253,19 @@ extension. The fingerprint now excludes the extension namespace. Cast visibility
   separate runtime matrix; do not recreate already working Morphe behavior or
   impose exact Apple rasterization as a missing-port gate.
 
-## Next steps from frozen build133
+## Release state and further coverage
 
-1. Final smoke and settings cleanup pass; retain the exact candidate APK and
-   restored emulator configuration recorded in the acceptance report.
-2. Reconcile the same-candidate strict reports, 1,806 source hashes, actual catalog
-   graph/options, notices and focused-check input hashes. Build133 has all four
-   strict selections passing; changed production inputs would require a new
-   candidate rather than reusing an old verdict.
-3. Commit the intended source and documentation to main, create the unique local
-   delivery/checksum/provenance manifest, then publish the verified `.mpp` and
-   update `patches-bundle.json`. Verify the public checksum/feed before reporting
-   publication. No PR is requested.
-4. Keep this a single-source bundle. Its own GmsCore and Spoof video streams
-   selections supply compatibility; do not add a second official bundle with
-   duplicate compatibility patches. The companion GmsCore app remains separate.
-5. For subsequent runtime coverage, use the retained actual AVD/launch setup and
-   Windows adb target. Do not revive the historical `swiftshader_indirect`
-   command below older checkpoints: software rendering has an observed Windows
-   qemu failure on Description copying. Restore the temporary host-clipboard QA
-   setting when image checks finish. Physical/account/casting and server-provided
-   AI/Shorts-carousel checks remain unverified.
+Build133 is published. Preserve its immutable source tag and unique delivery;
+new production changes need a new frozen build and validation record. The
+single source includes its own GmsCore and Spoof video streams selections; the
+companion GmsCore app remains a separate installation.
+
+Physical devices, account login, casting, native AI feed execution and the paused
+Shorts subscription carousel remain additional runtime coverage. Use eligible
+account/server fixtures for the latter two. Retain the successful host GLES
+configuration for Description/image QA and restore temporary host clipboard
+settings afterward. The original emulator renderer and clipboard sharing are
+restored at this checkpoint.
 
 ## Key Constraints
 
