@@ -24,6 +24,13 @@ public final class NativeTheme {
         return InstalledTweaks.has("theme-studio") ? palette : null;
     }
 
+    /** YouTube can select dark appearance independently of Android's system night mode. */
+    public static boolean isDark(Configuration configuration) {
+        Boolean known = nativeDark;
+        return known != null ? known
+                : (configuration.uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+    }
+
     public static int foregroundColor(int original) {
         ThemePalette active = activePalette();
         if (active == null) return original;
@@ -56,6 +63,8 @@ public final class NativeTheme {
     }
 
     public static Enum<?> appearance(Enum<?> original) {
+        if (original != null && ("DARK".equals(original.name()) || "LIGHT".equals(original.name())))
+            nativeDark = "DARK".equals(original.name());
         if (!InstalledTweaks.has("theme-studio") || Build.VERSION.SDK_INT < 34) return original;
         try {
             ThemePalette active = palette;

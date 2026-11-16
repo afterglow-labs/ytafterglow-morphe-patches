@@ -62,11 +62,20 @@ public final class SettingsVisibilityTest {
             expectRows(c, "page:about.credits", allRows("page:about.credits"));
             expectAbout(c);
             check(c + "root.search shown", true, SettingsBehavior.shown(SettingsBehavior.row("root.search")));
-            // Destinations whose features are not ported yet stay hidden.
-            expectHidden(c, "root.liteMode", "root.aiHome", "root.abLab", "root.vault");
+            check(c + "Lite Mode available", true, SettingsBehavior.shown(SettingsBehavior.row("root.liteMode")));
+            for (String destination : new String[] {"root.aiHome", "root.abLab", "root.vault"})
+                check(c + destination + " available", true, SettingsBehavior.shown(SettingsBehavior.row(destination)));
             check(c + "tools page is available", true, SettingsBehavior.shown(SettingsBehavior.row("root.tools")));
             check(c + "theme presets available", true, SettingsBehavior.shown(SettingsBehavior.row("themes.themeStudio")));
-            expectSearch(c, advanced, list("Advanced", "Theme Presets", "GradientStart", "PrimaryText"), list("LiteMode"));
+            expectSearch(c, advanced, list("Advanced", "Theme Presets", "GradientStart", "PrimaryText", "LiteMode"), list());
+        }
+
+        for (String owner : new String[] {"downloads", "ai-home", "ab-lab", "control-center"}) {
+            install(owner);
+            String[] owners = {"downloads", "ai-home", "ab-lab", "control-center"};
+            String[] keys = {"destination.vault", "destination.aiHome", "destination.experimentLab", "destination.controlCenter"};
+            for (int i = 0; i < owners.length; i++)
+                check(owner + " destination ownership " + keys[i], owner.equals(owners[i]), SettingsBehavior.keyVisible(keys[i]));
         }
 
         // ---- case 2: only "Shorts layout and buttons"
@@ -114,7 +123,8 @@ public final class SettingsVisibilityTest {
         check("lock button defaults on", true, AfterglowPrefs.getBool("lockButton"));
         check("buttons alone expose eye modes", true, SettingsBehavior.keyVisible("overlayDeclutterButton"));
         check("eye button defaults on", true, AfterglowPrefs.getBool("overlayDeclutterButton"));
-        check("unported Control Center reset stays hidden", false, SettingsBehavior.keyVisible("action.resetOverlayMode"));
+        check("overlay reset is owned by overlay buttons", true, SettingsBehavior.keyVisible("action.resetOverlayMode"));
+        check("controls sheet button is available", true, SettingsBehavior.keyVisible("controlsSheetButton"));
         check("buttons alone do not expose overlay pause", false, SettingsBehavior.keyVisible("pauseOnOverlay"));
         check("buttons alone do not expose automatic fullscreen", false, SettingsBehavior.keyVisible("autoFullscreen"));
         install("player-overlay");
@@ -139,7 +149,7 @@ public final class SettingsVisibilityTest {
         install("seek-bar");
         check("seek bar alone exposes image", true, SettingsBehavior.keyVisible("seekBarScrubberImage"));
         check("seek bar alone exposes played color", true, SettingsBehavior.keyVisible("theme_seekBar"));
-        check("unimplemented live scrubber hidden", false, SettingsBehavior.keyVisible("theme_seekBarScrubberLive"));
+        check("seek bar alone exposes live scrubber", true, SettingsBehavior.keyVisible("theme_seekBarScrubberLive"));
         check("seek bar alone exposes heatwaves", true, SettingsBehavior.keyVisible("hideHeatwaves"));
         Row gradient = SettingsBehavior.row("effects.seekBarGradient");
         AfterglowPrefs.remove("seekBarGradient");
@@ -598,13 +608,15 @@ public final class SettingsVisibilityTest {
         check("mini player does not expose copy controls", false, SettingsBehavior.keyVisible("copyVideoInfo"));
         install("long-press-tools");
         AfterglowPrefs.setBool("copyVideoInfo", true);
-        check("unverified text-copy entry stays hidden", false, SettingsBehavior.keyVisible("copyVideoInfo"));
-        check("unverified text-copy row stays hidden", false, SettingsBehavior.shown(SettingsBehavior.row("tools.copyVideoInfo")));
+        check("Description-header copy entry is available", true, SettingsBehavior.keyVisible("copyVideoInfo"));
+        check("Description-header copy row is available", true, SettingsBehavior.shown(SettingsBehavior.row("tools.copyVideoInfo")));
         check("copy tools do not expose native share", false, SettingsBehavior.keyVisible("nativeShare"));
         check("copy tools do not expose album fix", false, SettingsBehavior.keyVisible("fixAlbums"));
-        check("unsupported post operations stay hidden", false, SettingsBehavior.keyVisible("postManager"));
-        check("unsupported comment operations stay hidden", false, SettingsBehavior.keyVisible("commentManager"));
-        check("unsupported profile saving stays hidden", false, SettingsBehavior.keyVisible("saveProfilePhoto"));
+        for (String key : new String[]{"copyVideoInfo", "postManager", "commentManager", "saveProfilePhoto"}) {
+            AfterglowPrefs.remove(key);
+            check(key + " is available with long-press tools", true, SettingsBehavior.keyVisible(key));
+            check(key + " starts off", false, AfterglowPrefs.getBool(key));
+        }
 
         install();
         check("SponsorBlock stays off when uninstalled", false, SponsorSettings.current().shouldRun(false));

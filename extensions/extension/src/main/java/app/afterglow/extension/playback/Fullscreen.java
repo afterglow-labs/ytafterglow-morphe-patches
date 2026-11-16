@@ -41,6 +41,17 @@ public final class Fullscreen {
         return true;
     }
 
+    /** Explicit action from an owned dialog, whose window holds focus instead of the activity. */
+    public static boolean enterFromControlsSheet(Activity activity) {
+        FullscreenController host = controller.get();
+        if (host == null || activity == null || activity != Afterglow.mainActivity()
+                || activity.isFinishing() || activity.isDestroyed() || activity.getWindow() == null
+                || !activity.getWindow().getDecorView().isShown() || VideoState.isShortsPlayerInFront()
+                || VideoState.isAdPlaying() || !VideoState.playerType().isWatchPage()) return false;
+        if (VideoState.playerType() != PlayerType.WATCH_WHILE_FULLSCREEN) host.afterglow_enterFullscreen();
+        return true;
+    }
+
     public static synchronized void install() {
         if (installed) return;
         installed = true;

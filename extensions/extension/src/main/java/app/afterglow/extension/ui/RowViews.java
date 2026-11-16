@@ -468,7 +468,7 @@ final class RowViews {
             ThemePalette theme = ThemeStore.snapshot().palette;
             int pageStyle = theme.pageStyleOverride();
             dark = pageStyle >= 0 ? pageStyle == 1
-                    : (configuration.uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+                    : app.afterglow.extension.theme.NativeTheme.isDark(configuration);
 
             Integer themeBackground = theme.color(ThemeRole.BACKGROUND);
             Integer themeText = theme.color(ThemeRole.PRIMARY_TEXT);

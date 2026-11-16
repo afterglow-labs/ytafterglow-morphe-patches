@@ -3,6 +3,7 @@ package app.afterglow.extension.navigation;
 import android.content.Intent;
 
 import app.afterglow.extension.Afterglow;
+import app.afterglow.extension.diagnostics.DebugLog;
 import app.afterglow.extension.settings.LiteMode;
 import app.afterglow.extension.settings.TabStore;
 
@@ -19,6 +20,22 @@ public final class StartupHooks {
     private static final int GUIDE_MILESTONE_NOT_HOME = 1;
 
     private StartupHooks() {}
+
+    /**
+     * iOS startupAnimation forces eligibility when enabled; OFF keeps native behavior.
+     * Both Android startup-state and startup-type gates use this additive override.
+     * Animation style, memory checks, attached view and lifecycle cleanup remain native.
+     */
+    public static boolean animationEligible(boolean original) {
+        try {
+            if (!Gate.on(Gate.STARTUP, "startupAnimation")) return original;
+            if (!original) DebugLog.write("startup", "native animation eligibility enabled");
+            return true;
+        } catch (Throwable error) {
+            Afterglow.error("StartupHooks.animationEligible", error);
+            return original;
+        }
+    }
 
     /** The tab to open, or null when neither the startup tweak nor Shorts only mode applies. */
     static String startTab() {

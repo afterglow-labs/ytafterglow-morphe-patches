@@ -21,17 +21,51 @@ import app.morphe.patcher.resourceLiteral
 import app.morphe.patcher.patch.PatchException
 import app.morphe.patcher.patch.bytecodePatch
 import app.morphe.patcher.util.addInstructionsAtControlFlowLabel
+import app.morphe.patcher.util.proxy.mutableTypes.MutableMethod.Companion.toMutable
+import app.morphe.patches.youtube.video.information.videoInformationPatch
 import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.Opcode
+import com.android.tools.smali.dexlib2.builder.MutableMethodImplementation
 import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
 import com.android.tools.smali.dexlib2.iface.instruction.ReferenceInstruction
 import com.android.tools.smali.dexlib2.iface.reference.MethodReference
+import com.android.tools.smali.dexlib2.iface.reference.FieldReference
+import com.android.tools.smali.dexlib2.immutable.ImmutableMethod
 
 private const val SEEK = "$EXTENSION_PACKAGE/theme/SeekBarTheme;"
 
 internal val seekBarThemePatch = bytecodePatch {
-    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch)
+    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch, videoInformationPatch)
     execute {
+        // Reuse the original pinned response observer. Its live bit is already keyed to the
+        // response id; the Java adapter additionally requires the actual current player id.
+        val information = classDefBy("Lapp/morphe/extension/youtube/patches/VideoInformation;")
+        val liveInfo = information.methods.single { it.name == "isLiveStream" && it.parameterTypes.isEmpty() && it.returnType == "Z" }
+        val liveFields = liveInfo.implementation!!.instructions.mapNotNull {
+            ((it as? ReferenceInstruction)?.reference as? FieldReference)?.name
+        }.toSet()
+        require(liveFields.containsAll(setOf("liveStream", "liveStreamVideoId", "playerResponseVideoId"))) {
+            "Pinned VideoInformation no longer guards live state with its player response id"
+        }
+        val extension = mutableClassDefBy(SEEK)
+        for ((bridge, target) in listOf("nativeCurrentVideoId" to "getVideoId",
+            "nativeResponseVideoId" to "getPlayerResponseVideoId", "nativeResponseIsLive" to "isLiveStream")) {
+            val method = information.methods.single { it.name == target && it.parameterTypes.isEmpty() }
+            require(AccessFlags.PUBLIC.isSet(method.accessFlags) && AccessFlags.STATIC.isSet(method.accessFlags))
+            val placeholder = extension.methods.single { it.name == bridge && it.parameterTypes.isEmpty() && it.returnType == method.returnType }
+            extension.methods.remove(placeholder)
+            val objectResult = method.returnType == "Ljava/lang/String;"
+            require(objectResult || method.returnType == "Z")
+            extension.methods.add(ImmutableMethod(SEEK, bridge, placeholder.parameters, placeholder.returnType,
+                placeholder.accessFlags, placeholder.annotations, placeholder.hiddenApiRestrictions,
+                MutableMethodImplementation(1)).toMutable().apply {
+                addInstructions(0, """
+                    invoke-static { }, ${method.smali}
+                    ${if (objectResult) "move-result-object" else "move-result"} v0
+                    ${if (objectResult) "return-object" else "return"} v0
+                """)
+            })
+        }
         val bar = Fingerprint(returnType = "V", strings = listOf("timed_markers_width"))
         val draw = Fingerprint(classFingerprint = bar, name = "onDraw", parameters = listOf("Landroid/graphics/Canvas;"), returnType = "V").method
         val host = bar.classDef
@@ -81,11 +115,20 @@ internal val seekBarThemePatch = bytecodePatch {
             Triple(ResourceType.COLOR, "inline_time_bar_colorized_bar_played_color_dark", "played"),
             Triple(ResourceType.COLOR, "reel_time_bar_played_color", "played"),
             Triple(ResourceType.COLOR, "inline_time_bar_live_seekable_range", "live"),
+            Triple(ResourceType.COLOR, "inline_time_bar_buffered_color", "buffered"),
+            Triple(ResourceType.COLOR, "inline_time_bar_buffered_highlighted_color", "buffered"),
+            Triple(ResourceType.COLOR, "inline_time_bar_colorized_bar_buffered_color_dark", "buffered"),
         )
+        val bufferedFields = mapOf("inline_time_bar_buffered_color" to "j",
+            "inline_time_bar_buffered_highlighted_color" to "l", "inline_time_bar_colorized_bar_buffered_color_dark" to "k")
         resources.forEach { (type, resource, method) ->
-            Fingerprint(accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.CONSTRUCTOR),
+            val matches = Fingerprint(accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.CONSTRUCTOR),
                 filters = listOf(resourceLiteral(type, resource)),
-                custom = { _, cls -> !cls.type.startsWith("$EXTENSION_PACKAGE/") }).matchAll().forEach { match ->
+                custom = { _, cls -> !cls.type.startsWith("$EXTENSION_PACKAGE/") }).matchAll()
+            if (method == "buffered") require(matches.size == 1 && matches.single().method.definingClass == "Ljsd;") {
+                "Expected one native buffered color owner for $resource"
+            }
+            matches.forEach { match ->
                 val index = match.instructionMatches.first().index
                 val instructions = match.method.implementation!!.instructions
                 val literal = (instructions[index] as OneRegisterInstruction).registerA
@@ -101,6 +144,15 @@ internal val seekBarThemePatch = bytecodePatch {
                             && (instructions[candidate] as? OneRegisterInstruction)?.registerA == literal) break
                 }
                 if (calls.isEmpty()) throw PatchException("No resolved color for $resource in ${match.method.definingClass}")
+                if (method == "buffered") {
+                    require(calls.size == 1) { "Expected one buffered resource read for $resource" }
+                    val store = instructions.getOrNull(calls.single() + 2)
+                    val field = (store as? ReferenceInstruction)?.reference as? FieldReference
+                    require(store?.opcode == Opcode.IPUT && field?.definingClass == "Laruc;" &&
+                            field.type == "I" && field.name == bufferedFields[resource]) {
+                        "Buffered color no longer initializes the verified Laruc field for $resource"
+                    }
+                }
                 calls.asReversed().forEach { call ->
                     val register = (instructions[call+1] as OneRegisterInstruction).registerA
                     match.method.addInstructions(call+2, """

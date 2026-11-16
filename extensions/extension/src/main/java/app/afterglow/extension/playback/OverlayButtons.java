@@ -21,6 +21,7 @@ import java.util.WeakHashMap;
 import app.afterglow.extension.Afterglow;
 import app.afterglow.extension.InstalledTweaks;
 import app.afterglow.extension.diagnostics.DebugLog;
+import app.afterglow.extension.downloads.DownloadHooks;
 import app.afterglow.extension.settings.AfterglowPrefs;
 import app.afterglow.extension.settings.LiteMode;
 import app.afterglow.extension.ui.AfterglowActivity;
@@ -35,6 +36,16 @@ public final class OverlayButtons {
     private static final String[] EYE_LABELS = {"Hide YouTube controls", "Use timed Afterglow controls",
             "Keep only the eye", "Restore all controls"};
     private OverlayButtons() {}
+
+    /** Current native action owner for an owned sheet; independent of individual button preferences. */
+    public static OverlayActionController controllerForSheet(Activity activity) {
+        OverlayActionController value = controller.get();
+        String id = VideoState.videoId();
+        if (activity == null || activity != Afterglow.mainActivity() || value == null
+                || value.afterglow_overlayActivity() != activity || id.isEmpty()
+                || !id.equals(value.afterglow_overlayVideoId())) return null;
+        return value;
+    }
 
     public static void setController(OverlayActionController value) {
         Afterglow.runOnMain(() -> {
@@ -76,7 +87,7 @@ public final class OverlayButtons {
             OverlayModes.Listener {
         final FrameLayout root;
         final LinearLayout row;
-        final Button mute, lock, settings, eye;
+        final Button mute, lock, settings, eye, download, premium;
         final boolean shorts;
         final int containerId;
         FrameLayout host;
@@ -97,9 +108,15 @@ public final class OverlayButtons {
             lock = new Button(root, "Lock controls", 1);
             settings = new Button(root, "Afterglow Settings", 2);
             eye = new Button(root, "Hide YouTube controls", 3);
-            for (Button button : new Button[] {mute, lock, settings, eye}) {
+            download = new Button(root, "Afterglow Download", 4);
+            premium = new Button(root, "Afterglow player controls", 5);
+            for (Button button : new Button[] {mute, lock, download, premium, settings, eye}) {
                 row.addView(button, new LinearLayout.LayoutParams(dp(44), dp(44)));
             }
+            download.setOnClickListener(v -> { if (foreground()) DownloadHooks.openCurrent(); });
+            premium.setOnClickListener(v -> {
+                if (foreground() && enabled("controlsSheetButton")) PremiumControls.open(Afterglow.mainActivity());
+            });
             mute.setOnClickListener(v -> toggleMute());
             lock.setOnClickListener(v -> toggleLock());
             eye.setOnClickListener(v -> {
@@ -179,7 +196,7 @@ public final class OverlayButtons {
             if (containerId == 0) return false;
             // YouTube's lock UI is a full-player sibling above the controls root.
             // Its native custom-view container sits above that layer and already
-            // tracks player bounds/insets. Only our three button hit areas consume
+            // tracks player bounds/insets. Only our button hit areas consume
             // input here; taps elsewhere still reach native lock/unlock controls.
             for (View view = root; view != null;) {
                 View candidate = view.findViewById(containerId);
@@ -202,6 +219,8 @@ public final class OverlayButtons {
                 boolean controls = OverlayModes.controlsVisible();
                 setVisibility(mute, !shorts && controls && enabled("muteButton"));
                 setVisibility(lock, !shorts && controls && enabled("lockButton"));
+                setVisibility(download, controls && InstalledTweaks.has("downloads") && enabled("downloadButton"));
+                setVisibility(premium, !shorts && controls && enabled("controlsSheetButton"));
                 setVisibility(settings, controls);
                 setVisibility(eye, enabled("overlayDeclutterButton"));
                 eye.setAlpha(OverlayModes.eyeOpacity());
@@ -368,6 +387,23 @@ public final class OverlayButtons {
                 }
                 paint.setStrokeWidth(2);
                 canvas.drawCircle(12, 12, 2.2f, paint);
+            } else if (kind == 4) {
+                paint.setStyle(Paint.Style.STROKE);
+                canvas.drawLine(12, 2, 12, 16, paint);
+                canvas.drawLine(7, 11, 12, 16, paint);
+                canvas.drawLine(17, 11, 12, 16, paint);
+                Path tray = new Path();
+                tray.moveTo(4, 17); tray.lineTo(4, 21); tray.lineTo(20, 21); tray.lineTo(20, 17);
+                canvas.drawPath(tray, paint);
+            } else if (kind == 5) {
+                paint.setStyle(Paint.Style.STROKE);
+                for (int i = 0; i < 3; i++) {
+                    float y = 5 + i * 7;
+                    float knob = i == 1 ? 15 : 8;
+                    canvas.drawLine(2, y, knob - 2, y, paint);
+                    canvas.drawLine(knob + 2, y, 22, y, paint);
+                    canvas.drawCircle(knob, y, 2, paint);
+                }
             } else {
                 paint.setStyle(Paint.Style.STROKE);
                 Path outline = new Path();

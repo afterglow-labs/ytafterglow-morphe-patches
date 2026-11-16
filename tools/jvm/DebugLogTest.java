@@ -12,9 +12,9 @@ public final class DebugLogTest {
     }
     public static void main(String[] args) throws Exception {
         String[][] groups = {
-            {"debugLogDownloads", "dl-start", "downloader", "extractor-player", "selector", "ffmpeg", "action-sheet"},
+            {"debugLogDownloads", "download", "dl-start", "downloader", "extractor-player", "selector", "ffmpeg", "action-sheet"},
             {"debugLogPlayerUI", "overlay", "shorts-ui", "vc-resolve", "fullscreen"},
-            {"debugLogPremiumControls", "premium-ctrl-action"}, {"debugLogPiP", "pip-player"},
+            {"debugLogPremiumControls", "premium-controls", "premium-ctrl-action"}, {"debugLogPiP", "pip-player"},
             {"debugLogProbes", "offline-route", "ctor"}
         };
         for (String[] group : groups) for (int i = 1; i < group.length; i++) {

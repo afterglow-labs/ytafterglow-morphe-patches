@@ -550,24 +550,6 @@ val morpheCatalog29Patch = bytecodePatch(
 
 @Suppress("unused")
 val morpheCatalog30Patch = bytecodePatch(
-    name = "Downloads",
-    description = "Adds support to download videos with an external downloader app using the in-app download button or a video player action button, and adds an option to download videos in-app. Configure in Afterglow settings → Additional features.",
-    default = true,
-) {
-    compatibleWith(COMPATIBILITY_YOUTUBE)
-    availability { installer, architecture ->
-        when (val state = app.morphe.patches.youtube.interaction.downloads.downloadsPatch.availability?.resolve(installer, architecture)) {
-            PatchAvailability.UNAVAILABLE, PatchAvailability.REQUIRED -> state
-            else -> PatchAvailability.ENABLED
-        }
-    }
-    dependsOn(app.morphe.patches.youtube.interaction.downloads.downloadsPatch, morpheSettingsBridgePatch)
-    app.morphe.patches.youtube.interaction.downloads.downloadsPatch.options.values.forEach { it() }
-    execute { markTweakInstalled("morphe-downloads") }
-}
-
-@Suppress("unused")
-val morpheCatalog31Patch = bytecodePatch(
     name = "Enable debugging",
     description = "Adds options for debugging and exporting Morphe logs to the clipboard. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -585,7 +567,7 @@ val morpheCatalog31Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog32Patch = bytecodePatch(
+val morpheCatalog31Patch = bytecodePatch(
     name = "Feed card layout",
     description = "Adds an option to show or hide the card layout of feed videos, which YouTube sends as an A/B test. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -603,7 +585,7 @@ val morpheCatalog32Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog33Patch = bytecodePatch(
+val morpheCatalog32Patch = bytecodePatch(
     name = "Feed video actions",
     description = "Adds a Watch later button to video thumbnails in feeds, and opens the video menu by tapping and holding anywhere on a video. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -621,7 +603,7 @@ val morpheCatalog33Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog34Patch = bytecodePatch(
+val morpheCatalog33Patch = bytecodePatch(
     name = "Feed view count",
     description = "Adds the view count to the bottom left of the thumbnails of feed videos. Configure in Afterglow settings → Additional features.",
     default = false,
@@ -639,7 +621,7 @@ val morpheCatalog34Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog35Patch = bytecodePatch(
+val morpheCatalog34Patch = bytecodePatch(
     name = "Force animations",
     description = "Adds an option to always turn on or off the app animations that YouTube can turn off, such as the player transitions. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -657,7 +639,7 @@ val morpheCatalog35Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog36Patch = bytecodePatch(
+val morpheCatalog35Patch = bytecodePatch(
     name = "Force fullscreen landscape",
     description = "Adds an option to rotate the player to landscape when entering fullscreen mode on tablets and other large screen devices. Configure in Afterglow settings → Additional features.",
     default = false,
@@ -675,7 +657,7 @@ val morpheCatalog36Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog37Patch = bytecodePatch(
+val morpheCatalog36Patch = bytecodePatch(
     name = "Force original audio",
     description = "Adds an option to always use the original audio track. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -693,7 +675,7 @@ val morpheCatalog37Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog38Patch = bytecodePatch(
+val morpheCatalog37Patch = bytecodePatch(
     name = "Fullscreen video scale",
     description = "Adds options to stretch or zoom videos to fill the screen in fullscreen mode. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -711,7 +693,7 @@ val morpheCatalog38Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog39Patch = bytecodePatch(
+val morpheCatalog38Patch = bytecodePatch(
     name = "Hide Shorts components",
     description = "Adds options to hide components related to Shorts. Configure in Afterglow settings → Additional features.",
     default = false,
@@ -729,7 +711,7 @@ val morpheCatalog39Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog40Patch = bytecodePatch(
+val morpheCatalog39Patch = bytecodePatch(
     name = "Hide autoplay preview",
     description = "Adds an option to hide the autoplay preview at the end of videos. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -747,7 +729,7 @@ val morpheCatalog40Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog41Patch = bytecodePatch(
+val morpheCatalog40Patch = bytecodePatch(
     name = "Hide info cards",
     description = "Adds an option to hide info cards that creators add in the video player. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -765,7 +747,7 @@ val morpheCatalog41Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog42Patch = bytecodePatch(
+val morpheCatalog41Patch = bytecodePatch(
     name = "Hide layout components",
     description = "Adds options to hide general layout components. Configure in Afterglow settings → Additional features.",
     default = false,
@@ -783,7 +765,7 @@ val morpheCatalog42Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog43Patch = bytecodePatch(
+val morpheCatalog42Patch = bytecodePatch(
     name = "Hide player flyout menu components",
     description = "Adds options to hide menu components that appear when pressing the gear icon in the video player. Configure in Afterglow settings → Additional features.",
     default = false,
@@ -801,7 +783,7 @@ val morpheCatalog43Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog44Patch = bytecodePatch(
+val morpheCatalog43Patch = bytecodePatch(
     name = "Hide player overlay buttons",
     description = "Adds options to hide the player Cast, Autoplay, Captions, Previous & Next buttons, and to hide or change the opacity of the player control buttons background. Configure in Afterglow settings → Additional features.",
     default = false,
@@ -819,7 +801,7 @@ val morpheCatalog44Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog45Patch = bytecodePatch(
+val morpheCatalog44Patch = bytecodePatch(
     name = "Hide related video overlay",
     description = "Adds an option to hide the related video overlay shown when swiping up in fullscreen. Configure in Afterglow settings → Additional features.",
     default = false,
@@ -837,7 +819,7 @@ val morpheCatalog45Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog46Patch = bytecodePatch(
+val morpheCatalog45Patch = bytecodePatch(
     name = "Hide status bar",
     description = "Adds an option to hide the system status bar. Swipe down from the top edge to show it for a moment. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -855,7 +837,7 @@ val morpheCatalog46Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog47Patch = bytecodePatch(
+val morpheCatalog46Patch = bytecodePatch(
     name = "Hide timestamp",
     description = "Adds an option to hide the timestamp in the bottom left of the video player. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -873,7 +855,7 @@ val morpheCatalog47Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog48Patch = bytecodePatch(
+val morpheCatalog47Patch = bytecodePatch(
     name = "Hide video action buttons",
     description = "Adds options to hide video action buttons in fullscreen and portrait modes. Configure in Afterglow settings → Additional features.",
     default = false,
@@ -891,7 +873,7 @@ val morpheCatalog48Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog49Patch = bytecodePatch(
+val morpheCatalog48Patch = bytecodePatch(
     name = "Loop video",
     description = "Adds an option to loop videos and display loop video button in the video player. Configure in Afterglow settings → Additional features.",
     default = false,
@@ -909,7 +891,7 @@ val morpheCatalog49Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog50Patch = bytecodePatch(
+val morpheCatalog49Patch = bytecodePatch(
     name = "Media notification controls",
     description = "Adds options to disable the seekbar and previous/next buttons in the media notification and headphone controls. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -927,7 +909,7 @@ val morpheCatalog50Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog51Patch = bytecodePatch(
+val morpheCatalog50Patch = bytecodePatch(
     name = "Miniplayer",
     description = "Adds options to change the in-app minimized player. Patching 21.28.208 and lower has more miniplayer types to choose from. Configure in Afterglow settings → Additional features.",
     default = false,
@@ -945,7 +927,7 @@ val morpheCatalog51Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog52Patch = bytecodePatch(
+val morpheCatalog51Patch = bytecodePatch(
     name = "Navigation options",
     description = "Adds options to hide and change the bottom navigation bar (such as the Shorts button) and the upper navigation toolbar. Configure in Afterglow settings → Additional features.",
     default = false,
@@ -963,7 +945,7 @@ val morpheCatalog52Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog53Patch = bytecodePatch(
+val morpheCatalog52Patch = bytecodePatch(
     name = "Network proxy",
     description = "Adds settings to route supported network requests through an HTTP or HTTPS proxy. Including this patch may cause connectivity problems on certain devices Configure in Afterglow settings → Additional features.",
     default = false,
@@ -981,7 +963,7 @@ val morpheCatalog53Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog54Patch = bytecodePatch(
+val morpheCatalog53Patch = bytecodePatch(
     name = "Niconico comments",
     description = "Adds an option to show live chat and chat replay as comments that scroll across the video. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -999,7 +981,7 @@ val morpheCatalog54Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog55Patch = bytecodePatch(
+val morpheCatalog54Patch = bytecodePatch(
     name = "Open channel of live avatar",
     description = "Adds an option to prevent a channel's current live video from opening when tapping its avatar. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -1017,7 +999,7 @@ val morpheCatalog55Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog56Patch = bytecodePatch(
+val morpheCatalog55Patch = bytecodePatch(
     name = "Open links externally",
     description = "Adds an option to always open links in your browser instead of with the in-app browser. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -1035,7 +1017,7 @@ val morpheCatalog56Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog57Patch = bytecodePatch(
+val morpheCatalog56Patch = bytecodePatch(
     name = "Override YouTube Music buttons",
     description = "Overrides YouTube Music buttons to open Morphe Music or any compatible third-party client. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -1053,7 +1035,7 @@ val morpheCatalog57Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog58Patch = bytecodePatch(
+val morpheCatalog57Patch = bytecodePatch(
     name = "Picture-in-picture button",
     description = "Adds an option to display a picture-in-picture button in the video player. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -1071,7 +1053,7 @@ val morpheCatalog58Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog59Patch = bytecodePatch(
+val morpheCatalog58Patch = bytecodePatch(
     name = "Play all",
     description = "Adds an option to play all the videos from a channel and to display play all button in the video player. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -1089,7 +1071,7 @@ val morpheCatalog59Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog60Patch = bytecodePatch(
+val morpheCatalog59Patch = bytecodePatch(
     name = "Playback buffer",
     description = "Adds an option to change the video playback buffer size. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -1107,7 +1089,7 @@ val morpheCatalog60Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog61Patch = bytecodePatch(
+val morpheCatalog60Patch = bytecodePatch(
     name = "Playback in feeds",
     description = "Adds the 'Playback in feeds' setting of YouTube to the Afterglow settings, where it is always available even if YouTube hides it. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -1125,7 +1107,7 @@ val morpheCatalog61Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog62Patch = bytecodePatch(
+val morpheCatalog61Patch = bytecodePatch(
     name = "Playback speed options",
     description = "Adds options to customize available playback speeds, set a default playback speed, and show a speed dialog button in the video player. Configure in Afterglow settings → Additional features.",
     default = false,
@@ -1143,7 +1125,7 @@ val morpheCatalog62Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog63Patch = bytecodePatch(
+val morpheCatalog62Patch = bytecodePatch(
     name = "Player icon style",
     description = "Adds an option to change the style of the player button icons. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -1161,7 +1143,7 @@ val morpheCatalog63Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog64Patch = bytecodePatch(
+val morpheCatalog63Patch = bytecodePatch(
     name = "PoToken provider",
     description = "Adds option to get PoToken using an external PoToken minter app. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -1179,7 +1161,7 @@ val morpheCatalog64Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog65Patch = bytecodePatch(
+val morpheCatalog64Patch = bytecodePatch(
     name = "Reload video",
     description = "Adds an option to display reload video button in the video player. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -1197,7 +1179,7 @@ val morpheCatalog65Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog66Patch = bytecodePatch(
+val morpheCatalog65Patch = bytecodePatch(
     name = "Remember live stream playback position",
     description = "Adds an option to remember the playback position of an ongoing live stream and resume from there when reopening that live stream. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -1215,7 +1197,7 @@ val morpheCatalog66Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog67Patch = bytecodePatch(
+val morpheCatalog66Patch = bytecodePatch(
     name = "Remove background playback restrictions",
     description = "Removes restrictions on background playback, including playing kids videos in the background. Configure in Afterglow settings → Additional features.",
     default = false,
@@ -1233,7 +1215,7 @@ val morpheCatalog67Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog68Patch = bytecodePatch(
+val morpheCatalog67Patch = bytecodePatch(
     name = "Restore original titles",
     description = "Adds an option to show the original video titles, video descriptions and channel descriptions instead of the auto-translated ones. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -1251,7 +1233,7 @@ val morpheCatalog68Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog69Patch = bytecodePatch(
+val morpheCatalog68Patch = bytecodePatch(
     name = "Return YouTube Dislike",
     description = "Adds an option to show the dislike count of videos with Return YouTube Dislike, and the like count and like ratio on the thumbnails of feed videos. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -1269,7 +1251,7 @@ val morpheCatalog69Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog70Patch = bytecodePatch(
+val morpheCatalog69Patch = bytecodePatch(
     name = "Save to Watch later",
     description = "Adds an option to display save to Watch later button in the video player, and adds a setting to redirect Watch later saves to a playlist of your choice. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -1287,7 +1269,7 @@ val morpheCatalog70Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog71Patch = bytecodePatch(
+val morpheCatalog70Patch = bytecodePatch(
     name = "Search comments",
     description = "Adds a button to the comments to show only the loaded comments that contain the searched words. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -1305,7 +1287,7 @@ val morpheCatalog71Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog72Patch = bytecodePatch(
+val morpheCatalog71Patch = bytecodePatch(
     name = "Seekbar",
     description = "Adds options to show old seekbar thumbnails, disable precise seeking when swiping up on the seekbar, slide to seek instead of playing at 2x speed when pressing and holding, tapping the player seekbar to seek, hiding the video player seekbar, enabling seeking in live streams, and expanding the live stream DVR duration. Configure in Afterglow settings → Additional features.",
     default = false,
@@ -1323,7 +1305,7 @@ val morpheCatalog72Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog73Patch = bytecodePatch(
+val morpheCatalog72Patch = bytecodePatch(
     name = "Series tracking",
     description = "Adds a series library to History with local progress and episode continuation. This patch works with YouTube 21.02 and newer. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -1341,7 +1323,7 @@ val morpheCatalog73Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog74Patch = bytecodePatch(
+val morpheCatalog73Patch = bytecodePatch(
     name = "Settings menu filter",
     description = "Adds an option to hide items on the standard YouTube settings screen by their visible name. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -1359,7 +1341,7 @@ val morpheCatalog74Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog75Patch = bytecodePatch(
+val morpheCatalog74Patch = bytecodePatch(
     name = "Shorts autoplay",
     description = "Adds options to automatically play the next Short. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -1377,7 +1359,7 @@ val morpheCatalog75Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog76Patch = bytecodePatch(
+val morpheCatalog75Patch = bytecodePatch(
     name = "Shorts icon style",
     description = "Adds an option to change the style of the Shorts action button icons. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -1395,7 +1377,7 @@ val morpheCatalog76Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog77Patch = bytecodePatch(
+val morpheCatalog76Patch = bytecodePatch(
     name = "Skip live Shorts",
     description = "Automatically skips live streams that appear in the Shorts feed. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -1413,7 +1395,7 @@ val morpheCatalog77Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog78Patch = bytecodePatch(
+val morpheCatalog77Patch = bytecodePatch(
     name = "Skip silence",
     description = "Adds an option to automatically skip silent pauses in audio playback. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -1431,7 +1413,7 @@ val morpheCatalog78Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog79Patch = bytecodePatch(
+val morpheCatalog78Patch = bytecodePatch(
     name = "Spoof app version",
     description = "Adds an option to trick the app into thinking you are running an older version. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -1449,7 +1431,7 @@ val morpheCatalog79Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog80Patch = bytecodePatch(
+val morpheCatalog79Patch = bytecodePatch(
     name = "Spoof device dimensions",
     description = "Adds an option to spoof the device dimensions which can unlock higher video qualities. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -1467,7 +1449,7 @@ val morpheCatalog80Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog81Patch = bytecodePatch(
+val morpheCatalog80Patch = bytecodePatch(
     name = "Swipe controls",
     description = "Adds options to enable and configure volume and brightness swipe controls. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -1485,7 +1467,7 @@ val morpheCatalog81Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog82Patch = bytecodePatch(
+val morpheCatalog81Patch = bytecodePatch(
     name = "Translate posts",
     description = "Adds a menu item to translate the text of posts. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -1503,7 +1485,7 @@ val morpheCatalog82Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog83Patch = bytecodePatch(
+val morpheCatalog82Patch = bytecodePatch(
     name = "Video delay",
     description = "Adds an option to delay the video, to keep it in sync with laggy Bluetooth audio. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -1521,7 +1503,7 @@ val morpheCatalog83Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog84Patch = bytecodePatch(
+val morpheCatalog83Patch = bytecodePatch(
     name = "Video quality options",
     description = "Adds options to set default video qualities and always use the advanced video quality menu. Configure in Afterglow settings → Additional features.",
     default = false,
@@ -1539,7 +1521,7 @@ val morpheCatalog84Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog85Patch = bytecodePatch(
+val morpheCatalog84Patch = bytecodePatch(
     name = "Voice over translation",
     description = "Adds additional voice over languages using text-to-speech synchronized to the video playback. Configure in Afterglow settings → Additional features.",
     default = true,
@@ -1557,7 +1539,7 @@ val morpheCatalog85Patch = bytecodePatch(
 }
 
 @Suppress("unused")
-val morpheCatalog86Patch = bytecodePatch(
+val morpheCatalog85Patch = bytecodePatch(
     name = "Wide search bar",
     description = "Adds a wide search bar to the top of the home and subscription feed. Configure in Afterglow settings → Additional features.",
     default = true,

@@ -22,12 +22,12 @@
     "top_level_properties": 108,
     "factory_exports": 1,
     "decisions": {
-      "expose": 87,
-      "afterglow_owned": 18,
+      "expose": 86,
+      "afterglow_owned": 19,
       "exclude_branding": 2,
       "delegate_existing": 2
     },
-    "new_wrappers_default_selected": 64,
+    "new_wrappers_default_selected": 63,
     "source": "PatchLoader.Jar enumeration of the official pinned MPP, filtered by exact YouTube package compatibility; source symbols verified against the pinned revision."
   },
   "integration": {
@@ -37,7 +37,7 @@
     "selection_defaults": "Default-selected and runtime-enabled are separate. Original runtime defaults and existing morphe_prefs values are preserved.",
     "shared_settings": "Retain the complete original settings resources, startup initialization and extension graph; expose imported UI through the Afterglow settings bridge.",
     "branding": "Exclude Custom branding and Change header exports and their unlicensed/logo source assets.",
-    "exclusive_service_ownership": "Afterglow remains the only exported SponsorBlock implementation. Original Hide ads can still enter through optional Channel whitelist; this dependency exception is explicit.",
+    "exclusive_service_ownership": "Afterglow owns SponsorBlock and Downloads and Vault. Morphe Downloads is not exported. Original Hide ads can still enter through optional Channel whitelist; this dependency exception is explicit.",
     "validation_status": "Catalog and source inventory only; compile, strict patch application and device behavior are separate integration gates."
   },
   "patches": [
@@ -858,14 +858,18 @@
       "source_relative_path": "patches/src/main/kotlin/app/morphe/patches/youtube/interaction/downloads/DownloadsPatch.kt",
       "source_sha256": "ec1c3b8163eacf42b9f083f157d0369ebdd72bcb51214db21c7c58c6dad7b04f",
       "export_name": "Downloads",
-      "default": true,
+      "default": false,
       "upstream_default": true,
-      "decision": "expose",
-      "afterglow_owners": [],
-      "rationale": "Provides working original upstream downloads while the separate Afterglow Downloads and Vault feature remains unfinished.",
-      "coexistence": [],
+      "decision": "afterglow_owned",
+      "afterglow_owners": [
+        "downloads"
+      ],
+      "rationale": "The user prefers Afterglow's download mechanism, sheets, durable queue and Vault. The Afterglow owner replaces the original download interface and offline storage.",
+      "coexistence": [
+        "The existing signed-stream compatibility transport may supply ephemeral media URLs; transfer, queue, files and presentation belong to Afterglow."
+      ],
       "dependency_constraints": [
-        "Retain original download package options, settings resources and runtime requirements; selecting this wrapper does not implement the separate Afterglow Vault."
+        "Do not apply the original Downloads patch alongside the Afterglow Downloads and Vault owner."
       ],
       "direct_named_dependencies": [],
       "runtime_defaults_policy": "Preserve the original pinned upstream runtime preferences; wrapper selection does not reset stored preferences."

@@ -98,8 +98,8 @@ internal val watchActionsHookPatch = bytecodePatch {
                     move-exception v0
                     monitor-exit p0
                     throw v0
-                    .catchall {:start .. :end} :error
                 """)
+                guardWatchActionsMonitor()
             })
         }
         bridgeMethod("afterglow_rememberActions", List(2) { "Ljava/lang/Object;" }, "V", 4, """

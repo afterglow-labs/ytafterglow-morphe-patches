@@ -604,11 +604,6 @@
       "keys": []
     },
     {
-      "id": "morphe-downloads",
-      "name": "Downloads",
-      "keys": []
-    },
-    {
       "id": "morphe-enable-debugging",
       "name": "Enable debugging",
       "keys": []
@@ -894,6 +889,8 @@
     "theme_seekBar": "SeekBarTheme and AfterglowActivity color/image picker; runtime QA pending",
     "theme_seekBarLive": "SeekBarTheme and AfterglowActivity color/image picker; runtime QA pending",
     "theme_seekBarScrubber": "SeekBarTheme and AfterglowActivity color/image picker; runtime QA pending",
-    "theme_glowColor": "GlowStyle, GlowLabScreen and AfterglowActivity color picker"
+    "theme_glowColor": "GlowStyle, GlowLabScreen and AfterglowActivity color picker",
+    "activeTabs": "NativeTabs verified native model composition and TabEditorScreen ordering; runtime validation pending",
+    "theme_seekBarScrubberLive": "Verified native player/response identity and final scrubber draw; runtime validation pending"
   }
 }

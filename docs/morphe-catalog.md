@@ -2,7 +2,7 @@
 
 The import retains the original Morphe YouTube implementations and settings. [The machine-readable catalog](../tools/morphe-catalog.json) maps every original YouTube export to an exposed wrapper, an existing Afterglow owner, a delegated compatibility wrapper, or an explicit branding exclusion. This is a source and selection inventory; it is not a claim that every imported feature has passed device testing.
 
-The official pinned bundle contains **109 named YouTube patches**, not 108: 108 map to top-level Kotlin properties and `Open system share sheet` is a zero-argument factory. There are 87 new feature wrappers, of which 64 are default-selected and 23 are optional. Eighteen original exports are covered by existing Afterglow owners, two are excluded branding patches, and two delegate through the existing compatibility wrappers. Retaining the existing 35 produces **122 named patches and 99 default selections**.
+The official pinned bundle contains **109 named YouTube patches**, not 108: 108 map to top-level Kotlin properties and `Open system share sheet` is a zero-argument factory. There are 86 imported feature wrappers, of which 63 are default-selected and 23 are optional. Nineteen original exports are covered by Afterglow owners, two are excluded branding patches, and two delegate through compatibility wrappers. Together with 41 Afterglow/compatibility wrappers, the bundle has **127 named patches and 104 default selections**. Downloads and Vault use Afterglow's own interface, queue and library; the original Morphe Downloads patch is not selected.
 
 ## Provenance and schema
 
@@ -32,7 +32,7 @@ Patch selection and runtime enablement are separate. A default-selected DeArrow 
 
 Partial overlaps remain available as optional features, including caption languages/bilingual controls, external fonts, miniplayer layouts, richer quality controls, seekbar DVR controls and additional layout filters. When two implementations can set the same playback or visibility policy, configure one policy at a time. A filter disabled in one settings group cannot restore a view still hidden by the other. Optional selection does not imply that all upstream runtime switches default off.
 
-Afterglow remains the only selected SponsorBlock **playback skip engine**. The original SponsorBlock export is excluded rather than silently installing another engine. Its submission/voting UI is therefore an explicit remaining capability. Original download support still uses a separate upstream SponsorBlock offline-cache helper, described below; exclusion of the named patch does not mean no upstream SponsorBlock code is packaged.
+Afterglow remains the only selected SponsorBlock **playback skip engine**. The original SponsorBlock export is excluded rather than silently installing another engine. Its submission/voting UI is therefore an explicit remaining capability. Shared upstream SponsorBlock configuration remains packaged, as described below; excluding the named patch does not remove every upstream SponsorBlock class.
 
 ## Dependency constraints
 
@@ -48,9 +48,9 @@ The original `morphe_hide_autoplay_button` default is true, including when insta
 
 Use the complete original settings resource and initialization graph. The earlier minimal compatibility resource subset is insufficient for upstream settings activities: `morphe_settings_fragments`, `morphe_toolbar_parent`, `morphe_settings_with_toolbar`, preference XML, icons, strings and arrays must resolve. Initialize the common extension context before settings/client classes and retain one shared → youtube → shared-youtube extension merge. Do not execute both the former adapted compatibility graph and the imported originals.
 
-The imported `Settings` initializer calls `YouTubeSponsorBlockConfig.install()` even without the original SponsorBlock patch. The original `InAppDownloadsPatch.replaceDeclinedOfflinePlayerResponse()` calls `SponsorBlockOfflineStorage.fetchAndSaveSegments()`. Both `morphe_sb_enabled` and `morphe_sb_offline_segments` default true, so downloads can fetch/cache upstream segments without a second playback skip hook. Preserve the shared SponsorBlock strings/resources and configuration needed by that path. If integration promises exclusive Afterglow network ownership, this path needs a separate explicit adaptation; suppressing the named patch alone does not provide that guarantee.
+The imported `Settings` initializer calls `YouTubeSponsorBlockConfig.install()` even without the original SponsorBlock patch, so its shared strings/resources and configuration remain. The upstream Downloads implementation contains an offline-segment cache path, but that original Downloads patch is not selected or transitively installed in this bundle. Afterglow owns the download sheet, resolver, transfer queue and Vault; it can reuse the compatible original stream-request helper without installing the original download UI or its hooks.
 
-Keep Afterglow experimental `LongPressTextTools` hooks excluded while the original `Copy text` feature is installed. Existing pause-button timestamp copying remains a separate hook. Imported Copy text handles video titles and comments, not video-description replacement.
+Keep Afterglow experimental `LongPressTextTools` hooks excluded while the original `Copy text` feature is installed. Existing pause-button timestamp copying remains a separate hook. Imported Copy text handles video titles and comments. The separate Afterglow Description-header action adds full description copying without replacing those interactions.
 
 ## Complete export mapping
 
@@ -72,7 +72,7 @@ Keep Afterglow experimental `LongPressTextTools` hooks excluded while the origin
 | Channel search | Channel search | On | — | Adds channel-specific search absent from Afterglow. |
 | Channel whitelist | Channel whitelist | Off | remove-ads, playback-speed | Adds per-channel exceptions, but its Hide ads dependency installs a second ad implementation; opt-in pending dependency coordination. |
 | Check watch history domain name resolution | Check watch history domain name resolution | On | — | Adds diagnostics for blocked history domains absent from Afterglow. |
-| Copy text | Copy text | On | long-press-tools | Imports the complete original text-copy feature; the experimental Afterglow text-copy dependency is excluded and its setting hidden. |
+| Copy text | Copy text | On | long-press-tools | Preserves original title/comment copying alongside separate Afterglow Description-header and image actions. |
 | Copy video link | Copy video link | On | long-press-tools | Adds explicit URL-copy player buttons alongside the existing pause-press timestamp gesture. |
 | Custom branding | Branding excluded | Excluded | — | Exclude launcher branding and associated logo assets; preserve the existing app identity. |
 | Custom font | Custom font | Off | typography | Adds external font-file support beyond Afterglow font presets; optional because both can assign typefaces. |
@@ -95,7 +95,7 @@ Keep Afterglow experimental `LongPressTextTools` hooks excluded while the origin
 | Disable video codecs | Disable video codecs | On | — | Adds codec exclusions absent from Afterglow. |
 | Double tap to seek | Double tap to seek | On | player-gestures | Adds selectable seek intervals while Afterglow controls whether the gesture is enabled. |
 | Download post images | Download post images | On | long-press-tools | Adds original post-image download actions; Afterglow profile/thumbnail viewing does not provide this feature. |
-| Downloads | Downloads | On | — | Provides working original upstream downloads while the separate Afterglow Downloads and Vault feature remains unfinished. |
+| Downloads | Afterglow-owned | Owned | downloads | Afterglow provides its own six-action download sheet, durable queue and Vault library. |
 | Enable debugging | Enable debugging | On | — | Provides upstream diagnostics needed for imported features; existing Afterglow logging covers a different runtime. |
 | Exit fullscreen mode | Afterglow-owned | Owned | fullscreen | Afterglow already controls leaving fullscreen at playback completion. |
 | Feed card layout | Feed card layout | On | — | Adds feed-card presentation choices absent from Afterglow. |
@@ -175,8 +175,8 @@ These are source-derived test steps for the emulator owner. They do not record a
 | Feature | Original category and labels | Defaults and meaningful observation |
 | --- | --- | --- |
 | Return YouTube Dislike | `Return YouTube Dislike` → `Enable Return YouTube Dislike`, `Show dislikes as percentage`, `Show estimated likes` | Enabled=true; percentage=false; estimated likes=true. Cold-open a normal video and confirm the dislike count appears without pressing Like or Dislike. Toggle percentage and verify the displayed format. Disable, restart, reopen and verify the injected count is removed. |
-| Copy text | `General` → `Copy video title`, `Copy comments` | Both true. Hold the current visible watch-page title; expected snackbar `Video title copied to clipboard`. Paste and compare the actual clipboard to the current full title. Hold a comment; expected `Comment copied to clipboard`; compare against that comment. Preserve normal taps and any native selection toolbar. |
-| Downloads | `Player` → `Downloads` → `Download mode` | Default `Download in-app`; other choices are `Default` and `External downloader`. The overlay button defaults off. Use the native Download action or feed `Download video` item. A quality dialog proves entry only; completion plus later playback of the saved item proves a download. |
+| Copy text | Copy text | On | long-press-tools | Preserves original title/comment copying alongside separate Afterglow Description-header and image actions. |
+| Downloads | Afterglow-owned | Owned | downloads | Afterglow provides its own six-action download sheet, durable queue and Vault library. |
 | External downloads | `Player` → `Downloads` → `Downloader package name` | Default package `com.deniscerri.ytdl` (YTDLnis). With no handler installed, the expected dialog is `App not installed`, not a completed download. Do not install or open another app just to turn a missing-handler result into success. |
 | Download post images | `Feed` → `Download post images` | True. On an actual image/GIF post, expect a button beside Share and a menu item `Download image` or `Download images`. Verify the saved file and success message; a text-only post is not a valid fixture. |
 | DeArrow | `DeArrow` → title scopes `Home tab`, `Subscriptions tab`, `You tab`, `Player playlists & recommendations`, `Search results`; `Casual mode` | All five title scopes false; all five thumbnail scopes `Original thumbnails`; casual mode false. Enable an applicable title scope and restart. Compare original and replacement text. A title result does not prove thumbnail replacement. |

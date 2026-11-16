@@ -19,11 +19,12 @@ import app.morphe.patcher.patch.bytecodePatch
 @Suppress("unused")
 val tabBarTweakPatch = bytecodePatch(
     name = "Tab bar",
-    description = "Lets you remove tab labels and new content dots, and makes the tab bar opaque instead of frosted.",
+    description = "Customizes native tabs, the bonus row, centered anchors, labels, indicators and tab bar appearance in Afterglow settings.",
     default = true,
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
-    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch, afterglowLithoFilterPatch, tabBarHooksPatch)
+    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch, afterglowLithoFilterPatch, tabBarHooksPatch,
+        app.afterglow.patches.tweaks.navigation.nativeTabsHookPatch)
     execute { markTweakInstalled("tab-bar") }
 }
 

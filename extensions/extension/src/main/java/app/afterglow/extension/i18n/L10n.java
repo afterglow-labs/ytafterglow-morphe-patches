@@ -17,6 +17,9 @@ public final class L10n {
     private L10n() {}
 
     public static String get(String key, String fallback) {
+        if ("LiteModeDesc".equals(key)) return "Uses Home, Subscriptions, You and Afterglow with fewer distractions. Your saved preferences return when Lite Mode is off.";
+        if ("OldYTUI".equals(key)) return "Older Android interface";
+        if ("OldYTUIDesc".equals(key)) return "Uses Morphe's supported older Android interface version.";
         if (key == null || key.isEmpty()) return displayText(fallback == null ? "" : fallback);
         ensureLoaded();
         String value = current.get(key);

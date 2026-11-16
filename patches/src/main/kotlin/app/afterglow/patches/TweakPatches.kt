@@ -21,6 +21,53 @@ import app.morphe.patcher.patch.PatchAvailability
  */
 
 @Suppress("unused")
+val controlCenterTweakPatch = bytecodePatch(
+    name = "Afterglow Control Center",
+    description = "Adds the Afterglow hub with Vault, player state, quick controls, themes and recovery tools.",
+    default = true,
+) {
+    compatibleWith(COMPATIBILITY_YOUTUBE)
+    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch)
+    execute { markTweakInstalled("control-center") }
+}
+
+@Suppress("unused")
+val experimentLabTweakPatch = bytecodePatch(
+    name = "AB Lab",
+    description = "Adds Afterglow's native experiment browser, typed overrides, profiles and recovery tools.",
+    default = true,
+) {
+    compatibleWith(COMPATIBILITY_YOUTUBE)
+    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch,
+        app.afterglow.patches.experiments.experimentLabHookPatch)
+    execute { markTweakInstalled("ab-lab") }
+}
+
+@Suppress("unused")
+val aiHomeTweakPatch = bytecodePatch(
+    name = "AI Home",
+    description = "Adds the Afterglow AI Home prompt library, favorites and history with YouTube feed navigation.",
+    default = true,
+) {
+    compatibleWith(COMPATIBILITY_YOUTUBE)
+    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch,
+        app.afterglow.patches.navigation.aiHomeHookPatch)
+    execute { markTweakInstalled("ai-home") }
+}
+
+@Suppress("unused")
+val downloadsVaultTweakPatch = bytecodePatch(
+    name = "Downloads and Vault",
+    description = "Adds the Afterglow download sheets, resumable queue and Vault for videos, audio, captions and thumbnails. Configure in Afterglow settings.",
+    default = true,
+) {
+    compatibleWith(COMPATIBILITY_YOUTUBE)
+    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch,
+        app.afterglow.patches.downloads.afterglowDownloadsHookPatch)
+    execute { markTweakInstalled("downloads") }
+}
+
+@Suppress("unused")
 val gmsCoreSupportTweakPatch = bytecodePatch(
     name = "GmsCore support",
     description = "Runs Afterglow alongside the original YouTube app and supports signing in through compatible GmsCore.",
@@ -62,7 +109,8 @@ val shortsLayoutTweakPatch = bytecodePatch(
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
     dependsOn(afterglowExtensionPatch, afterglowSettingsPatch, afterglowLithoFilterPatch,
-        app.afterglow.patches.tweaks.navigation.shortsButtonsHookPatch)
+        app.afterglow.patches.tweaks.navigation.shortsButtonsHookPatch,
+        app.afterglow.patches.interfaceui.shortsSubscriptionsHookPatch)
     execute { markTweakInstalled("shorts-layout") }
 }
 
@@ -116,12 +164,16 @@ val miniPlayerTweakPatch = bytecodePatch(
 @Suppress("unused")
 val longPressToolsTweakPatch = bytecodePatch(
     name = "Long-press tools",
-    description = "Copies timestamped video links when you tap Pause, as selected in Afterglow settings.",
+    description = "Adds Description-header copying, comment and post actions, profile photo saving and copying, and timestamped links when you tap Pause, as selected in Afterglow settings.",
     default = true,
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
     dependsOn(afterglowExtensionPatch, afterglowSettingsPatch,
-        app.afterglow.patches.menus.longPressToolsHookPatch)
+        app.afterglow.patches.menus.longPressToolsHookPatch,
+        app.afterglow.patches.menus.descriptionHeaderHookPatch,
+        app.afterglow.patches.menus.longPressMountedTextHookPatch,
+        app.afterglow.patches.menus.avatarPhotoHookPatch,
+        app.afterglow.patches.menus.longPressPostImageHookPatch)
     execute { markTweakInstalled("long-press-tools") }
 }
 
@@ -152,11 +204,12 @@ val fixAlbumsTweakPatch = bytecodePatch(
 @Suppress("unused")
 val commentsHeaderTweakPatch = bytecodePatch(
     name = "Comments header",
-    description = "Lets you hide the sort chips at the top of the comments.",
+    description = "Lets you keep the native comment sort chips pinned while scrolling, hide them, or use YouTube's automatic behavior.",
     default = true,
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
-    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch, afterglowLithoFilterPatch)
+    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch, afterglowLithoFilterPatch,
+        app.afterglow.patches.interfaceui.commentsHeaderHookPatch)
     execute { markTweakInstalled("comments-header") }
 }
 
@@ -194,4 +247,35 @@ val feedMenusTweakPatch = bytecodePatch(
     compatibleWith(COMPATIBILITY_YOUTUBE)
     dependsOn(afterglowExtensionPatch, afterglowSettingsPatch, menuRowsHookPatch)
     execute { markTweakInstalled("feed-menus") }
+}
+
+@Suppress("unused")
+val liteModeTweakPatch = bytecodePatch(
+    name = "Lite Mode",
+    description = "Adds Afterglow's simplified Home, Subscriptions, You and Afterglow tabs with reduced distractions, while preserving your saved preferences.",
+    default = true,
+) {
+    compatibleWith(COMPATIBILITY_YOUTUBE)
+    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch, controlCenterTweakPatch,
+        app.afterglow.patches.tweaks.tabBarTweakPatch,
+        app.afterglow.patches.tweaks.startupTweakPatch,
+        app.afterglow.patches.tweaks.privacyTweakPatch,
+        app.afterglow.patches.tweaks.playerOverlayTweakPatch,
+        app.afterglow.patches.tweaks.ambientModeTweakPatch,
+        removeAdsTweakPatch, navigationBarTweakPatch, feedMenusTweakPatch,
+        shortsTweakPatch, shortsLayoutTweakPatch, playerButtonsMenusTweakPatch, watchPageTweakPatch)
+    execute { markTweakInstalled("lite-mode") }
+}
+
+@Suppress("unused")
+val interfaceLayoutTweakPatch = bytecodePatch(
+    name = "Interface layout",
+    description = "Adds left-to-right paragraph formatting and a supported older Android interface through Morphe's version compatibility settings.",
+    default = true,
+) {
+    compatibleWith(COMPATIBILITY_YOUTUBE)
+    dependsOn(afterglowExtensionPatch, afterglowSettingsPatch,
+        app.afterglow.patches.interfaceui.textDirectionHookPatch,
+        app.afterglow.patches.interfaceui.legacyInterfaceHookPatch)
+    execute { markTweakInstalled("interface-layout") }
 }

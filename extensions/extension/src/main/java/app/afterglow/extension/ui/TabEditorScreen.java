@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Locale;
 
 import app.afterglow.extension.i18n.L10n;
+import app.afterglow.extension.navigation.NativeTabs;
 import app.afterglow.extension.settings.TabStore;
 
 /**
@@ -86,10 +87,11 @@ final class TabEditorScreen extends SettingsScreen {
         // hidden tabs are appended in ytag_allTabIds order, which is also the initial order.
         active.clear();
         active.addAll(TabStore.currentActiveTabs());
+        List<String> supported = NativeTabs.supportedTabs();
         List<String> order = new ArrayList<>(loaded ? hidden : new ArrayList<String>());
         hidden.clear();
-        for (String tab : order) if (!active.contains(tab) && !hidden.contains(tab)) hidden.add(tab);
-        for (String tab : SettingsSpec.TAB_IDS) if (!active.contains(tab) && !hidden.contains(tab)) hidden.add(tab);
+        for (String tab : order) if (supported.contains(tab) && !active.contains(tab) && !hidden.contains(tab)) hidden.add(tab);
+        for (String tab : SettingsSpec.TAB_IDS) if (supported.contains(tab) && !active.contains(tab) && !hidden.contains(tab)) hidden.add(tab);
         loaded = true;
 
         RowViews views = host.views();
@@ -130,7 +132,10 @@ final class TabEditorScreen extends SettingsScreen {
         LinearLayout texts = new LinearLayout(views.context);
         texts.setOrientation(LinearLayout.VERTICAL);
         texts.addView(views.text(SettingsBehavior.tabName(tab), 16, views.palette.groupedLabel, false));
-        TextView subtitle = views.text((shown ? SettingsSpec.TAB_SHOWN_SUBTITLE : SettingsSpec.TAB_HIDDEN_SUBTITLE).get(),
+        String detail = shown && !NativeTabs.supportedTabs().contains(tab)
+                ? "Unavailable in this YouTube session. Your choice is saved."
+                : (shown ? SettingsSpec.TAB_SHOWN_SUBTITLE : SettingsSpec.TAB_HIDDEN_SUBTITLE).get();
+        TextView subtitle = views.text(detail,
                 13, views.palette.groupedSecondaryLabel, false);
         subtitle.setPadding(0, views.dp(2), 0, 0);
         texts.addView(subtitle);

@@ -67,9 +67,13 @@ internal val playlistMinibarHookPatch = bytecodePatch {
                     call?.definingClass == "Landroid/view/ViewStub;" && call.name == "setLayoutResource"
                 }) { "Original playlist controls must inflate the existing bar without substituting the floating layout" }
 
-        val matches = Fingerprint(filters = listOf(literal(FLOATING_PLAYLIST_MINIBAR))).matchAll()
+        // AB Lab describes this native flag using the same numeric id. Its extension
+        // metadata is not a native config read and must not enter the owner audit.
+        val matches = Fingerprint(filters = listOf(literal(FLOATING_PLAYLIST_MINIBAR)),
+            custom = { _, cls -> !cls.type.startsWith(EXTENSION_PACKAGE) }).matchAll()
         require(matches.size == 13 && matches.map { it.method.definingClass }.distinct().size == 7) {
-            "Expected all 13 playlist minibar methods across seven native owners"
+            "Expected all 13 playlist minibar methods across seven native owners; found " +
+                    matches.joinToString { it.method.smali }
         }
         var loadCount = 0
         val sites = matches.map { match ->

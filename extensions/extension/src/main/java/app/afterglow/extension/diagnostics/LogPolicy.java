@@ -14,9 +14,9 @@ public final class LogPolicy {
 
     public static String categoryKey(String category) {
         String c = category == null ? "" : category;
-        if (starts(c, "dl-", "downloader", "extractor", "selector", "ffmpeg", "action-sheet")) return "debugLogDownloads";
+        if (starts(c, "dl-", "download", "extractor", "selector", "ffmpeg", "action-sheet")) return "debugLogDownloads";
         if (starts(c, "overlay", "shorts-ui", "vc-resolve", "fullscreen")) return "debugLogPlayerUI";
-        if (c.startsWith("premium-ctrl")) return "debugLogPremiumControls";
+        if (starts(c, "premium-ctrl", "premium-controls")) return "debugLogPremiumControls";
         if (c.startsWith("pip")) return "debugLogPiP";
         if (starts(c, "offline-", "ctor")) return "debugLogProbes";
         return null;

@@ -1,12 +1,19 @@
 # Long-press tools
 
 Owner: `long-press-tools` / **Long-press tools**, from `tools/tweaks.json`.
-All five iOS preferences default to `false`. This release implements
-`copyWithTimestamp`. The experimental Morphe title/description adaptation for
-`copyVideoInfo` failed its build109 runtime checks and is excluded from the
-release patch graph. Its source and regression tests remain for follow-up work.
-`copyVideoInfo`, `postManager`, `commentManager` and `saveProfilePhoto` remain
-pending and must stay hidden in Android settings. Full iOS parity is incomplete.
+All five iOS preferences default to `false`. The timestamp action is implemented
+and has recorded emulator proof. Original Morphe **Copy text** is now imported
+separately; its title-copy action passed the build118 clipboard check. It also
+owns native comment text copying. The failed build109 experiment below is a
+different, excluded adaptation and does not describe the imported original.
+
+The comment and post action sheets have build132 emulator proof for exact text
+copying, full-image saving and cross-app PNG copying. A second comment copies its
+full body despite a collapsed native preview, and the post's current-image action
+follows the carousel selection. Broader interaction coverage remains pending.
+Description-header and avatar actions have separate implementations and
+validation. The [parity audit](morphe-parity-audit.md) separates Android
+implementation coverage from the remaining runtime matrix.
 
 ## Timestamped links
 
@@ -40,9 +47,117 @@ the native click handler.
 Integration: the named tweak depends on
 `app.afterglow.patches.menus.longPressToolsHookPatch`, which depends on
 `videoStatePatch` only. The named tweak must mark `long-press-tools` installed.
-`copyWithTimestamp` is the only shipped key in this group. The experimental
+`copyWithTimestamp` is the validated key in this group. The experimental
 `longPressTextHookPatch` must not be registered as a dependency until its native
 interaction works and passes runtime validation.
+
+## Comment capture sheet
+
+`longPressCaptureHookPatch` adds the unique iOS comment sheet: hold the comment
+for 300 ms, then choose **Copy comment text**, **Save comment as image**, or
+**Copy comment as image**. It checks the installed `long-press-tools` owner and
+live `commentManager` value, whose default remains OFF. Existing native and
+original Morphe click/long-click listeners are never reassigned. Short taps,
+scrolls, ambiguous roots and disabled preferences retain native dispatch. An
+exact, enabled avatar binding takes priority over a comment/post capture hold.
+
+One stock 21.43.523 renderer supplies an explicit root lifecycle: `Lwuv.b(View)` constructs a
+new `WeakReference` in `Lwuv.A`; `Lwuw.b` retains that exact token, and `Lwuw.a()`
+returns its native view. A real `Larar` factory passes the created `Lhit` root to
+this setter, and `Lhit` extends `ComponentHost`. Build128 proves that this root
+is optional in the active Comments renderer. The mounted-text bridge described
+under Validation instead uses the exact source component and native bind
+generation; the root-token route remains available where the native root exists.
+The original Morphe semantic text hooks
+supply legacy and cached modern text. The first `Lvuq.k` result in `Lvuz.L`
+supplies fresh modern body text, before the separate auxiliary text branch.
+The observer returns the original text unchanged; it never forces a renderer
+flag or replaces the native text and spans.
+
+Capture requires one observed comment body in the root and exactly one current
+mounted text occurrence. Build124 logs confirm that different comments share
+the same template hash; it is never treated as a per-comment ID. Multiple body
+values in one binding, repeated mounted bodies, mixed surfaces, stale bindings,
+recycled text, and unmarked shared-prefix matches are rejected. Ordinary
+author/date/like-count metadata within the comment tree remains valid. Explicit ellipsis
+recovery requires a sufficiently long prefix and a separated optional label.
+The delayed hold rechecks the exact binding, entry object, text, attachment,
+focus and screen position. A successful sheet cancels the native child gesture
+before its ordinary long-click timeout. The image is drawn from this exact root
+against its native background, with bounded dimensions and pixel count.
+When native hardware-backed images reject a software canvas, Android 29+ uses
+an owned `RenderNode` and `HardwareRenderer` to render the complete mounted root
+into an `ImageReader`. Readback produces an independent ARGB_8888 bitmap before
+the hardware image/buffer are released. This supports a tall mounted item whose
+full bounds extend beyond the visible viewport, without changing native layout,
+scroll position, layers or mount policies. It cannot reconstruct unmounted
+content and rejects external `SurfaceView`, `TextureView` and `WebView` trees.
+
+If offscreen rendering is unavailable, `PixelCopy` may copy only the complete,
+fully visible root from its exact activity window. The fallback checks the
+window/decor/token and unchanged bounds, native bind generation and mounted
+text before accepting the asynchronous result. New touches, cancellation,
+movement, recycling, live OFF or loss of focus invalidate it. A canceled
+destination is recycled after PixelCopy finishes writing. Partially visible
+roots never become falsely labeled full-item window crops.
+
+Both paths enforce 8192 pixels per side and an 8-megapixel total. Hardware
+render/readback is synchronous and has no cancellable platform deadline;
+sanitized elapsed-time diagnostics support runtime latency review. Only newly
+owned rendering resources are destroyed. If no safe image is available, verified
+text and independently proven current-image actions remain usable, while the
+whole-item image rows are disabled with an explicit explanation.
+
+`LongPressImageProvider` performs PNG encoding off the main thread. Copying uses
+a read-only, nonexported provider with temporary URI grants; saving publishes a
+completed image to `Pictures/Afterglow` through MediaStore on Android 10+.
+Failed writes remove partial output and report failure. The provider rejects
+foreign authorities, path traversal, symlink escape, write modes and mutation.
+It does not expose general filesystem paths. The same provider is available to
+the separately implemented avatar actions.
+
+The root integration dependency for both comment and post sheets is
+`longPressMountedTextHookPatch` in the existing Long-press-tools wrapper; it depends
+on `longPressPostHookPatch`, then `longPressCaptureHookPatch`. The latter depends on the root-owned
+`longPressCaptureResourcesPatch`, which registers the provider. Build132 verifies
+both distinct comment bodies, the sheet and both PNG actions for the pinned
+comment, as recorded below. Remaining runtime checks include recycling, toggle
+OFF, scrolling, expanded replies and a tapped avatar as separate surfaces.
+Physical devices remain untested.
+
+## Post capture sheet
+
+`postManager`, default OFF, enables a 300 ms hold on one exact native post root.
+Its sheet provides **Copy post text**, **Save post as image**, and **Copy post as
+image**. **Copy current image** appears only when the separately installed and
+enabled original Morphe post-image implementation proves exactly one selected,
+shown image. That action revalidates the original post key, root and selected
+URL on use. Original image/GIF saving remains available through its original
+controls; the new sheet does not activate that optional feature implicitly.
+
+Build124's real Posts feed supplies `images_post_root_slim.eml-fe` roots and
+`post_text.eml-fe → ContainerType → ExpandableTextType` body paths. The policy
+also accepts the native text/options/poll/videos post root variants, but those
+variants still need their own runtime checkpoint. Exact ownership requires one
+body per root binding and one matching mounted occurrence, as for comments.
+
+Native `Lvnn.aD` creates the body and its measurement variant through
+`Lutn.u(Lwds, boolean) → Lwhb`; its Read-more label uses a separate direct model
+builder. The patch marks only the former model identities, then checks the
+exact `Lvuw.z` or `Lvuz.A` model and that component's `Lwuw` context at the text
+observer. Equal but distinct model objects cannot reuse this marker. No
+dependency on the optional **Translate posts** patch is added, and its selected
+default or translation controls remain untouched.
+
+Post observers are installed during finalization, after all original text-hook
+clients have finished using their positional insertion counters. They borrow
+and restore the same context register from preserved native `p0`; no register
+count changes or unrelated native instructions are introduced. The additional
+fresh-text observer lies after the original cached insertion point, preserving
+that shared counter. Source checks cover default and all-feature native APK
+methods. Build132 verifies post text, rendered PNGs, the selected-image action
+and the preserved native image viewer on an image-carousel post, as recorded
+below. Other post variants still need device verification.
 
 ## Unshipped title and description experiment
 
@@ -163,12 +278,107 @@ The iOS remaining actions provide the behavior contract for the next mapping:
 - Comment: long press 0.3 seconds, **Copy comment text**, **Save comment as
   image**, and **Copy comment as image**.
 
-Their native Android model-to-mounted-view identity still needs verification.
-No accessibility-text scraping or unsupported action button is introduced by
-this release. The experimental text observer and touch hooks are excluded from
-the release patch graph.
+The comment/post root mapping above is now verified against stock DEX; its live
+interaction still needs validation. Avatar ownership is implemented separately.
+No accessibility-text scraping is used. The old experimental
+title/description observer and touch hooks remain excluded from the patch graph.
 
 ## Validation
+
+`python3 tools/check_long_press_capture.py` runs 32 ownership-policy checks and
+86 checks against the production gesture code with observable native-facing
+objects. Separate focused stock/patched-DEX tests pass 43 root/token/register,
+body-model and default/all-feature text-hook composition checks;
+the production image provider passes 18 access-control checks. These establish
+source boundaries, not Android gesture or rendered-image proof.
+
+Build127 did not open the comment sheet when holding the fully visible first
+comment body. The earlier `mounted texts=0` records came from the tap before
+the Comments panel loaded, so they do not establish the held body's failure
+boundary. Its accessibility node became long-clickable after the hold, while
+Afterglow did not arm; a child drawing host versus registered element-root
+mismatch was not established by those logs. The following diagnostic candidate logged
+sampled native root classes and observer token/state checks, plus direct and
+ancestor registration, mounted-text counts and readiness on touch. These logs
+are limited to 12 host records per physical touch and 160 diagnostic records
+per process and contain no comment text, semantic paths, buffers or URLs.
+Build128 established the failure: the active renderer supplies no root in
+`Lwuw.b` for the observed comment bodies, and none of the held hosts has a
+registered ancestor. The optional context-root path therefore does not cover
+that screen.
+
+The mounted implementation uses the actual native text bind lifecycle instead.
+Each final text observer records an immutable snapshot on the exact source
+component. A legacy `Lvuw` links its returned `Lhsl` text model to that source;
+the native shallow clone preserves this field. Modern `Lvuz` is already the
+source model. Successful `Lhiy.w` binds supply the actual host, native item,
+model and content, while `Lhiy.r` invalidates the old model before unbinding.
+This includes native same-item updates. All retained native objects are weakly
+referenced by the extension registry.
+
+Capture requires exactly one current body mount, a compatible semantic surface
+and one matching currently mounted text. It rechecks the same bind generation
+after the hold delay. A new bind invalidates the old item across hosts; a late
+old-model unbind cannot invalidate a newer model. Nested dispatch retains the
+outermost proven single-entity host for capture. Native text, spans and listeners
+are unchanged. The Description adapter shares this native bind provenance.
+Twenty-nine production lifecycle checks cover the rootless-context failure and
+recycling boundaries; 40 native checks validate register, clone and default/all
+composition against build128 default and build127 all. Build132 provides the
+live comment and post capture proof below.
+
+Build131 armed the real comment hold on its native bound item. Its following
+failure was confirmed as `hik > IllegalArgumentException` during software draw,
+with the fixed Android hardware-bitmap incompatibility signal. The hardware
+capture correction has 62 asynchronous window/gesture checks and 25 offscreen
+render/readback/resource-lifetime checks, including full tall-root output and
+same-text rebind rejection. These run production Java against observable
+platform boundaries. The API route is documented by
+[Android HardwareRenderer](https://developer.android.com/reference/android/graphics/HardwareRenderer)
+and [PixelCopy](https://developer.android.com/reference/android/view/PixelCopy).
+
+Build132 emulator QA confirmed the owned comment sheet (`004`), exact copying of
+the 81-character comment into a separate app (`006`), and a full hardware capture
+in 20 ms. Visual inspection of `comment-saved.png` confirmed the selected pinned
+comment's avatar, author, body, controls and reply count. The PNG is 1080 × 503,
+62,052 bytes, with SHA-256
+`b1f4ebf840285246c00b8fd9fc410c7714f616e58d14feafbf1316110a2d68ad`.
+The receiving-app check (`013`) obtained `image/png` through a temporary read
+grant and read identical bytes. Evidence is under
+`afterglow-vault-20261116/bundle-132-qa/native-runtime/`.
+An immediate hold during the transition back from the receiving app was ignored;
+the settled repeated hold worked. No production change was made for that
+transition.
+
+The second-comment check (`016`) copied the correct, different 754-character body,
+starting “Several weeks ago I commented”, despite the collapsed native preview.
+This verifies full observed body text rather than a copy of the visible preview.
+
+The post sheet opened in `023`, and `025` copied the exact Unicode post body.
+Visual inspection of `post-saved.png` confirmed the whole selected post's author,
+body, carousel and controls. The PNG is 1080 × 1428, 1,001,592 bytes, with SHA-256
+`a1c260b4925383ac1dcc4e3cad07ed3ad49211cada2e76471c768f67483b3788`.
+The cross-app PNG check (`030`) read identical bytes. **Copy current image**
+produced the selected 960 × 1008 image in `033`; swiping the carousel then copying
+again produced the different selected image in `037`. The image hashes and
+original Morphe resolver validation are recorded in [Avatar and post-image
+actions](avatar-photos.md). A tap outside the body-manager action still opened
+the native image viewer, and its **Close** control worked (`042`).
+
+A second, tall post opened its sheet in `044`, with a 22 ms hardware capture.
+The cross-app result (`046`) was 1080 × 1618, 771,304 bytes, with SHA-256
+`800377d4a7fb6e07f5968477783dfe40eb344f72cb476b88bb9d86d7767da2d7`.
+Visual inspection confirmed the author, body and full image extending below the
+734-pixel visible viewport. The native footer controls were unmounted, however,
+and their bottom area was blank in the PNG. This verifies capture of the complete
+mounted content beyond the viewport; it does not reconstruct unseen, unmounted
+parts of a native row. The fully visible first post includes all controls.
+Physical-device behavior and the lifecycle cases listed above remain unverified.
+
+Build132 passed strict application and APK assembly for all four integration
+selections: default, all patches, the isolated eight-patch selection, and
+Long-press tools with GmsCore support and Spoof video streams. These integration
+results are separate from the runtime cases above.
 
 `python3 tools/check_long_press_tools.py` runs the production URL policy and
 clipboard hook against an observable clipboard and native readiness command.
@@ -184,20 +394,19 @@ Build109 passed full 35-patch and independent six-patch strict application and
 APK assembly. The Android 16 emulator recorded normal decoded playback advancing
 and a native Pause at 9 seconds; pasting returned exactly
 `https://www.youtube.com/watch?v=rfscVS0vtbw&t=9s`. Evidence is in
-`bundle-109-qa/core-followup` and `bundle-109-qa/timestamp`. The next release
-candidate must repeat integration checks after excluding the text hooks.
+`bundle-109-qa/core-followup` and `bundle-109-qa/timestamp`. Build132 repeated the
+strict integration checks with the experimental text hooks excluded.
 
 Further timestamp QA still needs to verify:
 
-1. Full and independent Long-press-tools selections pass strict patch matching.
-2. In normal portrait and fullscreen watch playback, Pause copies the current
+1. In normal portrait and fullscreen watch playback, Pause copies the current
    video ID and integer time; Play and Replay leave a sentinel clipboard intact.
-3. Pause-on-overlay, app backgrounding and other automatic pause paths preserve
+2. Pause-on-overlay, app backgrounding and other automatic pause paths preserve
    the sentinel clipboard.
-4. Default OFF, live OFF, cold persistence, page reset and full reset work.
-5. A second video copies its own ID/time; unavailable playback and an ad do not
+3. Default OFF, live OFF, cold persistence, page reset and full reset work.
+4. A second video copies its own ID/time; unavailable playback and an ad do not
    copy a previous content ID. Shorts keep their native interaction.
-6. Native pause/play still controls decoded playback. Physical devices and
+5. Native pause/play still controls decoded playback. Physical devices and
    casting remain unverified until separately tested.
 The unshipped text experiment additionally requires:
 

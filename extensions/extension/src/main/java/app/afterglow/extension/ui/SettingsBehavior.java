@@ -95,7 +95,13 @@ final class SettingsBehavior {
     }
 
     static String text(SettingsModel.Text text) {
-        return text == null ? null : text.get();
+        if (text == null) return null;
+        String value = text.get();
+        return value == null ? null : value.replace("Save to Photos", "Save to media library")
+                .replace("save to Photos", "save to your media library")
+                .replace("videos save to Photos", "videos save to your media library")
+                .replace("save-to-Photos", "media export").replace("FFmpeg", "media assembly")
+                .replace("a Afterglow preferences file", "an Afterglow preferences file");
     }
 
     // ---------------------------------------------------------------- visibility and switches
@@ -134,9 +140,11 @@ final class SettingsBehavior {
     static String switchDescription(Row row) {
         String base = text(row.description);
         if ("copyVideoInfo".equals(row.key)) {
-            base = "Long press the video title to copy it, or description text to select and copy it.";
+            base = "Adds Copy title and Copy description to the Description header.";
         } else if ("nativeShare".equals(row.key) && base != null) {
             base = base.replace("iOS", "Android");
+        } else if ("nativeDownloadRouting".equals(row.key)) {
+            base = "Opens the Afterglow download sheet from YouTube's Download button and download menu actions.";
         }
         if (row.plainDescription) return base;
         List<String> parts = new ArrayList<>();

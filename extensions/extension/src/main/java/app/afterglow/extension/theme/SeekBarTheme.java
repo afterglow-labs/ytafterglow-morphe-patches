@@ -71,12 +71,32 @@ public final class SeekBarTheme {
     }
     private static int role(int original, ThemeRole role) {
         if (!InstalledTweaks.has("seek-bar")) return original;
-        Integer color = ThemeStore.snapshot().palette.color(role);
-        return color == null ? AfterglowPrefs.getBool("redProgressBar") ? 0xFFFF0000 : original : color;
+        try {
+            return SeekBarColorPolicy.resolve(original, ThemeStore.snapshot().palette, role, true,
+                    role != ThemeRole.SEEK_BUFFERED && AfterglowPrefs.getBool("redProgressBar"));
+        } catch (Throwable error) { Afterglow.error("SeekBarTheme.color", error); return original; }
     }
     public static int played(int original) { return role(original, ThemeRole.SEEK_PLAYED); }
+    public static int buffered(int original) { return role(original, ThemeRole.SEEK_BUFFERED); }
     public static int live(int original) { return role(original, ThemeRole.SEEK_LIVE); }
-    public static int scrubber(int original) { return role(original, ThemeRole.SEEK_SCRUBBER); }
+    public static int scrubber(int original) {
+        if (!InstalledTweaks.has("seek-bar")) return original;
+        return role(original, SeekBarColorPolicy.scrubberRole(isCurrentVideoLive()));
+    }
+
+    // Bound to the pinned, original VideoInformation methods by SeekBarThemePatch. The
+    // original hook owns response extraction; no renderer style bit is treated as "live".
+    private static String nativeCurrentVideoId() { return ""; }
+    private static String nativeResponseVideoId() { return ""; }
+    private static boolean nativeResponseIsLive() { return false; }
+    private static boolean isCurrentVideoLive() {
+        try {
+            String current = nativeCurrentVideoId(), response = nativeResponseVideoId();
+            return SeekBarColorPolicy.liveForVideo(current, response, nativeResponseIsLive())
+                    // Background prefetch or a player transition must not color another video's thumb.
+                    && current.equals(nativeCurrentVideoId()) && response.equals(nativeResponseVideoId());
+        } catch (Throwable error) { Afterglow.error("SeekBarTheme.liveVideo", error); return false; }
+    }
     public static LinearGradient gradient(LinearGradient original) {
         if (!InstalledTweaks.has("seek-bar")) return original;
         try {

@@ -20,11 +20,12 @@ import app.morphe.patcher.patch.bytecodePatch
 @Suppress("unused")
 val overlayButtonsTweakPatch = bytecodePatch(
     name = "Overlay buttons",
-    description = "Adds mute, lock and settings controls, plus shared eye modes for the player and Shorts overlays.",
+    description = "Adds Afterglow's player controls sheet, download entry, mute, lock, settings and shared eye modes for player overlays.",
     default = true,
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
-    dependsOn(afterglowSettingsPatch, overlayButtonsHookPatch)
+    dependsOn(afterglowSettingsPatch, overlayButtonsHookPatch,
+        app.afterglow.patches.playback.premiumControlsHookPatch)
     execute { markTweakInstalled("overlay-buttons") }
 }
 

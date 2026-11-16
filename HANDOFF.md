@@ -1,14 +1,24 @@
 # Handoff
 
-> Updated: 2026-11-16, integrated Morphe feature catalog
+> Updated: 2026-11-16, frozen build133 release candidate
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, public as verified 2026-11-15)
-> Session summary: The integration now reuses Morphe features alongside the working Afterglow features. There are 122 named patches, 99 selected by default, including the original Return YouTube Dislike, DeArrow, Downloads and Copy text implementations. Original settings are available through Afterglow settings → Additional features. Existing Afterglow owners are retained, overlapping additions are optional, and the two original branding patches are excluded. The pinned import is Morphe 2.0.0. The earlier iOS parity ledger remains 131 done / 4 n/a / 64 todo and does not gate the imported features. Build110 below is historical; the current catalog and release checkpoint describe the broader integration.
+> Session summary: Build133 passes source/package checks and its final emulator smoke; publication is pending. It contains 127 public patches and 104 defaults: 41 Afterglow/compatibility patches and 86 original Morphe features. Afterglow owns Downloads and Vault, Theme Studio and its other custom destinations; original Morphe Return YouTube Dislike, DeArrow, Copy text and post-image downloading remain integrated. Original settings are available through Afterglow settings → Additional features. The functional Android parity ledger is 195 done / 4 n/a / 0 todo. This is implementation coverage, not a claim that every physical device, account, server variant or optional combination has been tested. Build118 and earlier sections below are historical.
 
 ## Goal
 
+Current user priority (2026-11-16): port Afterglow's own download mechanism,
+six-action download sheet, durable queue and Vault presentation to Android.
+The user explicitly prefers these over Morphe's download interface. Preserve
+and complete Theme Studio and the remaining Afterglow destinations. Morphe
+remains the implementation for shared features such as Return YouTube Dislike;
+the downloader is the explicit exception to the earlier reuse instruction.
+Frozen build133 includes that work and passes the checks described below. It is
+not part of the published build118 until the final delivery and feed publication
+complete. Do not infer publication from a successful local build or install.
+
 Deliver a usable Afterglow bundle for Android YouTube **21.43.523**. Reuse Morphe's
 existing feature implementations and settings wherever Morphe already provides a
-feature, including Return YouTube Dislike, downloads, DeArrow and text copying.
+feature, including Return YouTube Dislike, DeArrow and text copying.
 Do not delay those features for a bespoke Afterglow implementation or exact iOS
 behavior. Focus custom development on features Morphe does not provide, while
 preserving existing working Afterglow functionality. The iOS parity ledger remains
@@ -19,7 +29,64 @@ bundle. The build110 checkpoint below predates this broader integration.
 - An Afterglow settings page lives inside YouTube's settings and shows only rows for tweaks that are installed and implemented.
 - GmsCore and stream compatibility are included as named patches in this bundle, adapted from pinned Morphe sources. Use these selections with Afterglow; avoid duplicate compatibility patches from another source. The companion GmsCore app remains a separate installation.
 
-## Integrated Morphe feature release: build118
+## Current checkpoint: frozen build133, publication pending
+
+All 1,806 production/provenance inputs are recorded in `source-133.json` under
+`~/.cache/ytafterglow-android/afterglow-vault-20261116/`. Strict Desktop1.20 /
+patcher2.1 application and APK assembly pass for default104, independent8,
+all127 and the three-patch Long-press tools/GmsCore/stream-spoofing selection.
+The actual bundle has 434 acyclic dependency objects and six forwarded original
+Option instances. Settings ownership, visibility, defaults and reset checks pass
+540/540. Original resources, source provenance, notices and licenses are retained.
+
+Build133 changes only `PremiumControls.java` and `PremiumControlsSheet.java`
+from build132; 1,804 inputs are unchanged. The Premium sheet now disables Lite
+Mode when that optional patch is absent, and its action preserves either saved
+ON or OFF preference in that case. All 74 actual Premium-session checks,
+51 actual watch DEX checks and a fresh 540-setting run pass. Runtime evidence
+below retains its tested build number. The exact build133 APK passes playback,
+dislike display, installed Lite ON/OFF and the resolved six-action download sheet.
+Its installed hash matches the signed candidate and the crash buffer is empty.
+
+Afterglow's six-action download sheet, durable queue and Vault are implemented.
+Runtime checks cover adaptive video/audio assembly, captions/thumbnails, a large
+paused download resumed across restart and APK upgrade, background completion,
+full exported-media decoding, and library import/filter/favorite/collection/file
+operations. Native tabs, Lite Mode, Control Center, Premium controls, AB Lab and
+the AI Home prompt library also have the individual emulator results recorded in
+[port validation](docs/afterglow-port-validation.md). Theme Studio remains the
+theme owner; buffered/live scrubber colors and VOD restoration are verified.
+
+Build129 verifies avatar hold, Save, cross-app PNG Copy and preserved native taps.
+Build131 verifies full-title/raw-description copying, OFF/ON and native Close,
+plus original Morphe carousel-image JPEG downloads. Build132 verifies the
+Description icon density, exact comment/post text, rendered-row Save and Copy,
+cross-app image grants, selected-image copying after a carousel swipe and the
+preserved native image viewer. Hardware capture includes the mounted photo beyond
+the visible viewport; an unmounted footer remains blank. It does not reconstruct
+content that the native renderer has not mounted.
+
+Physical devices, account login, casting and every optional runtime combination
+remain unverified. Native AI feed execution and the paused Shorts subscription
+carousel need eligible server/account fixtures. Description copying passes on
+the unchanged APK with host GLES; the emulator's software renderer terminated
+the Windows qemu process on the same interaction without an Android app fatal
+exception or ANR. The host failure's root cause is unproven. Image clipboard QA
+temporarily disables emulator-to-Windows clipboard synchronization, whose empty
+host-text replacement was independently identified; no app workaround was added.
+
+Final smoke and settings cleanup are complete. The temporary clipboard probe is
+removed, and the original emulator renderer and host clipboard sharing are
+restored. The scoped acceptance record passes for build133. The remaining
+delivery work is the clean source commit, unique artifact, publication and feed
+verification. The
+release manifest and public feed establish publication. The
+[build133 release record](docs/release-build133.md) tracks delivery status. See
+[parity audit](docs/morphe-parity-audit.md), [downloads](docs/afterglow-downloads.md),
+[long-press tools](docs/long-press-tools.md), [profile/post images](docs/avatar-photos.md)
+and [Description copying](docs/description-header.md) for precise scope and limits.
+
+## Historical integrated Morphe feature release: build118
 
 The bundle contains 122 public patches and 99 defaults, adding 87 original Morphe
 features from the pinned 2.0.0 source. Return YouTube Dislike, DeArrow, Downloads,
@@ -1116,15 +1183,15 @@ extension. The fingerprint now excludes the extension namespace. Cast visibility
 | `tools/generate_settings_ui.py`, `tools/ios-settings-ui.json` | iOS settings layout → generated `ui/SettingsSpec.java`. |
 | `tools/generate_tweaks.py` | `tweaks.json` + parity → generated `settings/TweakCatalog.java` (`SHOWN_KEYS`). |
 | `tools/local_build.sh` | Offline build → `build-local/YTAfterglow-<ver>-local.mpp`. |
-| `patches/src/main/kotlin/app/afterglow/patches/TweakPatches.kt` | The first 8 named tweaks. Other batches live in `tweaks/*Tweaks.kt`. |
+| `patches/src/main/kotlin/app/afterglow/patches/TweakPatches.kt` + `tweaks/*Tweaks.kt` | The 41 Afterglow/compatibility wrappers and their owned hooks. |
 | `patches/.../shared/{Constants,AfterglowExtensionPatch,Tweaks,BytecodeHelpers}.kt` | Compatibility (21.43.523), extension init, `markTweakInstalled(id)`. |
 | `patches/.../settings/AfterglowSettingsPatch.kt` | Adds the exported `AfterglowActivity` with an action intent-filter, the row layout/icon resources, and the row in `res/xml/settings_fragment_cairo.xml`. |
 | `extensions/extension/src/main/java/app/afterglow/extension/` | `Afterglow`, `InstalledTweaks`, `settings/` (AfterglowPrefs, TabStore, LiteMode, PrefsTransfer), `ui/`, `litho/`, `menus/`, `video/`, `playback/`, `navigation/`. |
-| `/mnt/c/Users/Corey/ytag-scratch/morphe-official-v2.2.0/` | Official Morphe source, the reference for hooks. Written for patcher **2.3.0**; translate to 2.1.0. |
+| `vendor/morphe/`, `tools/import_morphe.py`, `tools/morphe-catalog.json` | Pinned original 2.0.0 source/runtime, reproducible integration adapters and selection mapping. Later 2.2 source is research only. |
 | `/mnt/c/Users/Corey/ytag-scratch/morphe-research/featuremap.md` + `morphe-feasibility-report.md` | iOS key ↔ Morphe patch line-up. "Afterglow only" means not in Morphe. |
 | `/mnt/c/Users/Corey/ytag-scratch/android/yt-21.43.523/dump/classes*.txt` | `dexdump -d` of 21.43.523. Search with `rg -F` (about 2 s). |
 | `/mnt/c/Users/Corey/ytag-scratch/android/ios-reference/` | Current iOS screenshots: settings row glow, Control Center (IMG_3190–3198), Theme Studio (IMG_3199–3201). |
-| iOS source (read-only spec) `/home/corey/projects/xuninc/YTAfterglow/.worktrees/yt-21.43-hook-repair` | Behavior spec: `YTAfterglow.x`, `Settings.x`, `ColorMode.x`, `Utils/YTAGThemeStore.m`, `Utils/YTAGThemeCatalog.m`, `UI/*`. |
+| Frozen iOS source (read-only spec) `~/.cache/ytafterglow-android/afterglow-vault-20261116/ios-reference/` | Current behavior snapshot, including download/Vault, tabs and long-press actions. Do not edit the live iOS builder source. |
 
 ## What Has Been Tried (and Why It Failed)
 
@@ -1138,7 +1205,7 @@ extension. The fingerprint now excludes the extension namespace. Cast visibility
 
 ### Rebuilding GmsCore support
 - **What:** started our own GmsCore patch.
-- **Why it was dropped:** use Morphe's own GmsCore patch, ticked alongside ours. Our code must be package-name independent.
+- **Historical decision:** reuse Morphe's GmsCore implementation. It is now pinned and integrated into the same Afterglow source; a second bundle is no longer required. Our code remains package-name independent.
 
 ### Settings row: `targetPackage` intent, then unexported action intent
 - **What:** a fixed package broke once GmsCore renamed the package. An implicit intent to an unexported activity was blocked on Android 14+ (`ActivityNotFoundException`).
@@ -1168,43 +1235,48 @@ extension. The fingerprint now excludes the extension namespace. Cast visibility
 - **What:** the research labels made it look as if Morphe had Vault, Theme Studio, glow and the 11-tab bar.
 - **Why it was wrong:** Morphe has none of them. The notes are fixed; never describe these as Morphe features.
 
-## Current Best Theory
+## Current implementation boundary
 
-- **Adapt the official code for overlapping features.** For tweaks Morphe also has (about 130 overlap), adapt the official Morphe implementation in `morphe-official-v2.2.0`: its fingerprints already match 21.43.523. Rewire it to our iOS keys plus `InstalledTweaks`, under `app.afterglow.*`, with GPL attribution headers and never the name "Morphe".
-- **Build Afterglow-only features from the iOS source.**
-- **Theme engine first.** It unblocks the settings look, glow, Theme Studio and the Control Center gradient.
-  - The official theme patch uses resource variants via `mcc`/`mnc` qualifiers, FabricatedOverlay (Android 14+), and Litho color hooks, which need a restart.
-  - Afterglow needs per-role colors from the `theme_*` keys.
+- Preserve the pinned Morphe 2.0.0 source/runtime and original settings for shared
+  functionality. Imported implementations stay in `app.morphe.*`; Afterglow owns
+  the selectable wrappers and settings bridge. Keep provenance and notices.
+- Preserve Afterglow's download mechanism, UI, queue and Vault as the explicit
+  exception. Reuse compatible stream transport without selecting the original
+  Morphe Downloads UI. Theme Studio, Glow and the native theme adapters remain
+  Afterglow-owned.
+- The 195 done / 4 n/a ledger records functional Android implementation. Eligible
+  server/account fixtures, physical devices and additional layouts remain a
+  separate runtime matrix; do not recreate already working Morphe behavior or
+  impose exact Apple rasterization as a missing-port gate.
 
-## Next Steps
+## Next steps from frozen build133
 
-1. **Continue the port from the current checkpoint:** the Theme Studio editor/library/transfer and native gradient/font/glow adapters now exist. Remaining native role and player coverage is listed in `docs/theme-studio.md`; then continue the other feature groups in `tools/parity.json`. Do not ask the user to select the already authorized batch again.
-2. **For a batch:**
-   - Read the iOS implementation.
-   - Find the Morphe equivalent in `featuremap.md`.
-   - Verify every fingerprint against the dexdump.
-   - Add named patches in `patches/.../tweaks/<Area>Tweaks.kt`: `bytecodePatch(name=…, description=…, default=true)`, `compatibleWith(COMPATIBILITY_YOUTUBE)`, `dependsOn(base patches)`, and `markTweakInstalled("<id>")` in `execute`.
-   - Gate runtime on `InstalledTweaks.has(id)` plus the key (via `LiteMode.effectiveBool`/`AfterglowPrefs`). Fail open with `Afterglow.error`.
-   - If the tweak id already has a named patch in `TweakPatches.kt`, add an unnamed hook patch and append it to that patch's `dependsOn`.
-3. **Build and check:**
-   `OUT=/mnt/c/Users/Corey/ytag-scratch/android/build bash tools/local_build.sh && python3 -B -I tools/check_parity.py && python3 -B -I tools/check_tweaks.py && python3 -B -I tools/check_settings_ui.py`
-4. **Patch-test (JDK 21):** Prefer `tools/verify_bundle.py` (see `docs/theme-engine.md`) for exclusive patch selection, `--validate`, a saved command and a checked JSON result. The direct CLI equivalent begins:
-   `/usr/lib/jvm/java-21-openjdk-amd64/bin/java -Xmx6g -jar /mnt/c/Users/Corey/Downloads/morphe-desktop-1.20.0-all.jar patch -p <mpp> --unsigned -o /mnt/c/Users/Corey/ytag-scratch/android/test/out.apk -t /mnt/c/Users/Corey/ytag-scratch/android/test/tmp "/mnt/c/Users/Corey/Downloads/com.google.android.youtube_21.43.523-1561307650_minAPI29(arm64-v8a,armeabi-v7a,x86,x86_64)(nodpi)_apkmirror.com.apk"`
-   Every patch must log "Applied". Then update `tools/parity.json`, run `python3 -B -I tools/generate_tweaks.py`, and commit and push to main.
-5. **Emulator run:**
-   - Patch using `tools/verify_bundle.py` with `--gms-bundle /mnt/c/Users/Corey/Downloads/patches-2.0.0.mpp`. Merely adding `-e "GmsCore support"` without exclusive selection also enables unrelated default patches.
-   - Sign: `apksigner sign --ks /mnt/c/Users/Corey/ytag-scratch/android/signing/ytag-test.jks --ks-key-alias ytagtest --ks-pass pass:ytagtest123 --v1-signing-enabled false --v2-signing-enabled true --v3-signing-enabled true`.
-   - Verified phone emulator: Windows SDK `emulator.exe`, AVD `YTAG_Glow_Check`, `ANDROID_AVD_HOME=C:\Users\Corey\ytag-scratch\android\ui-test\avd`, flags `-no-window -no-audio -no-snapshot -gpu swiftshader_indirect -port 5600`. When launching from WSL, include `ANDROID_AVD_HOME` in `WSLENV`. Use Windows SDK `platform-tools/adb.exe` for `emulator-5600`. The Linux SDK phone-image path in the older handoff was not the actual working setup.
-   - Install microG `Downloads/microg-7.3.0.apk` and the signed APK.
-   - Screenshots via `adb emu screenrecord screenshot <dir>`. Shut it down afterwards (`adb emu kill`).
-6. **Real device:** ask the user for the S25 Ultra's wireless-debugging IP:port, or to bring it online on Tailscale (`coreys-s25-ultra`, 100.85.166.64).
+1. Final smoke and settings cleanup pass; retain the exact candidate APK and
+   restored emulator configuration recorded in the acceptance report.
+2. Reconcile the same-candidate strict reports, 1,806 source hashes, actual catalog
+   graph/options, notices and focused-check input hashes. Build133 has all four
+   strict selections passing; changed production inputs would require a new
+   candidate rather than reusing an old verdict.
+3. Commit the intended source and documentation to main, create the unique local
+   delivery/checksum/provenance manifest, then publish the verified `.mpp` and
+   update `patches-bundle.json`. Verify the public checksum/feed before reporting
+   publication. No PR is requested.
+4. Keep this a single-source bundle. Its own GmsCore and Spoof video streams
+   selections supply compatibility; do not add a second official bundle with
+   duplicate compatibility patches. The companion GmsCore app remains separate.
+5. For subsequent runtime coverage, use the retained actual AVD/launch setup and
+   Windows adb target. Do not revive the historical `swiftshader_indirect`
+   command below older checkpoints: software rendering has an observed Windows
+   qemu failure on Description copying. Restore the temporary host-clipboard QA
+   setting when image checks finish. Physical/account/casting and server-provided
+   AI/Shorts-carousel checks remain unverified.
 
 ## Key Constraints
 
-- **The spec is the iOS code, ported 1:1.** Don't ask vision or priority questions. Only floatingKeyboard and stockVolumeHUD are truly iOS-only. disableFloatingTabBar and hideShortsLogo are n/a because Android 21.43 has neither element.
+- **Use the frozen iOS behavior with functional Android adaptations.** Reuse existing Morphe functionality where it overlaps, preserving the explicit Afterglow download/Vault and Theme Studio owners. The four n/a keys are floatingKeyboard, stockVolumeHUD, disableFloatingTabBar and hideShortsLogo; Android 21.43 lacks their corresponding iOS surfaces.
 - **Patcher 2.1.0, old API** (`bytecodePatch`/`resourcePatch`, `Fingerprint(...)` named args). Check signatures with `javap -classpath /mnt/c/Users/Corey/Downloads/morphe-desktop-1.20.0-all.jar <class>`. kotlinc needs `-Xcontext-parameters`. The bundle loads in the user's current Desktop 1.20.0 and Manager, and in newer hosts.
 - **Push straight to main, no PRs.** The repo is public. Publish verified `.mpp` releases and update root `patches-bundle.json` so Manager can add the repository URL as a source; preserve a uniquely named local delivery as provenance. See README.md for the source links. The user also requested matching Morphe implementations as temporary coverage until Afterglow versions are finished; keep attribution and validate conflicts before including them.
-- **Never use `app.morphe.*` packages or "Morphe" in names.** Keep GPL attribution headers on adapted code.
+- **Afterglow is the product name.** Original imported code retains its `app.morphe.*` packages and accurate secondary attribution. Preserve GPL source, licenses, modification notices and user-accessible credits; do not imply an official Morphe release.
 - **The Linux root disk fills up** (other projects). Put build outputs on C: (`/mnt/c/Users/Corey/ytag-scratch/...`). Never delete other projects' files.
 - **Installed tools are the verified build path:** JDK, Android SDK, Android Studio kotlinc and Morphe Desktop jar. Earlier download/tool restrictions were session-specific; do not treat them as a permanent environment limitation.
 - **Follow the current iOS source for colors and glow.** App surface/control colors derive from the active theme. The settings wordmark has dedicated signature constants in Settings.x; do not recolor those based on a general statement in an older handoff.

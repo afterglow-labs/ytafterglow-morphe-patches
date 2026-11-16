@@ -99,6 +99,10 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         DebugLog.initialize(this);
+        // Settings can be the first activity after a cold shortcut launch.
+        if (app.afterglow.extension.destinations.ExperimentRuntime.nativeHooksInstalled()) {
+            app.afterglow.extension.destinations.ExperimentRuntime.onActivityCreate(this);
+        }
         try {
             // The patch declares the activity with Theme.DeviceDefault.DayNight, whose action bar
             // would show the app label ("YouTube") above Afterglow's own navigation bar.
@@ -120,6 +124,7 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
 
     @Override
     protected void onDestroy() {
+        AfterglowDestinations.onDestroy(this);
         AfterglowPrefs.removeListener(this);
         handler.removeCallbacksAndMessages(null);
         super.onDestroy();
@@ -377,6 +382,9 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
         void build(LinearLayout list) {
             if (page.type == PageType.ROOT) {
                 list.addView(views.wordmarkHeader());
+                if (SettingsBehavior.keyVisible("destination.controlCenter"))
+                    list.addView(views.detailRow("Control Center", "Vault, quick controls, themes and recovery tools.", null,
+                            true, v -> navigateDestination("controlCenter")));
                 if (MorpheSettingsBridge.isInstalled()) {
                     list.addView(views.detailRow("Additional features", "Original Morphe feature settings.", null,
                             true, v -> MorpheSettingsBridge.open(AfterglowActivity.this)));
@@ -384,6 +392,11 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
                 }
             }
             else if (page.sectionTitle != null) list.addView(views.sectionTitle(page.sectionTitle.get()));
+            if ("page:vault".equals(page.id) && SettingsBehavior.keyVisible("destination.vault")) {
+                list.addView(views.detailRow("Open Vault", "Saved media, imports and your download queue.", null,
+                        true, v -> app.afterglow.extension.ui.DownloadsUi.openVault(AfterglowActivity.this)));
+                list.addView(views.spacer());
+            }
             for (Row row : page.rows) addRow(list, row);
             if ("page:about.credits".equals(page.id)) {
                 list.addView(views.spacer());
@@ -412,6 +425,10 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
         @Override
         void build(LinearLayout list) {
             List<SettingsBehavior.Choice> choices = SettingsBehavior.choices(row);
+            if (row.picker == Picker.ANCHOR || row.picker == Picker.STARTUP_TAB) {
+                List<String> supported = app.afterglow.extension.navigation.NativeTabs.supportedTabs();
+                choices.removeIf(choice -> !supported.contains(choice.tabId));
+            }
             int selected = SettingsBehavior.selectedIndex(row, choices);
             for (int i = 0; i < choices.size(); i++) {
                 SettingsBehavior.Choice choice = choices.get(i);
@@ -623,7 +640,8 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
                 } else if (row.target == SettingsModel.Target.PAGE) {
                     push(screenFor(SettingsBehavior.page(row.targetPage)));
                 } else {
-                    push(new PlaceholderScreen(row.displayTitle(), SettingsBehavior.text(row.description)));
+                    Descriptor descriptor = AfterglowPrefs.descriptor(row.registryKey);
+                    if (descriptor != null && descriptor.destination != null) navigateDestination(descriptor.destination);
                 }
                 break;
             case LINK:
@@ -807,6 +825,7 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (AfterglowDestinations.onActivityResult(this, requestCode, resultCode, data)) return;
         if (resultCode != RESULT_OK || data == null || data.getData() == null) return;
         Uri uri = data.getData();
         if (requestCode == REQUEST_SCRUBBER_IMAGE) {
@@ -930,15 +949,43 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
     }
 
     private void openDestination(String destination) {
+        if ("vault".equals(destination) && SettingsBehavior.keyVisible("destination.vault")) {
+            DownloadsUi.openVault(this);
+            return;
+        }
+        SettingsScreen screen = destinationScreen(destination);
+        if (screen != null) stack.add(screen);
+    }
+
+    private void navigateDestination(String destination) {
+        if ("vault".equals(destination) && SettingsBehavior.keyVisible("destination.vault")) {
+            DownloadsUi.openVault(this);
+            return;
+        }
+        SettingsScreen screen = destinationScreen(destination);
+        if (screen != null) push(screen);
+    }
+
+    private SettingsScreen destinationScreen(String destination) {
+        AfterglowDestinations.Navigator navigator = new AfterglowDestinations.Navigator() {
+            @Override public void openDestination(String target) { navigateDestination(target); }
+            @Override public void openSettingsPage(String pageId) {
+                SettingsModel.Page page = SettingsBehavior.page(pageId);
+                if (page != null) push(screenFor(page));
+            }
+            @Override public void closeToNativeHome() { finish(); }
+        };
+        if ("experimentSafety".equals(destination) && SettingsBehavior.keyVisible("destination.experimentLab"))
+            return AfterglowDestinations.create(this, destination, navigator);
         for (Descriptor descriptor : Registry.ALL) {
             // Destinations follow their tweak, like their settings rows.
             if (destination.equals(descriptor.destination) && SettingsBehavior.keyVisible(descriptor.key)) {
-                stack.add("destination.themeStudio".equals(descriptor.key) ? new ThemeStudioScreen(this)
+                return "destination.themeStudio".equals(descriptor.key) ? new ThemeStudioScreen(this)
                         : "destination.glowLab".equals(descriptor.key) ? new GlowLabScreen(this)
-                        : new PlaceholderScreen(descriptor.title(), descriptor.description()));
-                return;
+                        : AfterglowDestinations.create(this, destination, navigator);
             }
         }
+        return null;
     }
 
     // ---------------------------------------------------------------- dialogs
