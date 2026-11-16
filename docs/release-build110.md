@@ -1,5 +1,12 @@
 # Afterglow build110 preview
 
+[Published release](https://github.com/afterglow-labs/ytafterglow-morphe-patches/releases/tag/v0.1.0-build.110) · [Add source](https://morphe.software/add-source?github=afterglow-labs/ytafterglow-morphe-patches&name=Afterglow)
+
+The public feed and anonymous artifact download are hash-verified. Updating the
+existing GitHub source in Morphe Manager 2.6 changes its name from YTAfterglow to
+Afterglow and its patch count from 29 to 35. The temporary local import was removed;
+the published GitHub source remains enabled.
+
 The bundle targets unpatched **YouTube 21.43.523** and contains **35 selectable
 patches**, including GmsCore support and Spoof video streams. Both compatibility
 patches are enabled by default. The non-root setup still requires the separate
