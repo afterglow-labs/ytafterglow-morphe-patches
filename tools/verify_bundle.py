@@ -18,9 +18,12 @@ def main():
     parser.add_argument("--gms-bundle", type=Path)
     parser.add_argument("--official-patch", action="append", default=[],
                         help="Additional playback/plumbing patch from --gms-bundle; repeat to combine")
-    parser.add_argument("--patch", action="append", help="Select only these Afterglow patches; repeat to combine (default: all)")
+    parser.add_argument("--patch", action="append", help="Select only these patches; repeat to combine (default: recommended selection)")
+    parser.add_argument("--all", action="store_true", help="Select every named patch, including optional overlapping controls")
     parser.add_argument("--out", type=Path, required=True, help="New output directory; existing evidence is never overwritten")
     args = parser.parse_args()
+    if args.all and args.patch:
+        parser.error("--all and --patch are mutually exclusive")
     if args.official_patch and not args.gms_bundle:
         parser.error("--official-patch requires --gms-bundle")
     for path in (args.bundle, args.apk, args.desktop_jar, args.gms_bundle):
@@ -36,6 +39,12 @@ def main():
         if unknown:
             parser.error(f"Unknown Afterglow patches: {sorted(unknown)}")
         names = [name for name in names if name in set(args.patch)]
+    elif not args.all:
+        catalog_path = ROOT / "tools/morphe-catalog.json"
+        if catalog_path.exists():
+            optional = {entry["export_name"] for entry in json.loads(catalog_path.read_text())["patches"]
+                        if entry.get("export_name") and not entry["default"]}
+            names = [name for name in names if name not in optional]
     if args.gms_bundle:
         duplicate = set(names) & {"GmsCore support", "Spoof video streams", *args.official_patch}
         if duplicate:

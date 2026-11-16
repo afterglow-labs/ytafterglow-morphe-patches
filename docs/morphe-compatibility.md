@@ -1,5 +1,12 @@
 # Temporary GmsCore and stream compatibility
 
+This document records the narrow build110 adaptation. The broader integration
+now delegates GmsCore and stream support to the original vendored Morphe graph,
+together with the imported feature catalog. The old compatibility helpers remain
+in source for reference but are not dependencies of the current named wrappers.
+See [the catalog and integration policy](morphe-catalog.md). Its original settings
+resources and extension loader are the sole active Morphe resource/runtime owner.
+
 Afterglow includes source adaptations of Morphe **2.0.0** for Android YouTube
 **21.43.523**, compiled against patcher **2.1.0**. The two named selections are
 **GmsCore support** and **Spoof video streams**. Both default ON. GmsCore support

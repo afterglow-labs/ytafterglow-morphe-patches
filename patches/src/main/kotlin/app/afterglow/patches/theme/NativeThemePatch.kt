@@ -24,10 +24,13 @@ import app.morphe.patcher.resourceLiteral
 import app.morphe.patcher.util.addInstructionsAtControlFlowLabel
 import app.morphe.patcher.patch.PatchException
 import app.morphe.patcher.patch.bytecodePatch
+import app.morphe.patcher.util.proxy.mutableTypes.MutableMethod
 import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.Opcode
 import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
 import com.android.tools.smali.dexlib2.iface.instruction.ReferenceInstruction
+import com.android.tools.smali.dexlib2.iface.instruction.TwoRegisterInstruction
+import com.android.tools.smali.dexlib2.iface.reference.FieldReference
 import com.android.tools.smali.dexlib2.iface.reference.MethodReference
 
 private const val THEME = "$EXTENSION_PACKAGE/theme/NativeTheme;"
@@ -40,7 +43,7 @@ private object AppearanceFingerprint : Fingerprint(
 )
 
 /** 21.43.523: Lvte;->onBoundsChange(Rect)V, color v2, Paint v1 (classes2.dex). */
-private object LithoColorFingerprint : Fingerprint(
+internal object LithoColorFingerprint : Fingerprint(
     classFingerprint = Fingerprint(
         accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
         returnType = "V",
@@ -55,10 +58,37 @@ private object LithoColorFingerprint : Fingerprint(
     returnType = "V",
     parameters = listOf("Landroid/graphics/Rect;"),
     filters = listOf(
-        fieldAccess(opcode = Opcode.IGET_OBJECT, definingClass = "this", type = "Landroid/graphics/Paint;", location = MatchAfterWithin(10)),
+        // The original feed-card, player-control and seekbar hooks add three call/result
+        // pairs before this load (stock index 5 becomes 11). Keep the Paint call adjacent.
+        fieldAccess(opcode = Opcode.IGET_OBJECT, definingClass = "this", type = "Landroid/graphics/Paint;", location = MatchAfterWithin(12)),
         methodCall(smali = "Landroid/graphics/Paint;->setColor(I)V", location = MatchAfterImmediately()),
     ),
 )
+
+internal fun MutableMethod.hookLithoThemeColor(colorCallIndex: Int) {
+    val instructions = implementation!!.instructions
+    val load = instructions[colorCallIndex - 1]
+    val field = (load as? ReferenceInstruction)?.reference as? FieldReference
+    val call = instructions[colorCallIndex]
+    val target = (call as? ReferenceInstruction)?.reference as? MethodReference
+    val registers = call.invokeRegisters
+    require(load.opcode == Opcode.IGET_OBJECT && field?.definingClass == definingClass
+        && field.type == "Landroid/graphics/Paint;"
+        && target?.definingClass == "Landroid/graphics/Paint;" && target.name == "setColor"
+        && target.parameterTypes == listOf("I") && target.returnType == "V"
+        && registers.size == 2) { "Unexpected Litho Paint color boundary" }
+    val paint = load as TwoRegisterInstruction
+    val color = registers[1]
+    require(registers[0] == paint.registerA && color != paint.registerA && color != paint.registerB) {
+        "Unexpected Litho Paint/color registers"
+    }
+    // Keep the native load/call pair intact for the original color-hook fingerprint.
+    // The original providers and the native zero-color branch retain their order and registers.
+    addInstructions(colorCallIndex - 1, """
+        ${invokeStatic(color, method = "$THEME->lithoColor(I)I")}
+        move-result v$color
+    """)
+}
 
 internal val nativeThemePatch = bytecodePatch {
     dependsOn(afterglowExtensionPatch, themeResourcesPatch)
@@ -105,11 +135,7 @@ internal val nativeThemePatch = bytecodePatch {
         """)
         val match = LithoColorFingerprint.match()
         val colorCall = match.instructionMatches.last()
-        val color = colorCall.instruction.invokeRegisters[1]
-        match.method.addInstructions(colorCall.index, """
-            ${invokeStatic(color, method = "$THEME->lithoColor(I)I")}
-            move-result v$color
-        """)
+        match.method.hookLithoThemeColor(colorCall.index)
         println("Afterglow theme: ${contexts.size} base contexts, Litho ${match.method.definingClass}->${match.method.name}")
     }
 }

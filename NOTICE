@@ -63,3 +63,12 @@ This is an independent Afterglow adaptation, not an official Morphe release.
 Native hooks, settings ownership, and supported behavior have been adapted for
 Afterglow and YouTube 21.43.523. Source origins and changes are recorded in the
 relevant source headers and docs/long-press-tools.md and docs/morphe-fallbacks.md.
+
+The bundled feature catalog also incorporates Morphe patches 2.0.0, commit
+6cb8e6b6ee425eda8a854e026507286359f38a32, and patches-library 2.1.0-dev.2,
+commit 42edb9710c2b63416e8eddd8096bb6a0adff75dd. Original feature implementations
+are retained. Afterglow changes their public selection wrappers and connects
+their settings to the Afterglow settings screen. Original source and notices,
+the import recipe, and a complete feature mapping are supplied in vendor/morphe,
+tools/import_morphe.py, tools/morphe-catalog.json and docs/morphe-catalog.md.
+This remains an independent Afterglow distribution, not an official Morphe build.

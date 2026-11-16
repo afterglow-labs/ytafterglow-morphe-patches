@@ -14,7 +14,7 @@ import app.morphe.patcher.patch.PatchAvailability
  * The Afterglow tweaks as Morphe shows them: one named patch per tweak in
  * tools/tweaks.json, each with the name given there. A tweak's patch marks its
  * id in InstalledTweaks; the extension turns on only the features of installed
- * tweaks, and each feature still follows its YTAfterglow setting at runtime, as
+ * tweaks, and each feature still follows its Afterglow setting at runtime, as
  * on iOS. The settings page, the extension and the Litho filter are unnamed base
  * patches that every tweak depends on. tools/check_tweaks.py checks this file
  * against tools/tweaks.json.
@@ -34,7 +34,9 @@ val gmsCoreSupportTweakPatch = bytecodePatch(
         }
     }
     dependsOn(afterglowExtensionPatch, afterglowSettingsPatch,
-        app.afterglow.patches.compat.morphe.gmsCoreSupportHookPatch)
+        app.afterglow.patches.morphe.morpheSettingsBridgePatch,
+        app.morphe.patches.youtube.misc.gms.gmsCoreSupportPatch)
+    app.morphe.patches.youtube.misc.gms.gmsCoreSupportPatch.options.values.forEach { it() }
     execute { markTweakInstalled("gmscore-support") }
 }
 
@@ -46,7 +48,9 @@ val spoofVideoStreamsTweakPatch = bytecodePatch(
 ) {
     compatibleWith(COMPATIBILITY_YOUTUBE)
     dependsOn(afterglowExtensionPatch, afterglowSettingsPatch,
-        app.afterglow.patches.compat.morphe.spoofVideoStreamsHookPatch)
+        app.afterglow.patches.morphe.morpheSettingsBridgePatch,
+        app.morphe.patches.youtube.misc.spoof.spoofVideoStreamsPatch)
+    app.morphe.patches.youtube.misc.spoof.spoofVideoStreamsPatch.options.values.forEach { it() }
     execute { markTweakInstalled("spoof-video-streams") }
 }
 

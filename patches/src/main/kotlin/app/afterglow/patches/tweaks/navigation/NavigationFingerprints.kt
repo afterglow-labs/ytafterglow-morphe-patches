@@ -489,7 +489,10 @@ internal object CommentsLinkFingerprint : Fingerprint(
         methodCall(
             opcode = Opcode.INVOKE_DIRECT,
             smali = "Landroid/content/Intent;-><init>(Ljava/lang/String;Landroid/net/Uri;)V",
-            location = MatchAfterImmediately(),
+            // Morphe's redirect hook inserts an invoke/move-result pair before
+            // this constructor. Keep the exact URI constructor and method
+            // anchors while allowing that verified composition.
+            location = MatchAfterWithin(3),
         ),
     ),
 )

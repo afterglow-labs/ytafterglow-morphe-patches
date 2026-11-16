@@ -115,6 +115,16 @@ internal val afterglowSettingsPatch = resourcePatch(
                 ?: error("Missing bundled $name")
             input.use { source -> licenseDirectory.resolve(name).outputStream().use(source::copyTo) }
         }
+        // The imported streaming engine keeps these exact JS assets. Preserve
+        // their third-party notices even though the retired compatibility-only
+        // resource patch is no longer part of the selected dependency graph.
+        val engineLicenses = get("assets/afterglow-compatibility")
+        engineLicenses.mkdirs()
+        for (name in listOf("ASTRING_LICENSE.TXT", "MERIYAH_LICENSE.TXT", "YT_DLP_EJS_LICENSE.TXT")) {
+            val input = object {}.javaClass.getResourceAsStream("/compat/morphe/license/$name")
+                ?: error("Missing streaming engine license $name")
+            input.use { source -> engineLicenses.resolve(name).outputStream().use(source::copyTo) }
+        }
         document("AndroidManifest.xml").use { document ->
             val application = document.getElementsByTagName("application").item(0) as Element
 

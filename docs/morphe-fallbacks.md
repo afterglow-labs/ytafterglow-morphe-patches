@@ -1,5 +1,11 @@
 # Temporary upstream adapters
 
+The broader [Morphe catalog integration](morphe-catalog.md) supersedes this
+build110-only fallback policy. Existing Morphe features can ship with their
+original controls and behavior; exact iOS parity is not required. The remaining
+key inventory below describes unfinished custom Afterglow behavior, not a reason
+to withhold Morphe downloads, text copying or other working upstream features.
+
 Afterglow includes selected source adaptations of existing Morphe implementations
 while the full port is completed. Each adapter uses an existing Afterglow setting,
 default, installed-tweak owner and translation. This inventory describes source

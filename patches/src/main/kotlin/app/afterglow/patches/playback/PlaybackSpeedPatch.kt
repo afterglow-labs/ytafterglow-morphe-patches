@@ -20,6 +20,7 @@ import app.afterglow.patches.video.debugMatch
 import app.afterglow.patches.video.installAtStartup
 import app.afterglow.patches.video.videoStatePatch
 import app.morphe.patcher.Fingerprint
+import app.morphe.patcher.anyInstruction
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
 import app.morphe.patcher.extensions.InstructionExtensions.getInstruction
 import app.morphe.patcher.fieldAccess
@@ -40,6 +41,8 @@ import com.android.tools.smali.dexlib2.iface.instruction.WideLiteralInstruction
 import com.android.tools.smali.dexlib2.iface.reference.MethodReference
 
 private const val PLAYBACK_SPEED_CLASS = "$EXTENSION_PLAYBACK/PlaybackSpeed;"
+private const val UPSTREAM_SPEED_CLASS =
+    "Lapp/morphe/extension/youtube/patches/playback/speed/CustomPlaybackSpeedPatch;"
 
 /**
  * Starts playing faster while the player is held: after the long press runnable fires it
@@ -76,8 +79,9 @@ internal object SpeedLimiterParentFingerprint : Fingerprint(
     parameters = listOf("L"),
     filters = listOf(
         string("Playback rate: %f"),
-        literal(0.25f),
-        literal(4.0f),
+        // Original Morphe custom speeds replaces the stock limits with 0x and 8x.
+        anyInstruction(literal(0.25f), literal(0.0f)),
+        anyInstruction(literal(4.0f), literal(8.0f)),
     ),
 )
 
@@ -91,25 +95,50 @@ internal object SpeedLimiterFingerprint : Fingerprint(
     accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
     returnType = "V",
     filters = listOf(
-        literal(0.25f),
-        literal(4.0f),
+        anyInstruction(literal(0.25f), literal(0.0f)),
+        anyInstruction(literal(4.0f), literal(8.0f)),
         methodCall(opcode = Opcode.INVOKE_INTERFACE, parameters = listOf("F"), returnType = "V"),
     ),
     custom = { method, _ -> method.parameterTypes.firstOrNull() == "F" },
 )
 
-/** Index of the 4.0f literal (bits 0x40800000) of the speed clamp. */
+/** The stock 4x limit or the original Morphe patch's 8x replacement. */
 private fun MutableMethod.maximumSpeedIndex(): Int =
     implementation!!.instructions.indexOfFirst { instruction ->
-        (instruction as? WideLiteralInstruction)?.wideLiteral == 4.0f.toRawBits().toLong()
-    }.takeIf { it >= 0 } ?: throw PatchException("No 4.0 speed limit in $this")
+        val value = (instruction as? WideLiteralInstruction)?.wideLiteral
+        value == 4.0f.toRawBits().toLong() || value == 8.0f.toRawBits().toLong()
+    }.takeIf { it >= 0 } ?: throw PatchException("No stock or upstream speed limit in $this")
 
 /**
- * Raises the maximum of the speed clamp after the 4.0 literal: the first static `(FFF)F` call
+ * Compose after the original Morphe provider when it already owns this constant. If it is
+ * applied later, its own constant+1 insertion naturally runs before our transform too.
+ */
+internal fun MutableMethod.holdSpeedInsertIndex(speedIndex: Int): Int {
+    val instructions = implementation!!.instructions
+    val nextIndex = speedIndex + 1
+    val next = instructions[nextIndex]
+    val call = (next as? ReferenceInstruction)?.reference as? MethodReference
+    if (call?.definingClass != UPSTREAM_SPEED_CLASS || call.name != "getTapAndHoldSpeed") {
+        return nextIndex
+    }
+    require(next.opcode == Opcode.INVOKE_STATIC && call.parameterTypes.isEmpty() && call.returnType == "F") {
+        "Unexpected upstream tap-and-hold provider in $this"
+    }
+    val result = instructions[nextIndex + 1]
+    require(result.opcode == Opcode.MOVE_RESULT
+        && (result as OneRegisterInstruction).registerA ==
+            (instructions[speedIndex] as OneRegisterInstruction).registerA) {
+        "Upstream tap-and-hold provider has no matching adjacent result in $this"
+    }
+    return nextIndex + 2
+}
+
+/**
+ * Raises the maximum of the speed clamp after its limit literal: the first static `(FFF)F` call
  * after it is the clamp (rate, minimum, maximum). Inserted at the call's label, so every path
  * to the clamp passes through.
  */
-private fun MutableMethod.raiseSpeedClampMaximum() {
+internal fun MutableMethod.raiseSpeedClampMaximum() {
     val instructions = implementation!!.instructions
     val clampIndex = (maximumSpeedIndex() until instructions.size).firstOrNull { index ->
         val instruction = instructions[index]
@@ -155,7 +184,7 @@ internal val playbackSpeedHookPatch = bytecodePatch(
             // Highest index first: the speed, then the "still allowed" check before its branch.
             val speedRegister = getInstruction<OneRegisterInstruction>(tapAndHoldSpeedIndex).registerA
             addInstructions(
-                tapAndHoldSpeedIndex + 1,
+                holdSpeedInsertIndex(tapAndHoldSpeedIndex),
                 """
                     ${invokeStaticOne(speedRegister, "$PLAYBACK_SPEED_CLASS->getHoldSpeed(F)F")}
                     move-result v$speedRegister

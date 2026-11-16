@@ -17,18 +17,25 @@
 
 package app.afterglow.patches.litho
 
+import app.afterglow.patches.shared.invokeRegisters
+import app.afterglow.patches.shared.smali
 import app.morphe.patcher.Fingerprint
 import app.morphe.patcher.InstructionLocation.MatchAfterImmediately
 import app.morphe.patcher.InstructionLocation.MatchAfterWithin
 import app.morphe.patcher.StringComparisonType
 import app.morphe.patcher.checkCast
+import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
 import app.morphe.patcher.fieldAccess
 import app.morphe.patcher.literal
 import app.morphe.patcher.methodCall
 import app.morphe.patcher.opcode
 import app.morphe.patcher.string
+import app.morphe.patcher.util.proxy.mutableTypes.MutableMethod
 import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.Opcode
+import com.android.tools.smali.dexlib2.iface.Method
+import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
+import com.android.tools.smali.dexlib2.iface.instruction.ReferenceInstruction
 import com.android.tools.smali.dexlib2.iface.reference.FieldReference
 import com.android.tools.smali.dexlib2.iface.reference.MethodReference
 
@@ -166,6 +173,66 @@ internal fun elementConversionFingerprint(accessibilityExtensionType: String) = 
         string("Element missing type"),
     ),
 )
+
+/**
+ * The original component return, even after another filter adds an earlier empty-component
+ * return. In 21.43.523 the component is built by Lwwa.b(Lhfs;)Lhfn; and stored in v0.
+ * Resolve that result from its signature instead of treating the first return as native.
+ */
+internal fun elementComponentReturnIndex(method: Method, viewModelIndex: Int, errorIndex: Int): Int {
+    val instructions = method.implementation!!.instructions.toList()
+    val contextType = method.parameterTypes.first().toString()
+    val builders = (viewModelIndex + 1 until errorIndex).filter { index ->
+        val instruction = instructions[index]
+        val reference = (instruction as? ReferenceInstruction)?.reference as? MethodReference
+        instruction.opcode in setOf(Opcode.INVOKE_INTERFACE, Opcode.INVOKE_INTERFACE_RANGE)
+            && reference != null && reference.returnType == method.returnType
+            && reference.parameterTypes.map { it.toString() } == listOf(contextType)
+    }
+    require(builders.size == 1) { "Expected one native component builder in $method" }
+    val resultIndex = builders.single() + 1
+    require(instructions[resultIndex].opcode == Opcode.MOVE_RESULT_OBJECT) {
+        "Native component builder has no adjacent result in $method"
+    }
+    val resultRegister = (instructions[resultIndex] as OneRegisterInstruction).registerA
+    val returns = (resultIndex + 1 until errorIndex).filter { index ->
+        val instruction = instructions[index]
+        instruction.opcode == Opcode.RETURN_OBJECT
+            && (instruction as OneRegisterInstruction).registerA == resultRegister
+    }
+    require(returns.size == 1) { "Expected one native component result return in $method" }
+    return returns.single()
+}
+
+/**
+ * Add complete getter/result pairs after the native void view-model binding. Upstream uses
+ * this same cast+2 boundary; inserting at cast+1 would let its later hook split our first pair.
+ * Plain insertion preserves the no-view-model branch's target at the component builder.
+ */
+internal fun MutableMethod.addElementAccessibilityHook(
+    viewModelIndex: Int,
+    idRegister: Int,
+    textRegister: Int,
+    accessibilityId: MethodReference,
+    accessibilityText: MethodReference,
+) {
+    val instructions = implementation!!.instructions
+    val viewModelRegister = (instructions[viewModelIndex] as OneRegisterInstruction).registerA
+    val binding = instructions[viewModelIndex + 1]
+    val reference = (binding as? ReferenceInstruction)?.reference as? MethodReference
+    require(binding.opcode in setOf(Opcode.INVOKE_STATIC, Opcode.INVOKE_STATIC_RANGE)
+        && reference != null && reference.returnType == "V"
+        && reference.parameterTypes.firstOrNull()?.toString() == accessibilityId.definingClass
+        && binding.invokeRegisters.firstOrNull() == viewModelRegister) {
+        "Expected native view-model binding immediately after cast in $this"
+    }
+    addInstructions(viewModelIndex + 2, """
+        invoke-interface/range { v$viewModelRegister .. v$viewModelRegister }, ${accessibilityId.smali}
+        move-result-object v$idRegister
+        invoke-interface/range { v$viewModelRegister .. v$viewModelRegister }, ${accessibilityText.smali}
+        move-result-object v$textRegister
+    """)
+}
 
 // endregion
 

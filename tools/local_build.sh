@@ -29,7 +29,8 @@ done
 
 VERSION="$(sed -n 's/^version *= *//p' "$ROOT/gradle.properties")"
 rm -rf "$OUT"
-mkdir -p "$OUT/ext-classes" "$OUT/ext-dex" "$OUT/patch-classes" "$OUT/patch-dex" "$OUT/bundle/extensions"
+mkdir -p "$OUT/ext-classes" "$OUT/ext-dex" "$OUT/patch-classes" "$OUT/patch-dex" \
+    "$OUT/patch-stubs" "$OUT/bundle/extensions"
 
 echo "==> extension: javac"
 mapfile -t JAVA_SOURCES < <(find "$ROOT/extensions/extension/src/main/java" -name '*.java' | sort)
@@ -43,9 +44,16 @@ JAVA_HOME="$JDK" "$D8" --release --min-api 29 --lib "$ANDROID_JAR" --output "$OU
 cp "$OUT/ext-dex/classes.dex" "$OUT/bundle/extensions/afterglow.mpe"
 
 echo "==> patches: kotlinc"
-mapfile -t KOTLIN_SOURCES < <(find "$ROOT/patches/src/main/kotlin/app" -name '*.kt' | sort)
+mapfile -t PATCH_STUB_SOURCES < <(find "$ROOT/vendor/morphe/stubs/src/main/java" -name '*.java' | sort)
+"$JDK/bin/javac" -encoding UTF-8 -source 11 -target 11 -nowarn -Xlint:none \
+    -d "$OUT/patch-stubs" "${PATCH_STUB_SOURCES[@]}"
+mapfile -t KOTLIN_SOURCES < <(find \
+    "$ROOT/patches/src/main/kotlin/app" \
+    "$ROOT/vendor/morphe/patches/src/main/kotlin" \
+    "$ROOT/vendor/morphe/library/src/main/kotlin" -name '*.kt' \
+    ! -path '*/app/morphe/util/PatchListGenerator.kt' | sort)
 JAVA_HOME="$JDK" "$KOTLINC" -jvm-target 11 -no-reflect -nowarn -Xskip-prerelease-check -Xcontext-parameters \
-    -classpath "$DESKTOP_JAR" -d "$OUT/patch-classes" "${KOTLIN_SOURCES[@]}"
+    -classpath "$DESKTOP_JAR:$OUT/patch-stubs:$ANDROID_JAR" -d "$OUT/patch-classes" "${KOTLIN_SOURCES[@]}"
 
 echo "==> patches: d8"
 mapfile -t PATCH_CLASSES < <(find "$OUT/patch-classes" -name '*.class' | sort)
@@ -57,15 +65,34 @@ cp -r "$OUT/patch-classes/." "$OUT/bundle/"
 if [[ -d "$ROOT/patches/src/main/resources" ]]; then
     cp -r "$ROOT/patches/src/main/resources/." "$OUT/bundle/"
 fi
+python3 - "$ROOT/vendor/morphe/resources" "$OUT/bundle" <<'PY'
+from pathlib import Path
+import shutil
+import sys
+
+source, destination = map(Path, sys.argv[1:])
+for original in sorted(source.rglob("*")):
+    if not original.is_file():
+        continue
+    target = destination / original.relative_to(source)
+    if target.exists() and target.read_bytes() != original.read_bytes():
+        raise SystemExit(f"Conflicting bundle resource: {target.relative_to(destination)}")
+    target.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(original, target)
+PY
 cp "$ROOT/NOTICE" "$ROOT/LICENSE" "$OUT/bundle/"
 mkdir -p "$OUT/bundle/afterglow/licenses"
 cp "$ROOT/NOTICE" "$ROOT/LICENSE" "$OUT/bundle/afterglow/licenses/"
+mkdir -p "$OUT/bundle/afterglow/licenses/morphe"
+cp "$ROOT/vendor/morphe/licenses/"* "$OUT/bundle/afterglow/licenses/morphe/"
+cp "$ROOT/vendor/morphe/provenance.json" "$OUT/bundle/afterglow/licenses/morphe/provenance.json"
+cp "$ROOT/vendor/morphe/README.md" "$OUT/bundle/afterglow/licenses/morphe/ADAPTATION.md"
 rm -rf "$OUT/bundle/META-INF"
 cp "$OUT/patch-dex/classes.dex" "$OUT/bundle/classes.dex"
 cat > "$OUT/MANIFEST.MF" <<EOF
 Manifest-Version: 1.0
 Name: Afterglow
-Description: Afterglow for YouTube on Android. The iOS feature port is in progress.
+Description: Afterglow for YouTube on Android, including integrated Morphe features.
 Version: $VERSION
 Timestamp: $(date +%s000)
 Source: git@github.com:afterglow-labs/ytafterglow-morphe-patches.git

@@ -1,8 +1,8 @@
 # Afterglow for Android
 
 Afterglow patches for **YouTube 21.43.523**, distributed as a Morphe patch
-source. The full iOS port is in progress; see [HANDOFF.md](HANDOFF.md) for current
-coverage and validation limits.
+source. Existing Morphe features are integrated alongside Afterglow's own
+features. See [HANDOFF.md](HANDOFF.md) for current coverage and validation limits.
 
 ## Add the source
 
@@ -28,26 +28,31 @@ imported from that release in Manager or Desktop.
 
 ## Current preview
 
-Build110 provides **35 independently selectable patches in one bundle**, including
-**GmsCore support** and **Spoof video streams**, selected by default. Use an
-unpatched **YouTube 21.43.523** APK and select the patches from the Afterglow source.
+Build118 provides **122 selectable patches**, with **99 selected
+by default**. It includes Morphe's **Return YouTube Dislike**, **DeArrow**,
+**Downloads**, **Copy text**, **GmsCore support** and **Spoof video streams**.
+Use an unpatched **YouTube 21.43.523** APK and select the Afterglow source.
 Use the default patch selection for the tested playback configuration.
 Use this bundle's compatibility patches only; selecting another source's copies
 applies overlapping hooks. A compatible GmsCore companion app is still required
 for the non-root setup.
 
-New controls include mini-player playback for children's videos, the old playlist
-bar, timestamped links from Pause, Android's share sheet and alternate image hosts.
-These settings start OFF. The playlist-bar switch is under advanced Player →
-Playback settings and requires a restart. Title/description copying remains
-pending and hidden; the full iOS port is still in progress.
+Open **Afterglow settings → Additional features** for the imported Morphe
+settings. Dislikes and title/comment copying are enabled by default. DeArrow's
+title scopes are available there and start off. Downloads retains Morphe's
+in-app and external-downloader choices. Original implementations and their
+runtime defaults are preserved; selecting a patch does not turn on every setting.
 
-Validation includes 518 settings checks, strict full and independent APK assembly
-with Morphe Desktop **1.20.0 / patcher 2.1.0**, successful full patching in
-**Morphe Manager 2.6.0**, and Android 16 emulator checks.
-See [the release checkpoint](docs/release-build110.md) for tested behavior and limits.
-Physical-device testing and account login remain unverified.
+The import adds 87 feature patches from the pinned Morphe **2.0.0** source.
+Features already covered by Afterglow keep their existing owner; partial overlaps
+are optional. Custom development focuses on features Morphe does not provide.
+See the [complete feature mapping](docs/morphe-catalog.md) for all inclusions,
+overlaps and the two excluded branding patches.
+
+Validation includes settings checks, strict patch application and APK assembly,
+and Android 16 emulator checks. See [the release checkpoint](docs/release-build118.md)
+for exact selections and limits. Physical-device testing and account login remain unverified.
 
 Upstream-derived code retains its attribution and license notices, also available
 in **Afterglow settings → About → Credits**. See [NOTICE](NOTICE), [LICENSE](LICENSE)
-and [the pinned compatibility sources](docs/morphe-compatibility.md).
+and [the pinned imported sources](vendor/morphe/README.md).

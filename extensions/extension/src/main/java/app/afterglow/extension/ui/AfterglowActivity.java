@@ -62,11 +62,12 @@ import app.afterglow.extension.ui.SettingsModel.Picker;
 import app.afterglow.extension.ui.SettingsModel.Row;
 
 /**
- * Hosts the YTAfterglow settings, opened from the YTAfterglow row in YouTube's
- * settings. Every page, row, picker and search entry comes from
+ * Hosts the Afterglow settings, opened from the Afterglow row in YouTube's
+ * settings. The iOS pages, rows, pickers and search entries come from
  * {@link SettingsSpec}, generated from the transcription of the iOS Settings.x
  * (tools/ios-settings-ui.json), so pages, order, texts and stored values match
- * iOS. Built in code: the extension ships as a DEX without resources.
+ * iOS. Installed upstream feature controls open in their original settings screen.
+ * Built in code: the extension ships as a DEX without resources.
  */
 public class AfterglowActivity extends Activity implements AfterglowPrefs.Listener {
     /** Optional extra: open straight to a registry destination id (e.g. "controlCenter"). */
@@ -374,7 +375,14 @@ public class AfterglowActivity extends Activity implements AfterglowPrefs.Listen
 
         @Override
         void build(LinearLayout list) {
-            if (page.type == PageType.ROOT) list.addView(views.wordmarkHeader());
+            if (page.type == PageType.ROOT) {
+                list.addView(views.wordmarkHeader());
+                if (MorpheSettingsBridge.isInstalled()) {
+                    list.addView(views.detailRow("Additional features", "Original Morphe feature settings.", null,
+                            true, v -> MorpheSettingsBridge.open(AfterglowActivity.this)));
+                    list.addView(views.spacer());
+                }
+            }
             else if (page.sectionTitle != null) list.addView(views.sectionTitle(page.sectionTitle.get()));
             for (Row row : page.rows) addRow(list, row);
             if ("page:about.credits".equals(page.id)) {

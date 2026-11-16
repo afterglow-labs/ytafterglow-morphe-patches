@@ -1,17 +1,42 @@
 # Handoff
 
-> Updated: 2026-11-16, integrated Morphe compatibility release
+> Updated: 2026-11-16, integrated Morphe feature catalog
 > Project: ytafterglow-morphe-patches (active checkout `/home/corey/projects/ytafterglow-morphe-patches`; original checkout `/home/corey/projects/xuninc/YTAfterglow-Android`, GitHub `afterglow-labs/ytafterglow-morphe-patches`, public as verified 2026-11-15)
-> Session summary: Theme Studio includes the editor, saved library and theme-file transfer. Native gradients, glow, bundled fonts, custom scrubbers, tap-to-seek, ambient-mode control and nine player overlay hide switches work in the Android 16 emulator. SponsorBlock skip/undo and timeline markers also work in watch playback and Shorts. Playback end time supports both clock formats and native speed changes; chapter snapping can be disabled independently of two-finger seeking. Autoplay Off starts opened videos paused while manual Play remains available. Classic quality opens populated native resolution lists and works independently of the other Afterglow tweaks. Shorts fullscreen combines native pinches, expanded content, idle overlays and continuity between reels. Shorts-only mode adds native live/cold routing, independent hidden tabs and its two-finger exit. The independent Shorts layout tweak can now hide the native player layer while retaining video and gestures. The player and Shorts share all four eye modes, and native mute and fullscreen lock work independently. Standalone videos can use native rewind/fast-forward buttons while playlists and live playback keep their controls. Below-player recommendations can be hidden while retaining video information and comments. There are 35 named patches, including integrated GmsCore and stream support. New playback and sharing controls are documented in the build110 release checkpoint; title/description copying remains hidden. Key-level parity remains conservative at 131 done / 4 n/a / 64 todo, including partial native coverage; the full port is not complete.
+> Session summary: The integration now reuses Morphe features alongside the working Afterglow features. There are 122 named patches, 99 selected by default, including the original Return YouTube Dislike, DeArrow, Downloads and Copy text implementations. Original settings are available through Afterglow settings → Additional features. Existing Afterglow owners are retained, overlapping additions are optional, and the two original branding patches are excluded. The pinned import is Morphe 2.0.0. The earlier iOS parity ledger remains 131 done / 4 n/a / 64 todo and does not gate the imported features. Build110 below is historical; the current catalog and release checkpoint describe the broader integration.
 
 ## Goal
 
-Port every Afterglow iOS tweak to Android YouTube **21.43.523**, exactly as it behaves on iOS: same settings, defaults, screens, translations and theme/glow look. Deliver it as the user's own standalone Morphe patch source, a `.mpp` bundle that Morphe Desktop or Manager loads next to Morphe's own list.
+Deliver a usable Afterglow bundle for Android YouTube **21.43.523**. Reuse Morphe's
+existing feature implementations and settings wherever Morphe already provides a
+feature, including Return YouTube Dislike, downloads, DeArrow and text copying.
+Do not delay those features for a bespoke Afterglow implementation or exact iOS
+behavior. Focus custom development on features Morphe does not provide, while
+preserving existing working Afterglow functionality. The iOS parity ledger remains
+a record of custom-port coverage, not a gate on importing useful upstream features.
+Deliver the result as the user's own standalone Morphe patch source, a `.mpp`
+bundle. The build110 checkpoint below predates this broader integration.
 - Each Afterglow feature group is a separately named tweak in Morphe's list (names from `tools/tweaks.json`).
 - An Afterglow settings page lives inside YouTube's settings and shows only rows for tweaks that are installed and implemented.
 - GmsCore and stream compatibility are included as named patches in this bundle, adapted from pinned Morphe sources. Use these selections with Afterglow; avoid duplicate compatibility patches from another source. The companion GmsCore app remains a separate installation.
 
-## Integrated compatibility release: build110
+## Integrated Morphe feature release: build118
+
+The bundle contains 122 public patches and 99 defaults, adding 87 original Morphe
+features from the pinned 2.0.0 source. Return YouTube Dislike, DeArrow, Downloads,
+Copy text and other existing upstream features are included now. Their controls
+are available under Afterglow settings → Additional features. Custom development
+should focus on gaps not supplied by Morphe.
+
+Strict patching and APK assembly pass for default99, independent8 and all122
+selections. The loader verifies the shared dependency graph and original options;
+settings checks pass 518/518. Source/runtime provenance and licenses are checked.
+The original text-copy implementation replaces the excluded Afterglow experiment.
+Existing Afterglow owners and preferences are retained, and overlapping additions
+are optional. See [release-build118.md](docs/release-build118.md) for delivery,
+Manager/runtime validation and limits, and [morphe-catalog.md](docs/morphe-catalog.md)
+for the complete mapping. The build110 checkpoint below is historical.
+
+## Historical integrated compatibility release: build110
 
 The new bundle contains 35 named patches, including GmsCore support and Spoof
 video streams. Full35 and independent6 strict application and APK assembly pass

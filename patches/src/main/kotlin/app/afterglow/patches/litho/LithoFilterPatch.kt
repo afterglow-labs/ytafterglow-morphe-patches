@@ -138,7 +138,7 @@ internal val afterglowLithoFilterPatch = bytecodePatch(
         val conversionMethod = conversion.method
         val nullCheckIndex = conversion.instructionMatches[0].index
         val viewModelIndex = conversion.instructionMatches[1].index
-        val returnIndex = conversion.instructionMatches[2].index
+        val errorIndex = conversion.instructionMatches[3].index
 
         // The injected code reads p1 (component context), p2 (conversion context) and p3 (element),
         // and returns the EmptyComponent from a method declared to return a component.
@@ -149,6 +149,9 @@ internal val afterglowLithoFilterPatch = bytecodePatch(
         ) {
             throw PatchException("Unexpected element conversion method: $conversionMethod")
         }
+        // Upstream filters can already have inserted an EmptyComponent return before the
+        // original return. The native builder's result identifies the common unfiltered path.
+        val returnIndex = elementComponentReturnIndex(conversionMethod, viewModelIndex, errorIndex)
         fun extendsClass(type: String, superType: String): Boolean {
             var current: String? = type
             repeat(8) {
@@ -204,8 +207,9 @@ internal val afterglowLithoFilterPatch = bytecodePatch(
 
             // Highest index first, so the lower indexes stay valid.
 
-            // Ask the extension before the component is returned; if it is filtered, return an
-            // EmptyComponent instead. Branches to the return now run this first.
+            // Replace the result when filtered, then use the original return. Keeping one
+            // common return also lets a later upstream filter resolve and run on both paths.
+            // Branches to the return now run this first.
             addInstructionsAtControlFlowLabel(
                 returnIndex,
                 """
@@ -218,24 +222,20 @@ internal val afterglowLithoFilterPatch = bytecodePatch(
                     invoke-static { v$resultRegister }, ${emptyComponentBuilder.smali}
                     move-result-object v$resultRegister
                     iget-object v$resultRegister, v$resultRegister, ${emptyComponentField.smali}
-                    return-object v$resultRegister
+                    move-object/from16 v$returnRegister, v$resultRegister
                     :afterglow_litho_keep
                     nop
                 """,
             )
 
-            // Right after the cast, the register holds the button view model: read its
-            // accessibility id and text. Plain insertion on purpose, so no branch label moves onto
-            // these calls: only the path through the cast may run them (the branch for elements
-            // without a view model jumps past the cast, to 0x00f9 on 21.43.523).
-            addInstructions(
-                viewModelIndex + 1,
-                """
-                    invoke-interface/range { v$viewModelRegister .. v$viewModelRegister }, ${accessibilityId.smali}
-                    move-result-object v$accessibilityIdRegister
-                    invoke-interface/range { v$viewModelRegister .. v$viewModelRegister }, ${accessibilityText.smali}
-                    move-result-object v$accessibilityTextRegister
-                """,
+            // Share the native binding boundary with upstream so neither insertion can split
+            // the other's getter/result pairs. Only the path through the cast runs these calls.
+            addElementAccessibilityHook(
+                viewModelIndex,
+                accessibilityIdRegister,
+                accessibilityTextRegister,
+                accessibilityId,
+                accessibilityText,
             )
 
             // Elements without a button view model pass empty strings.
