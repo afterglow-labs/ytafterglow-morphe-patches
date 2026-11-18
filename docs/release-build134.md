@@ -30,8 +30,23 @@ Unselect the icon patch to retain YouTube's icon. See [icon details](app-icon.md
   Launch succeeds, playback advances from 7 to 19 seconds, and the crash
   buffer is empty. Five saved Vault items remain visible after the upgrade.
 
-Publication and public-source Manager verification are pending at this source
-checkpoint. The release manifest and this record will be updated after delivery.
+Morphe Manager **2.6.0** refreshes the existing public source to **128 patches**,
+applies all **105 defaults**, rebuilds and signs. Its saved APK passes ZIP and
+Android v2 signature verification, compiled launcher-icon checks and 51 actual
+watch-action DEX checks. The signing certificate matches the Manager build133
+APK previously delivered to Samsung. Original Morphe remains disabled and no
+temporary local source is used. The Manager-signed APK itself was not installed;
+the emulator runtime checks above use a separately signed build of the same
+default patch selection.
+
+The source feed and anonymous release downloads are verified. Source commit:
+`b3841fb0dad062c2b96f4c42f94672cd81f27d9a`.
+Bundle SHA-256:
+`273a77ddc2ec0b76948ccf21c65b74db310c97d83f54cfe8bdb3f4bfb96a686c`.
+The release includes the `.mpp`, checksum and provenance manifest.
+
+The updated APK is ready locally. Samsung transfer is pending because the phone
+is disconnected; build134 has not been installed on it.
 Earlier functional tests remain scoped to the builds recorded in
 [build133](release-build133.md) and [port validation](afterglow-port-validation.md).
 Physical-device, account-login and every optional runtime combination remain
