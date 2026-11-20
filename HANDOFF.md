@@ -51,10 +51,19 @@ Original test preferences and tab order are restored.
 Bundle SHA-256:
 `d305d0d934f63187444ecee6546373dfc49c93faf1df4468546e7e3009c9293c`.
 [Build135 release record](docs/release-build135.md) tracks publication and delivery.
-Manager consumer verification and Samsung build135 delivery are pending at this
-source-feed checkpoint. Build134 was transferred and installed successfully on
-Samsung on November19; receipt: `samsung-delivery-20261119T224519Z.json` under
-`~/.cache/ytafterglow-android/afterglow-vault-20261116/`.
+The public feed and anonymous downloads are verified. Manager2.6 refreshes the
+existing public source, patches all105 defaults and signs with the same certificate
+as Samsung's build134. Its actual APK passes ZIP/signature/icon checks, layout20
+and watch51 DEX checks, and inspection of the fixed drag handler. No local source
+was added. Build135 APK and bundle were sent via Tailscale and hashes verified on
+Samsung SM-S938U1. ADB upgraded the app on Android17/SDK37; its installed APK hash
+matches `1acb31e9aa41157434602cc0e43d21f04c8ae1b9f74a26ee6596e349ab27a843`.
+The app launches and plays with no new crash. Phone tab UI checks remain incomplete:
+it returned to fullscreen playback during settings navigation. The tab gesture and
+layout runtime proof above is from the emulator. No phone preferences were changed
+and no app data was cleared. Receipt: `samsung-delivery-135.json` under
+`~/.cache/ytafterglow-android/afterglow-vault-20261116/`; APK:
+`C:\Users\Corey\ytag-scratch\android\deliveries\Afterglow-build135-YouTube-21.43.523.apk`.
 
 JS triage found no actual warning in Samsung app logs or a four-minute live
 capture. The pinned Morphe2.0.0 player-JS retrieval and both startup solver

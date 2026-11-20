@@ -54,6 +54,31 @@ uses a disposable probe package on an emulator, and removes that package afterwa
 The presentation test requires an installed YouTube 21.43.523 app; neither runner
 changes that app's private preferences or Vault data.
 
+## Publication and Samsung delivery
+
+Source commit: `c4df981c84ac5875bde28788d14cdab5040c7ca7`.
+Bundle SHA-256:
+`d305d0d934f63187444ecee6546373dfc49c93faf1df4468546e7e3009c9293c`.
+The public source feed and anonymous release downloads are verified. The release
+contains the `.mpp`, checksum and provenance manifest.
+
+Morphe Manager 2.6 refreshes the existing public Afterglow source, applies all 105
+defaults, rebuilds and signs. Its actual saved APK passes ZIP/signature and icon
+checks, 20 tab-layout DEX checks, 51 watch-action checks, and inspection of the
+placeholder-based drag handler. No temporary source was used. Its signing
+certificate matches the Samsung's build134 installation.
+
+Both the bundle and `Afterglow-build135-YouTube-21.43.523.apk` were sent through
+Tailscale to the Samsung SM-S938U1, with hashes verified in Downloads/Taildrop.
+ADB successfully upgraded the existing app on Android 17 / SDK37, and the
+installed APK hash matches the Manager output:
+`1acb31e9aa41157434602cc0e43d21f04c8ae1b9f74a26ee6596e349ab27a843`.
+The app launches and plays video with no new crash recorded. The phone returned
+to fullscreen playback during settings navigation, so the tab-editor and
+alignment UI checks were not completed there; their runtime proof is the emulator
+testing described above. No app data was cleared and no phone preferences were
+changed during the attempted UI checks.
+
 The reported JS-player warning is still under investigation. Samsung logs did
 not capture its text. The bundled player-script retrieval and both startup solver
 challenges passed from the host; that does not establish Android sandbox behavior.
